@@ -1,0 +1,322 @@
+/* ```timeline blocks (scripts/blocks.mjs): vertical, horizontal and snake layouts, plain or cards. */
+
+/* ---------------------------------------------------------------------------------------------
+   Timelines: ```timeline blocks (scripts/blocks.mjs). Each event is a dot on a line, with its
+   date, title and text in a body, which `style: cards` turns into a panel. The layout depends on
+   the timeline's own width (it's a size container), so a narrow column gets the vertical one:
+   - vertical: the line down the left edge. With cards, from 40rem, a centre line with the cards
+     alternating left and right.
+   - horizontal (from 40rem): the line along the top, scrolling sideways if the events don't fit.
+   - snake (from 32rem): rows of 2, 3 or 4 events (as many as fit), alternately left to right and
+     right to left, the line turning down at the end of each row, so nothing scrolls. Each event's
+     row and column for every row length are inline custom properties (--r2, --c2, … --c4) and its
+     connectors are classes (lms-snake3-link-r, lms-snake3-turn-l, …), worked out at build time. */
+.lms-timeline {
+	--lms-timeline-dot: 0.875rem;
+	/* The dot's distance from the top of a vertical event: level with the date. */
+	--lms-timeline-dot-top: 0.3rem;
+	--lms-timeline-gap: 1.25rem;
+	--lms-timeline-row-gap: 1.75rem;
+	/* Room beside the snake's rows for its turns. */
+	--lms-timeline-gutter: 1.5rem;
+	--lms-timeline-line: var(--sl-color-gray-5);
+	container-type: inline-size;
+	/* A <figure>: no browser indent. */
+	margin: 2rem 0;
+}
+.lms-timeline-title {
+	margin-bottom: 1rem;
+	font-weight: 700;
+	font-size: var(--sl-text-lg);
+	color: var(--sl-color-white);
+}
+.lms-timeline-events {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.lms-timeline-event {
+	position: relative;
+	margin: 0;
+	padding: 0 0 var(--lms-timeline-gap) calc(var(--lms-timeline-dot) + 1rem);
+}
+/* The line, from this event's dot to the next one's. */
+.lms-timeline-event::before {
+	content: '';
+	position: absolute;
+	top: var(--lms-timeline-dot-top);
+	bottom: calc(-1 * var(--lms-timeline-dot-top));
+	left: calc(var(--lms-timeline-dot) / 2 - 1px);
+	width: 2px;
+	background: var(--lms-timeline-line);
+}
+.lms-timeline-event:last-child::before {
+	content: none;
+}
+/* The dot, ringed in the page colour so the line appears to pass behind it. */
+.lms-timeline-event::after {
+	content: '';
+	position: absolute;
+	top: var(--lms-timeline-dot-top);
+	left: 0;
+	width: var(--lms-timeline-dot);
+	height: var(--lms-timeline-dot);
+	border-radius: 50%;
+	background: var(--lms-accent);
+	box-shadow: 0 0 0 3px var(--sl-color-black);
+}
+/* The snake's turn down to the next row: shown only where an event ends a row (below). */
+.lms-timeline-turn {
+	display: none;
+}
+.lms-timeline-date {
+	margin: 0 0 0.15rem;
+	font: 600 var(--sl-text-xs) var(--lms-mono);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--lms-accent-text);
+}
+.lms-timeline-heading {
+	margin: 0 0 0.25rem;
+	font-weight: 700;
+	color: var(--sl-color-white);
+}
+.lms-timeline-text {
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-2);
+}
+.lms-timeline-text p,
+.lms-timeline-text ul {
+	margin: 0 0 0.4rem;
+}
+.lms-timeline-text ul {
+	padding-inline-start: 1.25rem;
+}
+.lms-timeline-body > :last-child,
+.lms-timeline-text > :last-child {
+	margin-bottom: 0;
+}
+.lms-timeline :not(pre) > code {
+	padding: 0.1em 0.35em;
+	border-radius: var(--lms-radius-xs);
+	background: var(--sl-color-gray-6);
+	color: var(--sl-color-white);
+	font-family: var(--lms-mono);
+	font-size: 0.875em;
+	overflow-wrap: anywhere;
+}
+.lms-timeline a {
+	color: var(--sl-color-text-accent);
+}
+
+/* style: cards: each event's body is a panel, like the catalogue's cards. */
+.lms-timeline-cards {
+	--lms-timeline-dot-top: 1.05rem;
+}
+.lms-timeline-cards .lms-timeline-body {
+	padding: 0.85rem 1rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-lg);
+	background: var(--lms-panel);
+}
+/* Cards side by side in a row are the same height. */
+.lms-timeline-cards:is(.lms-timeline-horizontal, .lms-timeline-snake) .lms-timeline-event {
+	display: flex;
+	flex-direction: column;
+}
+.lms-timeline-cards:is(.lms-timeline-horizontal, .lms-timeline-snake) .lms-timeline-body {
+	flex: 1;
+}
+
+@container (min-width: 40rem) {
+	/* Horizontal: the line runs along the top, across the gap to the next event. */
+	.lms-timeline-horizontal .lms-timeline-events {
+		display: flex;
+		gap: var(--lms-timeline-gap);
+		overflow-x: auto;
+		/* Room for the dots' rings, which the scrolling list would otherwise clip. */
+		padding: 3px 3px 0.5rem;
+		scroll-snap-type: x proximity;
+	}
+	.lms-timeline-horizontal .lms-timeline-event {
+		flex: 1 0 12rem;
+		padding: calc(var(--lms-timeline-dot) + 0.75rem) 0 0;
+		scroll-snap-align: start;
+	}
+	.lms-timeline-horizontal .lms-timeline-event::before {
+		top: calc(var(--lms-timeline-dot) / 2 - 1px);
+		bottom: auto;
+		left: 0;
+		right: calc(-1 * var(--lms-timeline-gap));
+		width: auto;
+		height: 2px;
+	}
+	.lms-timeline-horizontal .lms-timeline-event::after {
+		top: 0;
+	}
+
+	/* Vertical cards: a centre line, with the cards alternating left and right of it. */
+	.lms-timeline-vertical.lms-timeline-cards .lms-timeline-events {
+		position: relative;
+	}
+	.lms-timeline-vertical.lms-timeline-cards .lms-timeline-events::before {
+		content: '';
+		position: absolute;
+		top: var(--lms-timeline-dot-top);
+		bottom: var(--lms-timeline-gap);
+		left: calc(50% - 1px);
+		width: 2px;
+		background: var(--lms-timeline-line);
+	}
+	.lms-timeline-vertical.lms-timeline-cards .lms-timeline-event {
+		width: 50%;
+		padding: 0 calc(var(--lms-timeline-dot) / 2 + 1rem) var(--lms-timeline-gap) 0;
+	}
+	.lms-timeline-vertical.lms-timeline-cards .lms-timeline-event:nth-child(even) {
+		margin-left: 50%;
+		padding: 0 0 var(--lms-timeline-gap) calc(var(--lms-timeline-dot) / 2 + 1rem);
+	}
+	.lms-timeline-vertical.lms-timeline-cards .lms-timeline-event::before {
+		content: none;
+	}
+	.lms-timeline-vertical.lms-timeline-cards .lms-timeline-event::after {
+		left: auto;
+		right: calc(var(--lms-timeline-dot) / -2);
+	}
+	.lms-timeline-vertical.lms-timeline-cards .lms-timeline-event:nth-child(even)::after {
+		left: calc(var(--lms-timeline-dot) / -2);
+		right: auto;
+	}
+}
+
+/* Snake: the grid, the dots along the top of each event, and the shape of the turns. Which events
+   link left or right and which turn is set per row length below. */
+@container (min-width: 32rem) {
+	.lms-timeline-snake .lms-timeline-events {
+		display: grid;
+		gap: var(--lms-timeline-row-gap) var(--lms-timeline-gap);
+		padding-inline: var(--lms-timeline-gutter);
+	}
+	.lms-timeline-snake .lms-timeline-event {
+		padding: calc(var(--lms-timeline-dot) + 0.75rem) 0 0;
+	}
+	.lms-timeline-snake .lms-timeline-event::before {
+		content: none;
+		top: calc(var(--lms-timeline-dot) / 2 - 1px);
+		bottom: auto;
+		width: auto;
+		height: 2px;
+	}
+	.lms-timeline-snake .lms-timeline-event::after {
+		top: 0;
+	}
+	/* A bracket from this event's dot out into the gutter, down, and back to the next event's dot,
+	   directly below. Rows stretch to their tallest event, so this event's height plus the row gap
+	   reaches the next row (+2px: the bottom border sits on the next row's line). */
+	.lms-timeline-snake .lms-timeline-turn {
+		position: absolute;
+		top: calc(var(--lms-timeline-dot) / 2 - 1px);
+		height: calc(100% + var(--lms-timeline-row-gap) + 2px);
+		box-sizing: border-box;
+		border: 2px solid var(--lms-timeline-line);
+	}
+}
+@container (32rem <= width < 46rem) {
+	.lms-timeline-snake .lms-timeline-events {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.lms-timeline-snake .lms-timeline-event {
+		grid-row: var(--r2);
+		grid-column: var(--c2);
+	}
+	.lms-timeline-snake .lms-snake2-link-r::before {
+		content: '';
+		left: 0;
+		right: calc(-1 * var(--lms-timeline-gap));
+	}
+	.lms-timeline-snake .lms-snake2-link-l::before {
+		content: '';
+		left: calc(-100% - var(--lms-timeline-gap));
+		right: 100%;
+	}
+	.lms-timeline-snake .lms-snake2-turn-r > .lms-timeline-turn {
+		display: block;
+		left: calc(var(--lms-timeline-dot) / 2);
+		right: calc(0.4rem - var(--lms-timeline-gutter));
+		border-left: 0;
+		border-radius: 0 1rem 1rem 0;
+	}
+	.lms-timeline-snake .lms-snake2-turn-l > .lms-timeline-turn {
+		display: block;
+		left: calc(0.4rem - var(--lms-timeline-gutter));
+		right: calc(100% - var(--lms-timeline-dot) / 2);
+		border-right: 0;
+		border-radius: 1rem 0 0 1rem;
+	}
+}
+@container (46rem <= width < 62rem) {
+	.lms-timeline-snake .lms-timeline-events {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	.lms-timeline-snake .lms-timeline-event {
+		grid-row: var(--r3);
+		grid-column: var(--c3);
+	}
+	.lms-timeline-snake .lms-snake3-link-r::before {
+		content: '';
+		left: 0;
+		right: calc(-1 * var(--lms-timeline-gap));
+	}
+	.lms-timeline-snake .lms-snake3-link-l::before {
+		content: '';
+		left: calc(-100% - var(--lms-timeline-gap));
+		right: 100%;
+	}
+	.lms-timeline-snake .lms-snake3-turn-r > .lms-timeline-turn {
+		display: block;
+		left: calc(var(--lms-timeline-dot) / 2);
+		right: calc(0.4rem - var(--lms-timeline-gutter));
+		border-left: 0;
+		border-radius: 0 1rem 1rem 0;
+	}
+	.lms-timeline-snake .lms-snake3-turn-l > .lms-timeline-turn {
+		display: block;
+		left: calc(0.4rem - var(--lms-timeline-gutter));
+		right: calc(100% - var(--lms-timeline-dot) / 2);
+		border-right: 0;
+		border-radius: 1rem 0 0 1rem;
+	}
+}
+@container (width >= 62rem) {
+	.lms-timeline-snake .lms-timeline-events {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	.lms-timeline-snake .lms-timeline-event {
+		grid-row: var(--r4);
+		grid-column: var(--c4);
+	}
+	.lms-timeline-snake .lms-snake4-link-r::before {
+		content: '';
+		left: 0;
+		right: calc(-1 * var(--lms-timeline-gap));
+	}
+	.lms-timeline-snake .lms-snake4-link-l::before {
+		content: '';
+		left: calc(-100% - var(--lms-timeline-gap));
+		right: 100%;
+	}
+	.lms-timeline-snake .lms-snake4-turn-r > .lms-timeline-turn {
+		display: block;
+		left: calc(var(--lms-timeline-dot) / 2);
+		right: calc(0.4rem - var(--lms-timeline-gutter));
+		border-left: 0;
+		border-radius: 0 1rem 1rem 0;
+	}
+	.lms-timeline-snake .lms-snake4-turn-l > .lms-timeline-turn {
+		display: block;
+		left: calc(0.4rem - var(--lms-timeline-gutter));
+		right: calc(100% - var(--lms-timeline-dot) / 2);
+		border-right: 0;
+		border-radius: 1rem 0 0 1rem;
+	}
+}

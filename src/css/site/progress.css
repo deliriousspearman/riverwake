@@ -1,0 +1,43 @@
+/* Progress bars and rows, and completed lessons in the sidebar. */
+
+/* Progress */
+.progress-row {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	font-family: var(--lms-mono);
+	font-size: 0.8rem;
+	color: var(--sl-color-gray-3);
+}
+.progress-row progress {
+	flex: 1;
+	max-width: 16rem;
+	height: 0.4rem;
+	appearance: none;
+	border: none;
+	border-radius: var(--lms-radius-pill);
+	overflow: hidden;
+	background: var(--sl-color-gray-5);
+}
+.progress-row progress::-webkit-progress-bar {
+	background: var(--sl-color-gray-5);
+}
+.progress-row progress::-webkit-progress-value {
+	background: var(--lms-accent);
+	border-radius: var(--lms-radius-pill);
+}
+.progress-row progress::-moz-progress-bar {
+	background: var(--lms-accent);
+	border-radius: var(--lms-radius-pill);
+}
+
+/* Completed lessons in the sidebar */
+a.is-complete::after {
+	content: '✓';
+	margin-inline-start: 0.4em;
+	color: var(--lms-accent-text);
+	font-weight: 700;
+}
+a[aria-current='page'].is-complete::after {
+	color: inherit;
+}

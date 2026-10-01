@@ -1,0 +1,123 @@
+/* "Mark as complete", the storage warning, "Complete & continue" and the end-of-course panel. */
+
+/* "Mark as complete" button on lesson pages */
+.lesson-complete {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	margin-bottom: 1.5rem;
+}
+/* Shown by progress.ts when localStorage can't be written. */
+.storage-warning {
+	max-width: 36rem;
+	padding: 0.5rem 0.85rem;
+	border: 1px solid var(--lms-medium);
+	border-inline-start-width: 4px;
+	border-radius: var(--lms-radius-sm);
+	color: var(--sl-color-white);
+	font-size: var(--sl-text-sm);
+	text-align: start;
+}
+.site-footer .storage-warning {
+	margin-top: 0.75rem;
+}
+/* The lesson's main action: "Complete & continue →", or "Next lesson →" once complete. */
+.lesson-action {
+	font: inherit;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	padding: 0.65rem 1.5rem;
+	border-radius: var(--lms-radius-sm);
+	border: 1px solid var(--lms-accent);
+	background: var(--lms-accent);
+	color: var(--lms-on-accent);
+	text-decoration: none;
+	cursor: pointer;
+}
+.lesson-action:hover {
+	background: var(--lms-accent-soft);
+	border-color: var(--lms-accent-soft);
+	color: var(--lms-on-accent);
+}
+.lesson-done {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+}
+/* End-of-course panel on a course's last lesson (src/components/LessonActions.tsx), styled like
+   the home page "Continue learning" banner. Its heading and hint depend on whether every lesson
+   is done. */
+.course-end {
+	width: 100%;
+	max-width: 40rem;
+	padding: 1rem 1.25rem;
+	border: 1px solid var(--sl-color-accent);
+	border-radius: var(--lms-radius-md);
+	background: linear-gradient(90deg, var(--sl-color-accent-low), transparent 70%);
+	text-align: start;
+}
+.course-end h2 {
+	margin: 0 0 0.25rem;
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-xs);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--sl-color-text-accent);
+}
+.course-end.is-complete h2::before {
+	content: '✓ ';
+}
+.course-end p {
+	margin: 0 0 0.5rem;
+	color: var(--sl-color-gray-2);
+}
+.course-end strong {
+	color: var(--sl-color-white);
+}
+.course-end a:not(.lesson-action) {
+	color: var(--sl-color-text-accent);
+	font-weight: 600;
+}
+.course-end.is-complete .course-end-open,
+.course-end:not(.is-complete) .course-end-done {
+	display: none;
+}
+.course-end-next {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	margin: 0.75rem 0 0;
+	padding: 0.75rem 0 0;
+	border-top: 1px solid var(--sl-color-gray-5);
+	list-style: none;
+}
+.course-end-next li {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem 1rem;
+	margin: 0;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-2);
+}
+.course-end .lesson-action {
+	display: inline-block;
+	padding: 0.45rem 1rem;
+	font-size: var(--sl-text-sm);
+}
+.lesson-done-status {
+	margin: 0;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-2);
+}
+.lesson-done-check {
+	color: var(--lms-accent-text);
+	font-weight: 700;
+}
+.lesson-action:focus-visible {
+	outline: 2px solid var(--sl-color-accent-high);
+	outline-offset: 2px;
+}

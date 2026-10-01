@@ -1,0 +1,210 @@
+/* The Hacklab theme, the default: every colour, size and font as a `--sl-*` / `--lms-*` variable (the
+   other files use only these), Infima's variables pointed at them, and the display face. Theme
+   files in src/css/themes/ override these variables and a few rules. */
+
+/* `hidden` always hides. The browser's own [hidden] rule is weak, so any `display` set by a
+   component (ours, Docusaurus's or Infima's) silently overrides it, which can show quiz answers
+   or an empty "Continue learning" banner before they're meant to appear. */
+[hidden] {
+	display: none !important;
+}
+
+/* Hacklab theme, the default: dark navy panels and a lime
+   signal colour. Chakra Petch for headings, Figtree for reading, JetBrains Mono for code, all
+   self-hosted (scripts/themes.mjs).
+
+   The other stylesheets in src/css/site/ are written against the `--sl-*` and `--lms-*` variables
+   defined here, and Docusaurus's Infima variables (`--ifm-*`) point at them too. Theme files in
+   src/css/themes/ override only the variables and a few rules. Anything that should change with
+   the theme uses a variable, not a literal value. Light mode is `[data-theme='light']` on <html>. */
+
+:root {
+	/* Layout and type scale. */
+	--sl-font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif;
+	--sl-text-2xs: 0.75rem;
+	--sl-text-xs: 0.8125rem;
+	--sl-text-sm: 0.875rem;
+	--sl-text-base: 1rem;
+	--sl-text-lg: 1.125rem;
+	--sl-text-xl: 1.25rem;
+	--sl-text-2xl: 1.5rem;
+	--sl-nav-height: 4rem;
+	--sl-content-width: 45rem;
+	--sl-z-index-navbar: 10;
+
+	--sl-font: 'Figtree Variable', var(--sl-font-system);
+	--lms-display: 'Chakra Petch', var(--sl-font);
+	--lms-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'DejaVu Sans Mono', 'Liberation Mono', monospace;
+	--sl-font-mono: var(--lms-mono);
+	--sl-text-h1: 2.5rem;
+	--sl-text-h2: 1.6rem;
+	--sl-text-h3: 1.3rem;
+	/* Width of the "On this page" column on wide screens. */
+	--lms-toc-width: 15rem;
+
+	/* Shape: corner radii (small chips → large cards, and pills), card and panel outline width, and
+	   the hover highlight on cards. Theme files override these. */
+	--lms-radius-xs: 4px;
+	--lms-radius-sm: 6px;
+	--lms-radius-md: 8px;
+	--lms-radius-lg: 10px;
+	--lms-radius-pill: 999px;
+	--lms-border-width: 1px;
+	--lms-hover-shadow: 0 0 0 1px var(--lms-accent);
+	/* Plain code blocks (square; terminals use --lms-radius-lg). */
+	--lms-radius-code: 0px;
+
+	/* Dark */
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #e4e9f4;
+	--sl-color-gray-2: #a4b1cd;
+	--sl-color-gray-3: #8494b5;
+	--sl-color-gray-4: #52627f;
+	--sl-color-gray-5: #2c3a52;
+	--sl-color-gray-6: #1a2332;
+	--sl-color-black: #111927;
+	--sl-color-accent-low: #2a3d12;
+	--sl-color-accent: #9fef00;
+	--sl-color-accent-high: #c5f467;
+	--sl-color-bg-nav: #1a2332;
+	--sl-color-bg-sidebar: #141d2b;
+	--sl-color-bg-inline-code: #202c3f;
+	--sl-color-text: var(--sl-color-gray-2);
+	--sl-color-text-accent: var(--sl-color-accent-high);
+	--sl-color-hairline-light: var(--sl-color-gray-5);
+	--sl-color-hairline: var(--sl-color-gray-6);
+	--sl-color-hairline-shade: var(--sl-color-black);
+	/* Card and panel surfaces */
+	--lms-panel: #1a2332;
+	--lms-panel-2: #202c3f;
+	/* The accent (lime in Hacklab) is used as a fill in both light and dark mode; --lms-accent-text
+	   is the readable text version, --lms-accent-soft the lighter tint for hovers and the hero. */
+	--lms-accent: #9fef00;
+	--lms-on-accent: #0e1a02;
+	--lms-accent-text: #9fef00;
+	--lms-accent-soft: #c5f467;
+	/* Difficulty chips (pathway levels) */
+	--lms-easy: #9fef00;
+	--lms-medium: #ffaf00;
+	--lms-hard: #ff3e3e;
+}
+
+:root[data-theme='light'] {
+	--sl-color-white: #0f1726;
+	--sl-color-gray-1: #1a2332;
+	--sl-color-gray-2: #34435c;
+	--sl-color-gray-3: #56657f;
+	--sl-color-gray-4: #8c99b0;
+	--sl-color-gray-5: #d3dae6;
+	--sl-color-gray-6: #e9edf4;
+	--sl-color-gray-7: #f1f4f9;
+	--sl-color-black: #f4f6fa;
+	--sl-color-accent-low: #e8f8c8;
+	--sl-color-accent: #5b8c00;
+	--sl-color-accent-high: #3d6200;
+	--sl-color-bg-nav: #ffffff;
+	--sl-color-bg-sidebar: #ffffff;
+	--sl-color-bg-inline-code: #e9edf4;
+	--sl-color-text-accent: var(--sl-color-accent);
+	--sl-color-hairline-light: var(--sl-color-gray-6);
+	--sl-color-hairline-shade: var(--sl-color-gray-6);
+	--lms-panel: #ffffff;
+	--lms-panel-2: #f1f4f9;
+	--lms-accent-text: #3d6200;
+	--lms-easy: #4d8a00;
+	--lms-medium: #b86e00;
+	--lms-hard: #d12a2a;
+}
+
+/* Infima (Docusaurus's CSS framework) follows the variables above. */
+:root {
+	--ifm-background-color: var(--sl-color-black);
+	--ifm-background-surface-color: var(--sl-color-bg-nav);
+	--ifm-font-family-base: var(--sl-font);
+	--ifm-font-family-monospace: var(--lms-mono);
+	--ifm-heading-font-family: var(--lms-display);
+	--ifm-font-color-base: var(--sl-color-gray-2);
+	--ifm-heading-color: var(--sl-color-white);
+	--ifm-line-height-base: 1.75;
+	--ifm-color-primary: var(--sl-color-accent);
+	--ifm-color-primary-dark: var(--sl-color-accent);
+	--ifm-color-primary-darker: var(--sl-color-accent);
+	--ifm-color-primary-darkest: var(--sl-color-accent-high);
+	--ifm-color-primary-light: var(--sl-color-accent-high);
+	--ifm-color-primary-lighter: var(--sl-color-accent-high);
+	--ifm-color-primary-lightest: var(--sl-color-accent-high);
+	--ifm-link-color: var(--sl-color-text-accent);
+	--ifm-link-hover-color: var(--sl-color-text-accent);
+	--ifm-color-emphasis-100: var(--sl-color-gray-6);
+	--ifm-color-emphasis-200: var(--sl-color-gray-6);
+	--ifm-color-emphasis-300: var(--sl-color-gray-5);
+	--ifm-color-emphasis-600: var(--sl-color-gray-3);
+	--ifm-color-emphasis-700: var(--sl-color-gray-2);
+	--ifm-color-content: var(--sl-color-gray-2);
+	--ifm-color-content-secondary: var(--sl-color-gray-3);
+	--ifm-toc-border-color: var(--sl-color-gray-5);
+	--ifm-hr-background-color: var(--sl-color-gray-5);
+	--ifm-table-border-color: var(--sl-color-gray-5);
+	--ifm-table-stripe-background: transparent;
+	--ifm-table-head-background: var(--lms-panel);
+	--ifm-code-background: var(--sl-color-bg-inline-code);
+	--ifm-code-font-size: 0.875em;
+	--ifm-code-border-radius: var(--lms-radius-xs);
+	--ifm-code-padding-horizontal: 0.35em;
+	--ifm-pre-background: var(--lms-panel);
+	--ifm-global-radius: var(--lms-radius-md);
+	--ifm-global-shadow-lw: none;
+	--ifm-navbar-height: var(--sl-nav-height);
+	--ifm-navbar-background-color: var(--sl-color-bg-nav);
+	--ifm-navbar-link-color: var(--sl-color-gray-2);
+	--ifm-navbar-link-hover-color: var(--sl-color-white);
+	--ifm-navbar-shadow: none;
+	--ifm-navbar-padding-horizontal: 1.5rem;
+	--ifm-menu-color: var(--sl-color-gray-2);
+	--ifm-menu-color-active: var(--lms-accent-text);
+	--ifm-menu-color-background-active: var(--sl-color-accent-low);
+	--ifm-menu-color-background-hover: var(--sl-color-gray-6);
+	--ifm-menu-link-padding-vertical: 0.2rem;
+	--ifm-menu-link-padding-horizontal: 0.5rem;
+	--ifm-toc-link-color: var(--sl-color-gray-3);
+	--ifm-breadcrumb-item-background-active: transparent;
+	--ifm-breadcrumb-color-active: var(--sl-color-white);
+	--ifm-dropdown-background-color: var(--lms-panel);
+	--doc-sidebar-width: 18.75rem;
+	--doc-sidebar-hidden-width: 2rem;
+	--docusaurus-announcement-bar-height: auto;
+}
+
+body {
+	background: var(--sl-color-black);
+	color: var(--sl-color-text);
+	font-size: var(--sl-text-base);
+}
+::selection {
+	background: var(--sl-color-accent-low);
+}
+
+/* Display face on titles, headings and the site name. */
+.navbar__title,
+.lms-page-header h1,
+.theme-doc-markdown :is(h2, h3) {
+	font-family: var(--lms-display);
+	font-weight: 700;
+	letter-spacing: 0;
+}
+.theme-doc-markdown :is(h2, h3, h4) {
+	color: var(--sl-color-white);
+	line-height: 1.2;
+}
+.theme-doc-markdown h2 {
+	font-size: var(--sl-text-h2);
+}
+.theme-doc-markdown h3 {
+	font-size: var(--sl-text-h3);
+}
+.lms-page-header h1 {
+	margin: 0;
+	font-size: var(--sl-text-h1);
+	line-height: 1.2;
+	color: var(--sl-color-white);
+}

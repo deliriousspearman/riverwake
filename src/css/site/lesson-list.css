@@ -1,0 +1,85 @@
+/* A course overview's lesson list: a checklist of tasks. */
+
+/* Course overview lesson list: a checklist of tasks */
+.lesson-list {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 1rem;
+	margin-top: 2rem;
+}
+.lesson-list h2 {
+	margin: 1rem 0 0;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: 1.5rem;
+	color: var(--sl-color-white);
+}
+.lesson-group {
+	width: 100%;
+}
+.lesson-group h3 {
+	margin: 0.75rem 0 0.4rem;
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-sm);
+	font-weight: 600;
+	color: var(--sl-color-gray-3);
+}
+.lesson-list ol {
+	display: grid;
+	gap: 0.4rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	width: 100%;
+}
+.lesson-list li {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.25rem 0.75rem;
+	padding: 0.7rem 1rem 0.7rem 2.75rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-sm);
+	background: var(--lms-panel);
+}
+/* Checkbox: empty until the lesson is complete. */
+.lesson-list li::before {
+	content: '';
+	position: absolute;
+	left: 1rem;
+	top: 50%;
+	translate: 0 -50%;
+	width: 1rem;
+	height: 1rem;
+	border: 1.5px solid var(--sl-color-gray-4);
+	border-radius: max(0px, calc(var(--lms-radius-xs) - 1px));
+}
+.lesson-list li:has(a.is-complete)::before {
+	content: '✓';
+	display: grid;
+	place-items: center;
+	border-color: var(--lms-accent);
+	background: var(--lms-accent);
+	color: var(--lms-on-accent);
+	font-size: 0.7rem;
+	font-weight: 800;
+}
+.lesson-list li a {
+	color: var(--sl-color-white);
+	font-weight: 600;
+	text-decoration: none;
+}
+.lesson-list li a:hover {
+	text-decoration: underline;
+}
+.lesson-list li a.is-complete::after {
+	display: none;
+}
+.lesson-meta {
+	margin-inline-start: auto;
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-xs);
+	color: var(--sl-color-gray-3);
+}

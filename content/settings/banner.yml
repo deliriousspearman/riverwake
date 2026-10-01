@@ -1,0 +1,8 @@
+enabled: false
+message: Scheduled maintenance on Saturday from 09:00 to 11:00. The site may be briefly unavailable.
+backgroundColor: '#ff0000'
+textColor: '#ffffff'
+fontSize: 15
+bold: true
+italic: false
+height: 30

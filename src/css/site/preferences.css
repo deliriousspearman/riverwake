@@ -1,0 +1,33 @@
+/* This browser's preferences (the Settings page): text size, width, motion, glossary terms. */
+
+/* ---------------------------------------------------------------------------------------------
+   This browser's preferences (the Settings page, src/lib/preferences.ts): data-lms-<name> on <html>,
+   set before the page is drawn by src/head/preferences.js. */
+/* Text size: everything is sized in rem, so this scales the page like browser zoom does. */
+html[data-lms-text='large'] {
+	--ifm-font-size-base: 112.5%;
+}
+html[data-lms-text='larger'] {
+	--ifm-font-size-base: 125%;
+}
+/* A wider text column (lesson and guide pages; the catalogue lists are wide already). */
+html[data-lms-width='wide'] {
+	--sl-content-width: 60rem;
+}
+/* Reduce motion, whatever the device says (the site already follows prefers-reduced-motion). */
+html[data-lms-motion='reduce'],
+html[data-lms-motion='reduce'] *,
+html[data-lms-motion='reduce'] *::before,
+html[data-lms-motion='reduce'] *::after {
+	animation: none !important;
+	transition: none !important;
+	scroll-behavior: auto !important;
+}
+/* Glossary terms as plain text (src/client/glossary.ts takes them out of the tab order). */
+html[data-lms-glossary='off'] .glossary-term {
+	text-decoration: none;
+	cursor: inherit;
+}
+html[data-lms-glossary='off'] .glossary-tip {
+	display: none !important;
+}

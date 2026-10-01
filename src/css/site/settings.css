@@ -1,0 +1,81 @@
+/* The Settings page (src/pages/settings.tsx). */
+
+/* Settings page (src/pages/settings.tsx): progress, backup and restore, reset. */
+.settings-section {
+	padding: 1.25rem 0 1.5rem;
+	border-top: 1px solid var(--sl-color-gray-5);
+}
+.settings-section:first-child {
+	border-top: 0;
+	padding-top: 0.5rem;
+}
+.settings-section h2 {
+	margin: 0 0 0.6rem;
+	font-family: var(--lms-display);
+	font-size: var(--sl-text-xl);
+	color: var(--sl-color-white);
+}
+.settings-section p {
+	margin: 0 0 0.75rem;
+}
+.settings-help {
+	color: var(--sl-color-gray-3);
+}
+/* One setting: its name and a line of explanation, with the switch or menu beside them (below on
+   phones). */
+.settings-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem 1.5rem;
+	padding: 0.65rem 0;
+}
+.settings-row + .settings-row {
+	border-top: 1px dashed var(--sl-color-gray-5);
+}
+.settings-row > div {
+	flex: 1 1 18rem;
+}
+.settings-row label,
+.settings-row .settings-name {
+	display: block;
+	color: var(--sl-color-white);
+	font-weight: 600;
+}
+.settings-section .settings-row p {
+	margin: 0.15rem 0 0;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}
+.settings-row .catalog-level {
+	min-width: 10rem;
+}
+.settings-switch {
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+}
+.settings-section .settings-defaults {
+	margin: 0.75rem 0 0;
+}
+.settings-defaults .link-button {
+	margin: 0;
+	font-size: var(--sl-text-sm);
+}
+.settings-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+}
+.settings-actions .lms-button {
+	cursor: pointer;
+}
+/* What restoring did. Kept in the page while empty, so screen readers announce it when it changes. */
+.settings-section .settings-status:not(:empty) {
+	margin: 0.75rem 0 0;
+	color: var(--sl-color-white);
+}
+.settings-section .settings-status:empty {
+	margin: 0;
+}

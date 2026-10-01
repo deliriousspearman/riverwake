@@ -1,0 +1,38 @@
+/* draw.io diagrams in pages (.drawio.svg, put into the page by plugins/remark-drawio.mjs). */
+
+/* The diagram fits the text column (scaled down, text and all, if it's wider: src/client/zoom.ts
+   then enlarges it on click), and never grows past its own size. The template's frame is its panel,
+   so the figure adds none. Diagrams stay dark in light mode, like terminal windows. */
+.lms-drawio {
+	margin: 1.5rem 0;
+}
+.lms-drawio > svg {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin-inline: auto;
+}
+/* Scaled down, text drawn at its exact size: Chrome otherwise rounds each glyph for the small size,
+   and wide labels came out squashed. */
+:is(.lms-drawio, .lms-zoom-body) > svg {
+	text-rendering: geometricPrecision;
+}
+.lms-drawio > figcaption {
+	margin-top: 0.5rem;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+	text-align: center;
+}
+/* The templates' fonts are the site's (templates/drawio/generate.mjs), named as draw.io knows them:
+   draw them with the theme's own font variables, which name the fonts the site loads ("JetBrains
+   Mono Variable", …) and follow the theme. Other fonts keep their name, with a fallback
+   (scripts/drawio-svg.mjs). Also in the enlarged copy (src/client/zoom.ts). */
+:is(.lms-drawio, .lms-zoom-body) [font-family*='Chakra Petch' i] {
+	font-family: var(--lms-display);
+}
+:is(.lms-drawio, .lms-zoom-body) [font-family*='Figtree' i] {
+	font-family: var(--sl-font);
+}
+:is(.lms-drawio, .lms-zoom-body) [font-family*='JetBrains Mono' i] {
+	font-family: var(--lms-mono);
+}

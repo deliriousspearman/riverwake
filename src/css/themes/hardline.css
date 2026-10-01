@@ -1,0 +1,39 @@
+/* Hardline theme (scripts/themes.mjs): Hacklab with square corners, heavier 2px outlines,
+   JetBrains Mono headings and a flat, hard-edged hover (the card lifts onto a solid accent
+   shadow). Colours are Hacklab's. Loaded after the site's stylesheets (src/css/site/), whose variables it overrides. */
+
+:root {
+	--lms-display: var(--lms-mono);
+	--lms-radius-xs: 0px;
+	--lms-radius-sm: 0px;
+	--lms-radius-md: 2px;
+	--lms-radius-lg: 2px;
+	--lms-radius-pill: 0px;
+	--lms-radius-code: 0px;
+	--lms-border-width: 2px;
+	--lms-hover-shadow: 4px 4px 0 var(--lms-accent);
+	/* Monospace runs wide: slightly smaller headings keep titles on one line. */
+	--sl-text-h1: 2.2rem;
+	--sl-text-h2: 1.45rem;
+	--sl-text-h3: 1.2rem;
+}
+
+/* Headings in the console face read better slightly tighter. */
+.navbar__title,
+.lms-page-header h1,
+.theme-doc-markdown :is(h2, h3) {
+	letter-spacing: -0.02em;
+}
+.lms-hero-title {
+	font-size: clamp(2.2rem, 1.2rem + 3.6vw, 3.9rem);
+}
+
+/* Cards lift onto their accent shadow on hover. */
+:is(.course-card, .pathway-card, .lab-card):hover {
+	translate: -2px -2px;
+}
+@media (prefers-reduced-motion: no-preference) {
+	:is(.course-card, .pathway-card, .lab-card) {
+		transition: translate 0.12s, box-shadow 0.12s;
+	}
+}

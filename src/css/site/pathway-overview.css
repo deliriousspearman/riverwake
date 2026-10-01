@@ -1,0 +1,130 @@
+/* A pathway's own page (src/components/PathwayOverview.tsx). */
+
+/* Pathway overview page (src/components/PathwayOverview.tsx) */
+.pathway-meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem 1rem;
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}
+.pathway-lead {
+	margin: 1rem 0 0;
+	font-size: var(--sl-text-lg);
+	color: var(--sl-color-gray-2);
+}
+.pathway-progress {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-top: 1.5rem;
+	padding: 1rem 1.25rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-lg);
+	background: var(--lms-panel);
+}
+.pathway-progress .progress-row {
+	flex: 1 1 16rem;
+}
+.pathway-overview:not(.is-started) .pathway-progress progress {
+	display: none;
+}
+.pathway-overview > h2 {
+	margin: 2.5rem 0 1rem;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: 1.5rem;
+	color: var(--sl-color-white);
+}
+/* Courses as numbered steps joined by a line; a step's number becomes a tick once it's complete. */
+.pathway-steps {
+	list-style: none;
+	counter-reset: step;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 1rem;
+}
+.pathway-step {
+	/* A grid item won't shrink below its content's width without this. */
+	min-width: 0;
+	counter-increment: step;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	margin-inline-start: 3rem;
+	padding: 1.25rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-lg);
+	background: var(--lms-panel);
+}
+.pathway-step::before {
+	content: counter(step);
+	position: absolute;
+	left: -3rem;
+	top: 1.25rem;
+	width: 2rem;
+	height: 2rem;
+	display: grid;
+	place-items: center;
+	border-radius: var(--lms-radius-sm);
+	border: var(--lms-border-width) solid var(--sl-color-gray-4);
+	background: var(--lms-panel-2);
+	font: 700 var(--sl-text-sm) var(--lms-mono);
+	color: var(--sl-color-gray-2);
+	z-index: 1;
+}
+.pathway-step:not(:last-child)::after {
+	content: '';
+	position: absolute;
+	left: -2rem;
+	top: 3.25rem;
+	bottom: -2.25rem;
+	border-left: 1px solid var(--sl-color-gray-5);
+}
+.pathway-step.is-complete {
+	border-color: var(--lms-accent);
+}
+.pathway-step.is-complete::before {
+	content: '✓';
+	border-color: var(--lms-accent);
+	background: var(--lms-accent);
+	color: var(--lms-on-accent);
+}
+.pathway-step h3 {
+	margin: 0;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: 1.2rem;
+	line-height: 1.25;
+}
+.pathway-step h3 a {
+	color: var(--sl-color-white);
+	text-decoration: none;
+}
+.pathway-step h3 a:hover {
+	color: var(--lms-accent-text);
+	text-decoration: underline;
+}
+.pathway-step p {
+	margin: 0;
+	color: var(--sl-color-gray-2);
+}
+@media (max-width: 30rem) {
+	.pathway-step {
+		margin-inline-start: 2.25rem;
+	}
+	.pathway-step::before {
+		left: -2.25rem;
+		width: 1.6rem;
+		height: 1.6rem;
+	}
+	.pathway-step:not(:last-child)::after {
+		left: -1.45rem;
+	}
+}

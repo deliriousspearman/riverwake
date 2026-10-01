@@ -1,0 +1,42 @@
+/* The home page's "Continue learning" banner (src/components/ContinueBanner.tsx). */
+
+/* "Continue learning" banner on the home page (src/components/ContinueBanner.tsx) */
+.continue-banner {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem 1.5rem;
+	margin-block: 0 1.5rem;
+	padding: 1rem 1.25rem;
+	border: 1px solid var(--sl-color-accent);
+	border-radius: var(--lms-radius-md);
+	background: linear-gradient(90deg, var(--sl-color-accent-low), transparent 70%);
+}
+.continue-text {
+	min-width: 0;
+}
+.continue-banner h2 {
+	margin: 0 0 0.25rem;
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-xs);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--sl-color-text-accent);
+}
+.continue-banner p {
+	margin: 0;
+	color: var(--sl-color-gray-2);
+}
+.continue-banner strong {
+	color: var(--sl-color-white);
+}
+.continue-sep {
+	margin-inline: 0.35rem;
+	color: var(--sl-color-gray-4);
+}
+.continue-banner .continue-count {
+	margin-top: 0.15rem;
+	font-size: var(--sl-text-xs);
+	color: var(--sl-color-gray-3);
+}

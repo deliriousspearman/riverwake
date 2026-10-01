@@ -1,0 +1,348 @@
+# Sveltia CMS configuration (rendered to static/admin/config.yml by scripts/prepare.mjs).
+# ${VAR} placeholders come from the environment — see README.md.
+# Docs: https://sveltiacms.app/en/docs
+
+backend:
+  name: gitlab
+  repo: ${CI_PROJECT_PATH}
+  branch: ${CMS_BRANCH}
+  base_url: ${CMS_GITLAB_URL}
+  api_root: ${CMS_GITLAB_URL}/api/v4
+  auth_type: pkce
+  app_id: ${CMS_APP_ID}
+  commit_messages:
+    create: 'content: create {{collection}} “{{slug}}”'
+    update: 'content: update {{collection}} “{{slug}}”'
+    delete: 'content: delete {{collection}} “{{slug}}”'
+    uploadMedia: 'content: upload “{{path}}”'
+    deleteMedia: 'content: delete “{{path}}”'
+
+site_url: ${SITE_URL}
+display_url: ${SITE_URL}
+
+# Images used inside lessons (screenshots, diagrams). Videos are NOT uploaded here — see README.
+# Only image files (PNG, JPEG, WebP, AVIF, GIF, plain SVG) are allowed here: anything else fails the
+# build (scripts/static-files.mjs), because uploads are published on the site's own address.
+media_folder: static/images
+public_folder: /images
+# Upload limit for images and other files without their own (scripts/static-files.mjs fails the build
+# above IMAGE_MAX_KB: keep the two equal). Pictures, downloads and captions set their own below.
+media_libraries:
+  default:
+    config:
+      max_file_size: 1048576
+
+collections:
+  - name: courses
+    label: Courses
+    label_singular: Course
+    description: A course is a folder of lessons. Create the course first, then add lessons to it.
+    folder: docs/courses
+    path: '{{slug}}/index'
+    filter: { field: kind, value: course }
+    create: true
+    delete: false
+    summary: '{{title}}'
+    sortable_fields: [order, title]
+    preview_path: 'courses/{{dirname}}/'
+    fields:
+      - { name: kind, widget: hidden, default: course }
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Short description, widget: text, hint: Shown on the home page course card. }
+      - { name: level, label: Level, widget: select, options: [Beginner, Intermediate, Advanced], required: false, hint: 'Optional. Shown on the course card, and used by the level filter on the course list.' }
+      - { name: order, label: Position on home page, widget: number, value_type: int, required: false, hint: Lower numbers appear first. }
+      - { name: image, label: Picture, widget: image, required: false, accept: '.png,.jpg,.jpeg,.webp,.avif,.gif,.svg', media_library: { config: { max_file_size: 204800 } }, hint: 'Optional square picture shown on the home page card, like a profile picture. 256×256 is enough (PNG, JPG, WebP or SVG, up to 200 KB).' }
+      - name: sections
+        label: Section titles
+        widget: keyvalue
+        required: false
+        key_label: Section folder
+        value_label: Title
+        hint: 'Optional. Sections are subfolders of the course (e.g. 01-foundations). Titles default to the folder name without its number, e.g. "Foundations".'
+      - name: sidebar
+        widget: object
+        collapsed: true
+        label: Sidebar
+        fields:
+          - { name: hidden, widget: hidden, default: true }
+      - { name: created, label: Created, widget: datetime, time_format: false, date_format: 'YYYY-MM-DD', format: 'YYYY-MM-DD', required: false, hint: 'Leave empty: the date the page was first published is used automatically.' }
+      - { name: lastUpdated, label: Last updated (override), widget: datetime, time_format: false, date_format: 'YYYY-MM-DD', format: 'YYYY-MM-DD', required: false, hint: 'Leave empty: the date of the latest change is used automatically.' }
+      - name: attachments
+        label: Downloads
+        label_singular: Download
+        widget: list
+        required: false
+        hint: 'Files learners can download for the whole course, e.g. a cheat sheet. Shown on the overview with every lesson''s downloads.'
+        fields:
+          - { name: file, label: File, widget: file, accept: '.pdf,.txt,.md,.csv,.json,.yaml,.yml,.log,.conf,.py,.sh,.ps1,.pcap,.pcapng,.zip,.7z,.gz,.tgz,.tar,.docx,.xlsx,.pptx,.odt,.ods,.odp,.png,.jpg,.jpeg,.webp,.gif', media_folder: /static/files, public_folder: /files, media_library: { config: { max_file_size: 10485760 } }, hint: 'Up to 10 MB. PDF, text, Markdown, CSV, JSON, YAML, logs, scripts (.py .sh .ps1), packet captures, ZIP/7z/tar archives, Office documents or images. Not HTML or SVG.' }
+          - { name: title, label: Title, widget: string, hint: 'What learners see, e.g. Nmap cheat sheet' }
+          - { name: description, label: Description, widget: string, required: false }
+      - { name: aliases, label: Old addresses, widget: list, required: false, hint: 'Only if this course folder was renamed: its old paths, e.g. /courses/lorem-pathway-3. They redirect here (lessons too) and keep learners'' progress.' }
+      - { name: body, label: Overview, widget: markdown, hint: 'Introduce the course. The lesson list is added automatically below this text.' }
+
+  - name: lessons
+    label: Lessons
+    label_singular: Lesson
+    description: Pick the course folder (or a section folder inside it) for each lesson with the folder picker.
+    folder: docs/courses
+    filter: { field: kind, value: lesson }
+    create: true
+    nested: { depth: 3, subfolders: false }
+    meta: { path: {} }
+    slug: '{{title}}'
+    summary: '{{dirname}} · {{sidebar.order}}. {{title}}'
+    sortable_fields: [sidebar.order, title]
+    preview_path: 'courses/{{dirname}}/{{filename}}/'
+    fields:
+      - { name: kind, widget: hidden, default: lesson }
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Short description, widget: string, required: false }
+      - name: sidebar
+        label: Position
+        widget: object
+        fields:
+          - { name: order, label: Lesson number, widget: number, value_type: int, hint: Lessons are shown in this order within their course or section. }
+      - name: video
+        label: Video path
+        widget: string
+        required: false
+        pattern: ['^/videos/[A-Za-z0-9/_.-]+\.(mp4|webm)$', 'Must look like /videos/<course>/<file>.mp4']
+        hint: 'Videos can''t be uploaded here: add the file to static/videos/ with git first (Site guide → Images, downloads and video), then enter its path, e.g. /videos/lorem-course-1/01-intro.mp4'
+      - { name: captions, label: Video captions, widget: file, required: false, accept: '.vtt', media_folder: /static/captions, public_folder: /captions, media_library: { config: { max_file_size: 512000 } }, hint: 'Optional subtitles for the video: a WebVTT (.vtt) file, up to 500 KB. Learners turn them on with the player''s CC button. Needs a video path above.' }
+      - { name: created, label: Created, widget: datetime, time_format: false, date_format: 'YYYY-MM-DD', format: 'YYYY-MM-DD', required: false, hint: 'Leave empty: the date the page was first published is used automatically.' }
+      - { name: lastUpdated, label: Last updated (override), widget: datetime, time_format: false, date_format: 'YYYY-MM-DD', format: 'YYYY-MM-DD', required: false, hint: 'Leave empty: the date of the latest change is used automatically.' }
+      - name: attachments
+        label: Downloads
+        label_singular: Download
+        widget: list
+        required: false
+        hint: 'Files for this lesson, shown above the lesson text and on the course overview.'
+        fields:
+          - { name: file, label: File, widget: file, accept: '.pdf,.txt,.md,.csv,.json,.yaml,.yml,.log,.conf,.py,.sh,.ps1,.pcap,.pcapng,.zip,.7z,.gz,.tgz,.tar,.docx,.xlsx,.pptx,.odt,.ods,.odp,.png,.jpg,.jpeg,.webp,.gif', media_folder: /static/files, public_folder: /files, media_library: { config: { max_file_size: 10485760 } }, hint: 'Up to 10 MB. PDF, text, Markdown, CSV, JSON, YAML, logs, scripts (.py .sh .ps1), packet captures, ZIP/7z/tar archives, Office documents or images. Not HTML or SVG.' }
+          - { name: title, label: Title, widget: string, hint: 'What learners see, e.g. Nmap cheat sheet' }
+          - { name: description, label: Description, widget: string, required: false }
+      - { name: glossary, label: Mark glossary terms, widget: boolean, required: false, default: true, hint: 'Underline the first use of each glossary term on this page, with its definition on hover. Switch off for pages where that would be distracting.' }
+      - { name: aliases, label: Old addresses, widget: list, required: false, hint: 'Only if this lesson was moved or renamed: its old paths, e.g. /courses/lorem-course-4/01-intro. They redirect here and keep learners'' progress.' }
+      - { name: body, label: Lesson content, widget: markdown }
+
+  - name: pathways
+    label: Pathways
+    label_singular: Pathway
+    description: Curated sequences of courses, shown under "Pathways" on the home page.
+    folder: content/pathways
+    extension: yml
+    format: yaml
+    create: true
+    slug: '{{title}}'
+    summary: '{{title}}'
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Short description, widget: text, required: false }
+      - { name: level, label: Level, widget: select, options: [Beginner, Intermediate, Advanced], required: false }
+      - { name: image, label: Picture, widget: image, required: false, accept: '.png,.jpg,.jpeg,.webp,.avif,.gif,.svg', media_library: { config: { max_file_size: 204800 } }, hint: 'Optional square picture shown on the home page card, like a profile picture. 256×256 is enough (PNG, JPG, WebP or SVG, up to 200 KB).' }
+      - { name: order, label: Position on home page, widget: number, value_type: int, required: false, hint: Lower numbers appear first. }
+      - name: courses
+        label: Courses
+        label_singular: Course
+        widget: list
+        min: 1
+        hint: In the order learners should take them. Drag to reorder.
+        field:
+          name: course
+          label: Course
+          widget: relation
+          collection: courses
+          value_field: '{{slug}}'
+          search_fields: [title]
+          display_fields: [title]
+
+  - name: labs
+    label: Pro Labs
+    label_singular: Pro lab
+    description: Lab environments shown under "Pro Labs" on the home page. The site only describes each lab; the labs themselves run elsewhere.
+    folder: docs/labs
+    filter: { field: kind, value: lab }
+    create: true
+    slug: '{{title}}'
+    summary: '{{title}} · {{level}}'
+    sortable_fields: [order, title]
+    preview_path: 'labs/{{slug}}/'
+    fields:
+      - { name: kind, widget: hidden, default: lab }
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Short description, widget: text, hint: Shown on the home page card. }
+      - { name: order, label: Position on home page, widget: number, value_type: int, required: false, hint: Lower numbers appear first. }
+      - { name: image, label: Picture, widget: image, required: false, accept: '.png,.jpg,.jpeg,.webp,.avif,.gif,.svg', media_library: { config: { max_file_size: 204800 } }, hint: 'Optional square picture shown on the home page card. 256×256 is enough (PNG, JPG, WebP or SVG, up to 200 KB).' }
+      - { name: level, label: Level, widget: select, options: [Beginner, Intermediate, Advanced] }
+      - name: environment
+        label: Environment
+        widget: select
+        options:
+          - { label: Active Directory domain, value: domain }
+          - { label: Standalone hosts (no domain), value: standalone }
+      - { name: domain, label: Domain name, widget: string, required: false, hint: 'Domain environments only, e.g. corp.example. Leave empty for standalone labs.' }
+      - { name: entryPoint, label: Entry point, widget: string, hint: 'Where learners start, e.g. 198.51.100.0/24.' }
+      - { name: flags, label: Flags, widget: number, value_type: int, min: 1 }
+      - name: machines
+        label: Machines
+        label_singular: Machine
+        widget: list
+        min: 1
+        summary: '{{fields.name}} · {{fields.os}} · {{fields.role}}'
+        fields:
+          - { name: name, label: Name, widget: string }
+          - { name: os, label: Operating system, widget: select, options: [Windows, Linux, FreeBSD, Other] }
+          - { name: role, label: Role, widget: string, required: false, hint: 'e.g. Domain controller, Web server' }
+          - { name: network, label: Network, widget: string, required: false, hint: 'e.g. DMZ, Internal' }
+          - { name: domainJoined, label: Domain joined, widget: boolean, required: false, default: false, hint: 'Domain environments only.' }
+      - { name: skills, label: What you'll practise, widget: list, required: false }
+      - { name: glossary, label: Mark glossary terms, widget: boolean, required: false, default: true, hint: 'Underline the first use of each glossary term on this page, with its definition on hover. Switch off for pages where that would be distracting.' }
+      - { name: created, label: Created, widget: datetime, time_format: false, date_format: 'YYYY-MM-DD', format: 'YYYY-MM-DD', required: false, hint: 'Leave empty: the date the page was first published is used automatically.' }
+      - { name: lastUpdated, label: Last updated (override), widget: datetime, time_format: false, date_format: 'YYYY-MM-DD', format: 'YYYY-MM-DD', required: false, hint: 'Leave empty: the date of the latest change is used automatically.' }
+      - { name: body, label: Scenario and rules, widget: markdown, hint: 'Scenario, scope and rules of engagement, and how to get access. The stats, machine list and skills are added automatically.' }
+
+  - name: lab-flags
+    label: Lab flags
+    label_singular: Lab's flags
+    description: 'The flags learners submit on a pro lab''s page to track their progress, one entry per lab. Only these files hold the flags themselves: never put a flag in the lab page, which every visitor''s browser receives. The site gets only a hash of each flag.'
+    folder: content/lab-flags
+    extension: yml
+    format: yaml
+    create: true
+    identifier_field: lab
+    slug: '{{lab}}'
+    summary: '{{lab}}'
+    fields:
+      - { name: lab, label: Lab, widget: relation, collection: labs, value_field: '{{slug}}', search_fields: [title], display_fields: [title], hint: 'The pro lab these flags belong to. The entry is saved under the lab''s name.' }
+      - name: flags
+        label: Flags
+        label_singular: Flag
+        widget: list
+        min: 1
+        summary: '{{machine}} · {{label}}'
+        hint: 'Learners see each flag''s machine and label, in this order, never its value. Changing a flag''s value makes learners'' browsers forget they captured it.'
+        fields:
+          - { name: machine, label: Machine, widget: string, required: false, hint: "One of the lab's machine names, e.g. DC01. Leave empty for a flag that isn't on one machine." }
+          - { name: label, label: Label, widget: string, hint: 'What the flag is, e.g. User, Root, Domain admin.' }
+          - { name: flag, label: Flag, widget: string, hint: 'The exact value learners submit. Use a long random one (at least 12 characters): a short one could be guessed.' }
+
+  - name: glossary
+    label: Glossary
+    label_singular: Term
+    description: 'Security terms explained on /glossary/. The first use of each term in a lesson is underlined, with the definition on hover.'
+    folder: content/glossary
+    extension: yml
+    format: yaml
+    create: true
+    slug: '{{term}}'
+    identifier_field: term
+    summary: '{{term}}'
+    sortable_fields: [term]
+    fields:
+      - { name: term, label: Term, widget: string, hint: 'As it should be shown, e.g. Kerberoasting or access control list.' }
+      - { name: aliases, label: Other names, widget: list, required: false, hint: 'Abbreviations and other spellings that should also be recognised, e.g. ACL. Each name can belong to one term only.' }
+      - { name: definition, label: Definition, widget: text, hint: 'One or two plain sentences. Shown in the tooltip and on the glossary page.' }
+      - name: seeAlso
+        label: See also
+        widget: relation
+        collection: glossary
+        value_field: '{{slug}}'
+        search_fields: [term]
+        display_fields: [term]
+        multiple: true
+        required: false
+
+  # The site guide for editors (docs/guide/, linked from the footer). Not a course: no progress or
+  # course buttons. Pages sit in the guide folder or one of its numbered section folders.
+  - name: guide
+    label: Site guide
+    label_singular: Guide page
+    description: 'The "Site guide" pages linked from the footer: how to edit and publish the site. Pick the section folder for each page with the folder picker.'
+    folder: docs/guide
+    create: true
+    nested: { depth: 2, subfolders: false }
+    meta: { path: {} }
+    slug: '{{title}}'
+    summary: '{{dirname}} · {{sidebar.order}}. {{title}}'
+    sortable_fields: [sidebar.order, title]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Short description, widget: string, required: false }
+      - name: sidebar
+        label: Position
+        widget: object
+        required: false
+        fields:
+          - { name: order, label: Page number, widget: number, value_type: int, required: false, hint: Pages are shown in this order within their section. }
+      - name: sections
+        label: Section titles
+        widget: keyvalue
+        required: false
+        key_label: Section folder
+        value_label: Title
+        hint: 'Only on the guide overview (index): titles for the section folders, e.g. 01-editing → Editing the site.'
+      # A guide page can show a video and downloads like a lesson, to demonstrate them.
+      - name: video
+        label: Example video path
+        widget: string
+        required: false
+        pattern: ['^/videos/[A-Za-z0-9/_.-]+\.(mp4|webm)$', 'Must look like /videos/guide/<file>.mp4']
+        hint: 'Optional: shows the lesson video player on this page, e.g. /videos/guide/intro.mp4'
+      - { name: captions, label: Example video captions, widget: file, required: false, accept: '.vtt', media_folder: /static/captions, public_folder: /captions, media_library: { config: { max_file_size: 512000 } }, hint: 'Optional WebVTT subtitles for the example video.' }
+      - name: attachments
+        label: Example downloads
+        label_singular: Download
+        widget: list
+        required: false
+        hint: 'Optional: shows the lesson downloads list on this page.'
+        fields:
+          - { name: file, label: File, widget: file, accept: '.pdf,.txt,.md,.csv,.json,.yaml,.yml,.log,.conf,.py,.sh,.ps1,.pcap,.pcapng,.zip,.7z,.gz,.tgz,.tar,.docx,.xlsx,.pptx,.odt,.ods,.odp,.png,.jpg,.jpeg,.webp,.gif', media_folder: /static/files, public_folder: /files, media_library: { config: { max_file_size: 10485760 } }, hint: 'Up to 10 MB. Not HTML or SVG.' }
+          - { name: title, label: Title, widget: string }
+          - { name: description, label: Description, widget: string, required: false }
+      - { name: body, label: Page content, widget: markdown }
+
+  # Site-wide settings: single files, edited as forms.
+  - name: settings
+    label: Site settings
+    description: 'The site banner and theme, and pages removed on purpose. Changes go live with the next deploy (a few minutes after saving).'
+    files:
+      - name: theme
+        label: Theme
+        file: content/settings/theme.yml
+        fields:
+          - name: theme
+            label: Theme
+            widget: select
+            default: hacklab
+            hint: 'The look of the whole site. Every theme has light and dark modes; visitors still choose between those.'
+            options:
+              - { label: 'Hacklab: navy panels, lime accent, rounded corners (default)', value: hacklab }
+              - { label: 'Hardline: square corners, heavier outlines, monospace headings', value: hardline }
+              - { label: 'Hardline Classic: Hardline with Hacklab''s headings and round switches', value: hardline-classic }
+              - { label: 'Nightshift: teal accent, rounder corners, soft glows', value: nightshift }
+      - name: banner
+        label: Banner
+        file: content/settings/banner.yml
+        fields:
+          - { name: enabled, label: Show the banner, widget: boolean, default: false, hint: 'Switch off when the notice no longer applies.' }
+          - { name: message, label: Message, widget: string, required: false, hint: 'One or two short sentences, e.g. Scheduled maintenance on Saturday from 09:00 to 11:00.' }
+          - { name: backgroundColor, label: Bar colour, widget: color, allowInput: true, default: '#ffaf00' }
+          - { name: textColor, label: Text colour, widget: color, allowInput: true, default: '#0e1a02', hint: 'Must stand out clearly against the bar colour: dark text on a light bar, or light text on a dark bar.' }
+          - { name: fontSize, label: Text size (pixels), widget: number, value_type: int, min: 10, max: 32, default: 15, hint: '10 to 32. The site''s body text is 16.' }
+          - { name: bold, label: Bold text, widget: boolean, default: true }
+          - { name: italic, label: Italic text, widget: boolean, default: false }
+          - { name: height, label: Bar height (pixels), widget: number, value_type: int, min: 20, max: 120, default: 40, hint: '20 to 120. The bar grows taller if the message doesn''t fit on one line (e.g. on phones).' }
+      - name: removed
+        label: Removed pages
+        file: content/settings/removed-pages.yml
+        fields:
+          - name: pages
+            label: Pages removed on purpose
+            label_singular: Removed page
+            widget: list
+            required: false
+            hint: 'After deleting a lesson or course, add its old address here, or the site won''t publish: learners lose their progress for a removed page, and links to it break. If the page moved instead, add the old address to the new page''s Old addresses field. A course''s address covers all its lessons.'
+            fields:
+              - { name: path, label: Old address, widget: string, pattern: ['^/courses/[\w./-]+$', 'Must look like /courses/<course>/<lesson>'], hint: 'e.g. /courses/lorem-course-4/03-old-lesson' }
+              - { name: reason, label: Reason, widget: string, hint: 'Why it was removed, e.g. Replaced by the new injection lessons.' }

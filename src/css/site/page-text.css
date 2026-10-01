@@ -1,0 +1,136 @@
+/* Page text: typography, lessons' "Task N" headings, and callouts (admonitions). */
+
+/* ---------------------------------------------------------------------------------------------
+   Page text */
+.theme-doc-markdown {
+	font-size: var(--sl-text-base);
+	line-height: 1.75;
+}
+.theme-doc-markdown > * + * {
+	margin-top: 1.5rem;
+}
+.theme-doc-markdown p,
+.theme-doc-markdown ul,
+.theme-doc-markdown ol {
+	margin-bottom: 0;
+}
+.theme-doc-markdown li + li {
+	margin-top: 0.25rem;
+}
+.theme-doc-markdown strong {
+	color: var(--sl-color-white);
+}
+.theme-doc-markdown a:not(.lms-button, .lesson-action, .hash-link) {
+	color: var(--sl-color-text-accent);
+	text-decoration: underline;
+}
+.theme-doc-markdown code:not(pre code) {
+	padding: 0.1em 0.35em;
+	border: none;
+	background: var(--sl-color-bg-inline-code);
+	color: var(--sl-color-white);
+	font-size: 0.875em;
+	vertical-align: baseline;
+}
+.theme-doc-markdown table {
+	display: table;
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--sl-text-sm);
+}
+.theme-doc-markdown table :is(th, td) {
+	padding: 0.5rem 1rem;
+	border: none;
+	border-bottom: 1px solid var(--sl-color-gray-5);
+	text-align: start;
+}
+.theme-doc-markdown table tr {
+	background: none;
+	border: none;
+}
+.theme-doc-markdown table th {
+	color: var(--sl-color-white);
+	background: none;
+}
+.theme-doc-markdown blockquote {
+	border-inline-start: 1px solid var(--sl-color-gray-5);
+	padding-inline-start: 1rem;
+	color: var(--sl-color-gray-2);
+}
+.theme-doc-markdown img {
+	border-radius: var(--lms-radius-md);
+}
+.hash-link {
+	color: var(--sl-color-gray-3);
+}
+
+/* Lessons as tasks: each h2 in a lesson or overview is a numbered task header. */
+.theme-doc-markdown {
+	counter-reset: task;
+}
+.theme-doc-markdown > h2 {
+	counter-increment: task;
+	margin-top: 2.25rem;
+	padding: 0.75rem 1rem;
+	background: var(--lms-panel);
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-left: 3px solid var(--lms-accent);
+	border-radius: var(--lms-radius-sm);
+	font-size: 1.35rem;
+}
+.theme-doc-markdown > h2::before {
+	content: 'Task ' counter(task);
+	display: inline-block;
+	margin-inline-end: 0.75rem;
+	padding: 0.1rem 0.5rem;
+	border-radius: var(--lms-radius-xs);
+	background: var(--lms-panel-2);
+	color: var(--lms-accent-text);
+	font: 600 0.8rem var(--lms-mono);
+	vertical-align: 0.2rem;
+}
+/* Lab and site guide pages aren't lessons: keep the section panels but not the "Task N" labels. */
+.lms-doc-lab .theme-doc-markdown > h2::before,
+.lms-doc-guide .theme-doc-markdown > h2::before {
+	content: none;
+}
+
+/* Callouts (Docusaurus admonitions: note, tip, caution, danger). */
+.theme-admonition {
+	--lms-aside: var(--sl-color-accent);
+	margin-block: 1.5rem;
+	padding: 1rem;
+	border: none;
+	border-inline-start: 4px solid var(--lms-aside);
+	border-radius: 0;
+	background: color-mix(in srgb, var(--lms-aside) 12%, var(--sl-color-black));
+	color: var(--sl-color-white);
+	box-shadow: none;
+}
+.theme-admonition-note,
+.theme-admonition-info {
+	--lms-aside: #5cb2ff;
+}
+.theme-admonition-tip {
+	--lms-aside: #c16cfa;
+}
+.theme-admonition-caution,
+.theme-admonition-warning {
+	--lms-aside: #ffaf00;
+}
+.theme-admonition-danger {
+	--lms-aside: #ff3e3e;
+}
+.theme-admonition [class*='admonitionHeading'] {
+	margin-bottom: 0.5rem;
+	color: var(--lms-aside);
+	font-size: var(--sl-text-base);
+	text-transform: none;
+}
+.theme-admonition [class*='admonitionIcon'] svg {
+	fill: var(--lms-aside);
+	stroke: none;
+}
+.theme-admonition a {
+	color: inherit !important;
+}

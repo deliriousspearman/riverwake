@@ -1,0 +1,4 @@
+# Lesson videos are stored with Git LFS (README → Videos): git keeps a small pointer, GitLab keeps
+# the file. Without git-lfs installed, `git add` stores a video as an ordinary file instead;
+# tests/videos.test.mjs catches that.
+static/videos/** filter=lfs diff=lfs merge=lfs -text

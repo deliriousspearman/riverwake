@@ -1,0 +1,34 @@
+/* The home page's preview of each part of the catalogue (src/pages/index.tsx). */
+
+/* Home page: a short preview of each part of the catalogue (src/pages/index.tsx). */
+.home-section {
+	margin-block: 2.5rem;
+}
+.home-section-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.25rem 1rem;
+	margin-bottom: 0.75rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid var(--sl-color-gray-5);
+}
+.home-section-head h2 {
+	margin: 0;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: 1.5rem;
+	color: var(--sl-color-white);
+}
+.home-section-head a {
+	font-weight: 600;
+	color: var(--lms-accent-text);
+	text-decoration: none;
+}
+.home-section-head a:hover {
+	text-decoration: underline;
+}
+.home-section .course-list {
+	margin-top: 1rem;
+}

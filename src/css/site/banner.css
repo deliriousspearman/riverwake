@@ -1,0 +1,50 @@
+/* The site banner, the staging strip, and in-page jumps stopping below the navbar. */
+
+/* Site banner (content/settings/banner.yml; src/theme/AnnouncementBar applies the sizes). */
+.site-banner [class*='announcementBar'] {
+	min-height: var(--lms-banner-min-height);
+	height: auto;
+	font-size: var(--lms-banner-font-size);
+	font-weight: var(--lms-banner-weight);
+	font-style: var(--lms-banner-style);
+	line-height: 1.35;
+	border-bottom: none;
+}
+.site-banner [class*='announcementBarContent'] {
+	padding: 0.25rem 1rem;
+	font-size: inherit;
+}
+
+/* Staging site strip (src/theme/Root.tsx): hazard stripes, the same in both colour modes, so it
+   can't be mistaken for the admin-set banner. */
+.staging-banner {
+	padding: 0.4rem 1rem;
+	border-top: 0.35rem solid transparent;
+	border-image: repeating-linear-gradient(-45deg, #1a1a1a 0 0.5rem, #ffcc00 0.5rem 1rem) 1;
+	background: #ffcc00;
+	color: #1a1a1a;
+	font-size: var(--sl-text-sm);
+	line-height: 1.35;
+	text-align: center;
+}
+.staging-banner strong {
+	margin-inline-end: 0.5rem;
+	padding: 0.05rem 0.4rem;
+	border-radius: var(--lms-radius-xs);
+	background: #1a1a1a;
+	color: #ffcc00;
+	font-family: var(--lms-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+/* In-page jumps (glossary letters and terms) stop below the fixed navigation bar, not under it. */
+.glossary-letter,
+.glossary-entry {
+	scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
+}
+
+
+:root {
+	--lms-banner-h: 0px;
+}

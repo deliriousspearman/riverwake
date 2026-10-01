@@ -1,0 +1,23 @@
+/* Catalogue pages' columns (/courses/, /pathways/, /labs/, /glossary/, /settings/). */
+
+/* Catalogue pages (plugins/lms-content.mjs routes): a wide column beside the sidebar, so the tile
+   grids fit more tiles per row. */
+.lms-catalog-content {
+	max-width: 110rem;
+	margin-inline: auto;
+	padding-top: 0.5rem;
+}
+.lms-catalog-content > .lms-page-header {
+	margin-inline: -1.5rem;
+	margin-top: -1rem;
+}
+.lms-no-sidebar .lms-catalog-content {
+	max-width: var(--sl-content-width);
+}
+/* Without a sidebar the page's own padding is narrower on small screens: the header's rule reaches
+   only to it, or the page would scroll sideways (/glossary/, /settings/). */
+@media (max-width: 996px) {
+	.lms-no-sidebar .lms-catalog-content > .lms-page-header {
+		margin-inline: calc(-1 * var(--ifm-spacing-horizontal));
+	}
+}

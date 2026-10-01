@@ -1,0 +1,192 @@
+/* The top bar: logo, section links, search box and results, and the colour mode menu. */
+
+/* ---------------------------------------------------------------------------------------------
+   Header */
+.navbar {
+	height: var(--sl-nav-height);
+	padding-block: 0.75rem;
+	border-bottom: 1px solid var(--sl-color-gray-5);
+	box-shadow: none;
+}
+.navbar__brand {
+	margin-inline-end: 1.5rem;
+}
+.navbar__title {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	font-size: 1.4rem;
+	color: var(--sl-color-white);
+}
+/* Logo: a prompt in an accent tile. */
+.navbar__title::before {
+	content: '>_';
+	display: grid;
+	place-items: center;
+	width: 1.9rem;
+	height: 1.9rem;
+	border-radius: var(--lms-radius-sm);
+	background: var(--lms-accent);
+	color: var(--lms-on-accent);
+	font: 700 0.8rem var(--lms-mono);
+}
+/* Courses / Pathways / Pro Labs / Glossary, the current one underlined (navbar items in
+   docusaurus.config.ts). */
+.navbar__items:not(.navbar__items--right) .navbar__link {
+	padding: 0.35rem 0.75rem;
+	margin-inline-end: 0.25rem;
+	border-radius: var(--lms-radius-sm);
+	font-family: var(--lms-display);
+	font-weight: 700;
+	color: var(--sl-color-gray-2);
+	white-space: nowrap;
+}
+.navbar__items:not(.navbar__items--right) .navbar__link:hover {
+	color: var(--sl-color-white);
+	background: var(--lms-panel-2);
+}
+.navbar__items:not(.navbar__items--right) .navbar__link--active {
+	color: var(--lms-accent-text);
+	box-shadow: inset 0 -2px 0 var(--lms-accent);
+}
+/* Search box: a wide field with the shortcut hint. */
+.navbar__search-input,
+.navbar .navbar__search input {
+	width: 22rem;
+	height: 2.5rem;
+	padding-inline-start: 2.25rem;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-md);
+	background-color: var(--sl-color-black);
+	color: var(--sl-color-white);
+	font-size: var(--sl-text-sm);
+}
+@media (max-width: 996px) {
+	.navbar__search-input,
+	.navbar .navbar__search input {
+		width: 2.5rem;
+		/* 16px: iPhone Safari zooms the whole page into a text field with smaller text. */
+		font-size: 16px;
+	}
+	/* Closed, it's just the magnifier. A query left in it is hidden
+	   rather than squeezed into the icon. */
+	.navbar .navbar__search input:not(:focus) {
+		border-color: transparent;
+		background-color: transparent;
+		color: transparent;
+	}
+	/* Open, it covers the site title up to the menu button (header padding, 30px button, 0.5rem gap),
+	   and no wider than 32rem on tablets. */
+	.navbar .navbar__search input:focus {
+		width: min(calc(100vw - 2 * var(--ifm-navbar-padding-horizontal) - 30px - 0.5rem), 32rem);
+	}
+	/* The box is an icon until it's clicked: no room for the "Ctrl K" hint, or for the clear button
+	   before it opens. The plugin itself only hides them below 577px. */
+	.navbar [class*='searchHintContainer'],
+	.navbar [class*='searchBarContainer']:not([class*='focused']) [class*='searchClearButton'] {
+		display: none;
+	}
+}
+/* Theme dropdown (src/theme/ColorModeToggle): icon, current choice, caret. The
+   icon and label follow <html data-theme-choice>; the transparent <select> on top takes the input.
+   A fixed width, with its contents at the end, so neither the caret nor the divider before it
+   moves between Dark, Light and Auto, and the icon stays by the text. */
+.lms-theme-select {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.4rem;
+	min-width: 6.3rem;
+	height: 2.5rem;
+	padding-inline: 0.25rem;
+	color: var(--sl-color-gray-2);
+	font-size: var(--sl-text-sm);
+	cursor: pointer;
+}
+.lms-theme-select:hover,
+.lms-theme-select:focus-within {
+	color: var(--sl-color-white);
+}
+.lms-theme-select:has(select:focus-visible) {
+	outline: 2px solid var(--sl-color-accent-high);
+	outline-offset: 2px;
+	border-radius: var(--lms-radius-xs);
+}
+.lms-theme-icon svg {
+	width: 1rem;
+	height: 1rem;
+}
+.lms-theme-caret {
+	margin-inline-start: 0.5rem;
+	opacity: 0.8;
+}
+.lms-theme-icon [data-choice],
+.lms-theme-label [data-choice] {
+	display: none;
+}
+[data-theme-choice='dark'] .lms-theme-select [data-choice='dark'],
+[data-theme-choice='light'] .lms-theme-select [data-choice='light'],
+[data-theme-choice='system'] .lms-theme-select [data-choice='system'] {
+	display: inline;
+}
+.lms-theme-select select {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	opacity: 0;
+	cursor: pointer;
+	font: inherit;
+	/* The open list uses the page's colours. */
+	color: var(--sl-color-white);
+	background: var(--lms-panel);
+}
+.lms-theme-select select:disabled {
+	cursor: default;
+}
+/* Small screens: the icon only. */
+@media (max-width: 49.99rem) {
+	.lms-theme-label,
+	.lms-theme-caret {
+		display: none !important;
+	}
+	.lms-theme-select {
+		justify-content: center;
+		width: 2.5rem;
+		min-width: 0;
+	}
+	.lms-theme-icon svg {
+		width: 1.125rem;
+		height: 1.125rem;
+	}
+}
+
+/* Search results (@easyops-cn/docusaurus-search-local): the site's panels and text colours. The
+   result under the pointer or keyboard gets an accent outline; the plugin's default fills it with
+   the accent colour, which made bright lime behind light text. */
+:root {
+	--search-local-modal-background: var(--lms-panel);
+	--search-local-modal-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 0.35);
+	--search-local-hit-background: var(--sl-color-black);
+	--search-local-hit-shadow: none;
+	--search-local-hit-color: var(--sl-color-gray-2);
+	--search-local-hit-active-color: var(--sl-color-white);
+	--search-local-highlight-color: var(--lms-accent-text);
+	--search-local-muted-color: var(--sl-color-gray-3);
+}
+[class*='dropdownMenu'] {
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-md) !important;
+}
+[class*='dropdownMenu'] [class*='suggestion'] {
+	border-radius: var(--lms-radius-xs) !important;
+}
+[class*='dropdownMenu'] [class*='suggestion'][class*='cursor'] {
+	background-color: var(--search-local-hit-background) !important;
+	box-shadow: inset 0 0 0 2px var(--lms-accent) !important;
+}
+.navbar__items--right > :last-child {
+	padding-inline-start: 1rem;
+	margin-inline-start: 1rem;
+	border-inline-start: 1px solid var(--sl-color-gray-5);
+}

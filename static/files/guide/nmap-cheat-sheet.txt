@@ -1,0 +1,27 @@
+NMAP CHEAT SHEET (example download from the site guide)
+=======================================================
+
+Only scan systems you own or have written permission to test.
+Examples use documentation addresses (192.0.2.0/24, 198.51.100.0/24).
+
+Host discovery
+  nmap -sn 192.0.2.0/24              Ping sweep: which hosts are up
+  nmap -Pn 192.0.2.10                Skip discovery, treat host as up
+
+Port scanning
+  nmap 192.0.2.10                    Top 1,000 TCP ports
+  nmap -p- 192.0.2.10                All 65,535 TCP ports
+  nmap -p 22,80,443 192.0.2.10       Specific ports
+  nmap -sU --top-ports 50 192.0.2.10 Top 50 UDP ports (slow)
+
+Services and versions
+  nmap -sV 192.0.2.10                Detect service versions
+  nmap -sC -sV 192.0.2.10            Versions plus default scripts
+  nmap -O 192.0.2.10                 Guess the operating system (needs root)
+
+Output
+  nmap -oN scan.txt 192.0.2.10       Normal text output
+  nmap -oA scan 192.0.2.10           All formats (.nmap, .gnmap, .xml)
+
+Timing
+  -T2  polite (slower, quieter)      -T4  aggressive (faster, noisier)

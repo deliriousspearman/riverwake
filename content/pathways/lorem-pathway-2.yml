@@ -1,0 +1,9 @@
+title: Lorem Ipsum Pathway 2
+description: Ipsum sed nulla magna minim deserunt. Consectetur dolor sed consectetur voluptate sed eiusmod amet ad. Scelerisque.
+level: Intermediate
+image: /images/icons/badge/pathways/lorem-pathway-2.svg
+order: 2
+courses:
+  - lorem-course-1
+  - lorem-course-3
+  - lorem-course-5

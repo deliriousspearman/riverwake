@@ -1,0 +1,60 @@
+/* Click to enlarge (src/client/zoom.ts). */
+
+/* Click to enlarge (src/client/zoom.ts): pictures and diagrams shown smaller than their real size. */
+[data-zoomable] {
+	cursor: zoom-in;
+}
+[data-zoomable]:focus-visible {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 4px;
+}
+.lms-zoom {
+	max-width: 96vw;
+	max-height: 94vh;
+	padding: 0;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-lg);
+	background: var(--lms-panel);
+	color: var(--sl-color-gray-1);
+	overflow: hidden;
+}
+.lms-zoom::backdrop {
+	background: rgb(5 9 16 / 0.8);
+}
+.lms-zoom-body {
+	max-width: 96vw;
+	max-height: 94vh;
+	overflow: auto;
+	padding: 1.5rem;
+}
+.lms-zoom-body > img,
+.lms-zoom-body > svg {
+	display: block;
+	max-width: none;
+	height: auto;
+}
+.lms-zoom-close {
+	position: sticky;
+	float: right;
+	top: 0.5rem;
+	margin: 0.5rem 0.5rem 0 0;
+	width: 2.25rem;
+	height: 2.25rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-sm);
+	background: var(--lms-panel-2);
+	color: var(--sl-color-gray-1);
+	font-size: 1.4rem;
+	line-height: 1;
+	cursor: pointer;
+}
+.lms-zoom-close:hover,
+.lms-zoom-close:focus-visible {
+	border-color: var(--sl-color-accent);
+	color: var(--sl-color-accent);
+}
+@media print {
+	.lms-zoom {
+		display: none;
+	}
+}

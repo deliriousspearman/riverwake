@@ -1,0 +1,94 @@
+/* The left sidebar: course and section lists, the current page, completed ticks, hide buttons. */
+
+/* ---------------------------------------------------------------------------------------------
+   Left sidebar (the course, the course list, or the lab list) */
+.theme-doc-sidebar-container {
+	border-inline-end: 1px solid var(--sl-color-gray-5) !important;
+	background: var(--sl-color-bg-sidebar);
+}
+.theme-doc-sidebar-menu {
+	padding: 1rem 2rem 1rem 1rem;
+	font-size: var(--sl-text-sm);
+}
+.menu__link {
+	border-radius: var(--lms-radius-xs);
+	line-height: 1.4;
+	padding-block: 0.3rem;
+	color: var(--sl-color-gray-2);
+}
+.menu__link:hover {
+	color: var(--sl-color-white);
+}
+/* The current page: an accent rail. */
+.menu__link--active:not(.menu__link--sublist),
+.menu__link--active:not(.menu__link--sublist):hover {
+	background: var(--sl-color-accent-low);
+	color: var(--lms-accent-text);
+	box-shadow: inset 3px 0 0 var(--lms-accent);
+}
+/* Section groups: bold labels with a caret, lessons indented under a hairline. */
+.menu__list .menu__list {
+	margin-inline-start: 0.5rem;
+	padding-inline-start: 0;
+	border-inline-start: 1px solid var(--sl-color-hairline-light);
+}
+.menu__list .menu__list .menu__list-item {
+	padding-inline-start: 0.5rem;
+}
+.menu__link--sublist,
+.menu__list-item-collapsible > .menu__link {
+	color: var(--sl-color-white);
+	font-weight: 600;
+	font-size: var(--sl-text-base);
+}
+.menu__list-item-collapsible:hover {
+	background: none;
+}
+.menu__caret::before,
+.menu__link--sublist-caret::after {
+	background-size: 1.1rem;
+	filter: none;
+	opacity: 0.8;
+}
+/* The only group in the sidebar gets a plain heading, not a collapsible one: it's a
+   non-collapsible category. */
+.sidebar-single-group > .menu__list-item-collapsible > .menu__link,
+.sidebar-single-group > .menu__list-item-collapsible > .menu__link:hover {
+	background: none;
+	box-shadow: none;
+	padding: 0.2em 0.5rem;
+	font-size: var(--sl-text-base);
+	font-weight: 600;
+	color: var(--sl-color-white);
+	cursor: default;
+	pointer-events: none;
+}
+.sidebar-single-group > .menu__list-item-collapsible > .menu__link::after {
+	display: none;
+}
+.sidebar-single-group > .menu__list {
+	margin-top: 0.25rem;
+}
+/* Completed lessons get a tick (src/theme/DocSidebarItem/Link). */
+.menu__list-item.is-complete > .menu__link::after {
+	content: '✓';
+	margin-inline-start: 0.4em;
+	color: var(--lms-accent-text);
+	font-weight: 700;
+}
+.menu__list-item.is-complete > .menu__link--active::after {
+	color: inherit;
+}
+/* Docusaurus's hide-sidebar buttons. */
+.theme-doc-sidebar-container button[title*='sidebar' i] {
+	border-top: 1px solid var(--sl-color-gray-5);
+	background: var(--sl-color-bg-sidebar);
+	color: var(--sl-color-gray-3);
+}
+[class*='expandButton'] {
+	background: var(--sl-color-bg-sidebar);
+}
+[class*='expandButton']:hover,
+.theme-doc-sidebar-container button[title*='sidebar' i]:hover {
+	background: var(--sl-color-gray-6);
+}

@@ -1,0 +1,112 @@
+/* The glossary page and a term's own page. */
+
+/* Glossary page (src/components/GlossaryList.tsx) */
+.glossary-letters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	margin: 0 0 1.5rem;
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-sm);
+}
+.glossary-letters > * {
+	display: grid;
+	place-items: center;
+	min-width: 1.9rem;
+	height: 1.9rem;
+	border-radius: var(--lms-radius-xs);
+}
+.glossary-letters a {
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	background: var(--lms-panel);
+	color: var(--sl-color-white);
+	text-decoration: none;
+	font-weight: 700;
+}
+.glossary-letters a:hover {
+	border-color: var(--lms-accent);
+	color: var(--lms-accent-text);
+}
+.glossary-letters span {
+	color: var(--sl-color-gray-4);
+}
+.glossary[data-no-match] .glossary-no-match {
+	display: block;
+}
+.glossary-letter {
+	margin-bottom: 2rem;
+}
+.glossary-letter h2 {
+	margin: 0 0 0.75rem;
+	padding-bottom: 0.35rem;
+	border-bottom: 1px solid var(--sl-color-gray-5);
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: 1.5rem;
+	color: var(--lms-accent-text);
+}
+.glossary-letter dl {
+	display: grid;
+	gap: 0.75rem;
+	margin: 0;
+}
+.glossary-entry {
+	padding: 1rem 1.25rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-md);
+	background: var(--lms-panel);
+	scroll-margin-top: calc(var(--sl-nav-height) + var(--lms-banner-h) + 1rem);
+}
+/* Arriving from a tooltip's "In the glossary" link. */
+.glossary-entry:target {
+	border-color: var(--lms-accent);
+	box-shadow: var(--lms-hover-shadow);
+}
+.glossary-entry dt {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.25rem 0.75rem;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: 1.15rem;
+	color: var(--sl-color-white);
+}
+.glossary-aliases {
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-xs);
+	font-weight: 400;
+	color: var(--sl-color-gray-3);
+}
+.glossary-entry dd {
+	margin: 0.4rem 0 0;
+}
+.glossary-entry dd p {
+	margin: 0;
+	color: var(--sl-color-gray-2);
+}
+.glossary-see {
+	margin-top: 0.4rem !important;
+	font-size: var(--sl-text-sm);
+}
+.glossary-see a {
+	color: var(--lms-accent-text);
+}
+/* A term's own page (src/components/GlossaryTerm.tsx): the entry's panel, larger. */
+.lms-page-header .glossary-aliases {
+	margin: 0.5rem 0 0;
+	font-size: var(--sl-text-sm);
+}
+.glossary-term-page .glossary-entry {
+	max-width: 48rem;
+	padding: 1.25rem 1.5rem;
+}
+.glossary-definition-text {
+	margin: 0;
+	font-size: var(--sl-text-lg);
+	line-height: 1.6;
+	color: var(--sl-color-gray-2);
+}
+.glossary-term-back {
+	margin-top: 1.5rem;
+}

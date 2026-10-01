@@ -1,0 +1,308 @@
+/* Docs page layout: the text column, "On this page", the title band, the breadcrumb bar, previous/next. */
+
+/* ---------------------------------------------------------------------------------------------
+   Page layout: the text centred in its column, a compact "On this page" column pinned to the right,
+   and full-width bands (breadcrumbs, title) across the text column. */
+.main-wrapper {
+	background: var(--sl-color-black);
+}
+.docs-doc-page [class*='docMainContainer'] > .container {
+	max-width: none !important;
+	padding: 0 !important;
+}
+.docs-doc-page .row {
+	margin: 0;
+	flex-wrap: nowrap;
+}
+.docs-doc-page .row > .col[class*='docItemCol'] {
+	max-width: none !important;
+	flex: 1 1 0;
+	min-width: 0;
+	padding: 0 0 2rem;
+	container-type: inline-size;
+}
+[class*='docItemContainer'] {
+	max-width: calc(var(--sl-content-width) + 3rem);
+	margin-inline: auto;
+	padding-inline: 1.5rem;
+}
+/* Stretches an element across the whole text column (its padding and the centring margins). */
+.lms-crumb-bar,
+.theme-doc-breadcrumbs,
+.lms-doc .lms-page-header {
+	margin-inline: calc((100% - 100cqi) / 2);
+	padding-inline: calc((100cqi - 100%) / 2);
+}
+@media (min-width: 997px) {
+	.theme-doc-toc-desktop {
+		top: calc(var(--sl-nav-height) + 1rem);
+	}
+	.docs-doc-page .row > .col.col--3 {
+		flex: 0 0 var(--lms-toc-width);
+		max-width: var(--lms-toc-width);
+		padding: 1rem 1rem 0;
+		border-inline-start: 1px solid var(--sl-color-hairline);
+	}
+}
+/* The page's HTML has the desktop "On this page" column even for phones (Docusaurus only knows the
+   screen size once its scripts run, then removes it). The row above doesn't wrap, so on a narrow
+   screen that column squeezed the text into a sliver until then: hide it there. */
+@media (max-width: 996px) {
+	.docs-doc-page .row > .col.col--3 {
+		display: none;
+	}
+}
+/* "On this page" collapsed with the breadcrumb bar's button (src/theme/DocBreadcrumbs): the text
+   column takes the space, its text staying centred. */
+html.docs-doc-page[data-lms-toc='hidden'] .row > .col.col--3 {
+	display: none;
+}
+[class*='docMainContainer'] > .container,
+[class*='docItemWrapper'] {
+	max-width: none !important;
+	padding-inline: 1.5rem;
+}
+/* "On this page" */
+.theme-doc-toc-desktop::before {
+	font-size: var(--sl-text-lg);
+	color: var(--sl-color-white);
+}
+.theme-doc-toc-desktop::before {
+	content: 'On this page';
+	display: block;
+	margin: 0 0 0.5rem;
+	font-family: var(--lms-display);
+	font-weight: 700;
+}
+.table-of-contents {
+	border-left: none;
+	padding: 0 0 0 0.5rem;
+	font-size: var(--sl-text-xs);
+}
+.table-of-contents__link {
+	color: var(--sl-color-gray-3);
+}
+.table-of-contents__link:hover,
+.table-of-contents__link--active {
+	color: var(--sl-color-text-accent);
+}
+
+/* The page title: a band across the text column (with the picture and
+   dates, src/components/DocParts.tsx). */
+.lms-page-header {
+	margin: 0 -1.5rem 1.5rem;
+	padding: 2rem 1.5rem 1.5rem;
+	border-bottom: 1px solid var(--sl-color-hairline);
+}
+.lms-doc .lms-page-header {
+	margin-top: 0;
+	margin-bottom: 2rem;
+}
+
+/* The breadcrumb bar (src/theme/DocBreadcrumbs): a strip above the title with the trail (Courses ›
+   Course › Section › Lesson) and, on the right, the button that collapses "On this page". Pinned
+   under the navbar, unless "Pin the breadcrumb bar" is off in Settings. One line high whatever the
+   trail's length (long crumbs are cut short with "…"), so headings that are jumped to
+   can stop just below it. */
+.theme-doc-breadcrumbs {
+	display: flex;
+	align-items: center;
+	min-height: 3rem;
+	margin-bottom: 0;
+	border-bottom: 1px solid var(--sl-color-hairline-shade);
+	background: var(--sl-color-bg-nav);
+	font-size: var(--sl-text-sm);
+}
+.lms-crumb-bar {
+	--lms-crumb-bar-height: 3rem;
+	position: sticky;
+	top: var(--ifm-navbar-height);
+	z-index: calc(var(--ifm-z-index-fixed) - 1);
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	height: var(--lms-crumb-bar-height);
+	border-bottom: 1px solid var(--sl-color-hairline-shade);
+	background: var(--sl-color-bg-nav);
+	font-size: var(--sl-text-sm);
+}
+html[data-lms-breadcrumbs='scroll'] .lms-crumb-bar {
+	position: static;
+}
+/* Wide screens: the trail starts in line with the text, and the "On this page" button sits at the
+   bar's far right, beside the column it collapses (the bar's right padding replaces the text's). */
+@media (min-width: 997px) {
+	.lms-crumb-bar:has(.lms-toc-toggle) {
+		padding-inline-end: 0.75rem;
+	}
+}
+/* Inside the bar, the trail takes the space the button leaves. */
+.lms-crumb-bar .theme-doc-breadcrumbs {
+	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	border: none;
+	background: none;
+}
+.theme-doc-breadcrumbs .breadcrumbs {
+	margin: 0;
+}
+/* A trail too long for the bar shortens each crumb with "…", the ones before the current page first. */
+.lms-crumb-bar .breadcrumbs {
+	display: flex;
+	min-width: 0;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.lms-crumb-bar .breadcrumbs__item {
+	display: flex;
+	align-items: baseline;
+	flex: 0 1 auto;
+	min-width: 2.5em;
+}
+.lms-crumb-bar .breadcrumbs__item--active {
+	flex-shrink: 0.25;
+	min-width: 4em;
+}
+.lms-crumb-bar .breadcrumbs__item::after {
+	flex: none;
+}
+.lms-crumb-bar .breadcrumbs__link {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+/* Phones: "Courses" is in the navbar already, so the trail starts at the course. */
+@media (max-width: 996px) {
+	.lms-crumb-bar .lms-crumb-home {
+		display: none;
+	}
+}
+/* Headings jumped to ("On this page", links with a #) stop below the pinned bar as well as the navbar. */
+html.docs-doc-page:not([data-lms-breadcrumbs='scroll']):has(.lms-crumb-bar) .anchor {
+	scroll-margin-top: calc(var(--ifm-navbar-height) + 3rem + 0.5rem);
+}
+/* The "On this page" button: an icon at the far right of the bar, after a thin separator, with a
+   tooltip on hover and keyboard focus. Only where the column can be shown beside the text. */
+.lms-crumb-bar-sep {
+	flex: none;
+	width: 1px;
+	height: 1.5rem;
+	margin-inline: auto -0.5rem;
+	background: var(--sl-color-gray-5);
+}
+.lms-toc-toggle {
+	position: relative;
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	padding: 0.25rem;
+	border: 1px solid transparent;
+	border-radius: var(--lms-radius-sm);
+	background: none;
+	color: var(--sl-color-gray-2);
+	cursor: pointer;
+}
+.lms-toc-toggle:hover {
+	border-color: var(--sl-color-gray-5);
+	color: var(--sl-color-white);
+}
+.lms-toc-toggle:focus-visible {
+	outline: 2px solid var(--sl-color-accent-high);
+	outline-offset: 2px;
+}
+/* The tooltip, under the button and lined up with its right edge (so it stays on screen). Its words
+   follow data-lms-toc, so they're right before the page's scripts have run. */
+.lms-toc-toggle::after {
+	content: 'Hide “On this page”';
+	position: absolute;
+	top: calc(100% + 0.4rem);
+	right: 0;
+	padding: 0.3rem 0.55rem;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-sm);
+	background: var(--lms-panel-2);
+	color: var(--sl-color-white);
+	font-family: var(--sl-font);
+	font-size: var(--sl-text-xs);
+	white-space: nowrap;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.1s;
+}
+html[data-lms-toc='hidden'] .lms-toc-toggle::after {
+	content: 'Show “On this page”';
+}
+.lms-toc-toggle:hover::after,
+.lms-toc-toggle:focus-visible::after {
+	opacity: 1;
+	transition-delay: 0.3s;
+}
+.lms-toc-toggle-arrow {
+	transform-box: fill-box;
+	transform-origin: center;
+	transition: transform 0.15s;
+}
+/* Collapsed: the arrow points back, to bring the column in. */
+html[data-lms-toc='hidden'] .lms-toc-toggle-arrow {
+	transform: scaleX(-1);
+}
+@media (max-width: 996px) {
+	.lms-toc-toggle,
+	.lms-crumb-bar-sep {
+		display: none;
+	}
+}
+.breadcrumbs__item:not(:last-child)::after {
+	content: '›';
+	margin-inline: 0.5rem;
+	background: none;
+	color: var(--sl-color-gray-4);
+	opacity: 1;
+	width: auto;
+	height: auto;
+	filter: none;
+	vertical-align: baseline;
+}
+.breadcrumbs__link {
+	padding: 0;
+	color: var(--sl-color-gray-2);
+	font-size: var(--sl-text-sm);
+	background: none !important;
+}
+a.breadcrumbs__link:hover {
+	color: var(--sl-color-white);
+	text-decoration: underline;
+}
+.breadcrumbs__item--active .breadcrumbs__link {
+	color: var(--sl-color-white);
+	font-weight: 600;
+}
+
+/* Previous / next links. */
+.pagination-nav {
+	gap: 1rem;
+}
+.pagination-nav__link {
+	padding: 1rem;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-md);
+	background: transparent;
+	box-shadow: none;
+}
+.pagination-nav__link:hover {
+	border-color: var(--sl-color-gray-2);
+}
+.pagination-nav__sublabel {
+	color: var(--sl-color-gray-3);
+	font-size: var(--sl-text-sm);
+	font-weight: 400;
+}
+.pagination-nav__label {
+	color: var(--sl-color-white);
+	font-size: var(--sl-text-xl);
+	font-weight: 400;
+}

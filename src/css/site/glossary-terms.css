@@ -1,0 +1,63 @@
+/* Glossary terms in lessons and their tips (plugins/remark-glossary.mjs, src/client/glossary.ts). */
+
+/* Glossary terms in lessons (plugins/remark-glossary.mjs, src/client/glossary.ts): the first use
+   of each term, underlined,
+   with its definition in a tip on hover, focus or tap. */
+.glossary-mark {
+	position: relative;
+}
+.glossary-term {
+	padding: 0;
+	border: none;
+	background: none;
+	font: inherit;
+	color: inherit;
+	text-decoration: underline dotted var(--lms-accent);
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.2em;
+	cursor: help;
+}
+.glossary-term:focus-visible {
+	outline: 2px solid var(--sl-color-accent-high);
+	outline-offset: 2px;
+	border-radius: var(--lms-radius-xs);
+}
+.glossary-tip {
+	position: absolute;
+	z-index: 20;
+	top: calc(100% + 0.4rem);
+	left: var(--shift, 0);
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+	width: max-content;
+	max-width: min(22rem, 80vw);
+	padding: 0.75rem 0.9rem;
+	border: var(--lms-border-width) solid var(--lms-accent);
+	border-radius: var(--lms-radius-md);
+	background: var(--lms-panel);
+	box-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 0.35);
+	font-size: var(--sl-text-sm);
+	font-weight: 400;
+	font-style: normal;
+	line-height: 1.5;
+	text-align: start;
+	white-space: normal;
+}
+.glossary-tip strong {
+	font-family: var(--lms-display);
+	color: var(--sl-color-white);
+}
+.glossary-definition {
+	color: var(--sl-color-gray-2);
+}
+.glossary-tip a {
+	align-self: flex-start;
+	font-weight: 600;
+	color: var(--lms-accent-text);
+}
+@media print {
+	.glossary-tip {
+		display: none !important;
+	}
+}

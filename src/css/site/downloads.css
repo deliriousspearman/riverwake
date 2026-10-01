@@ -1,0 +1,105 @@
+/* Downloadable files (Attachments in src/components/DocParts.tsx). */
+
+/* Downloadable files (Attachments in src/components/DocParts.tsx): under the video on lesson pages,
+   and gathered under "Downloads" on course overviews (CourseDownloads, same file). */
+.attachments {
+	display: grid;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.attachments li {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 0.25rem 0.85rem;
+	padding: 0.65rem 0.9rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-md);
+	background: var(--lms-panel);
+}
+.attachments li:hover {
+	border-color: var(--lms-accent);
+}
+.attachment-ext {
+	flex: none;
+	min-width: 3.25rem;
+	padding: 0.3rem 0.4rem;
+	border-radius: var(--lms-radius-xs);
+	background: var(--lms-panel-2);
+	color: var(--lms-accent-text);
+	font: 700 0.72rem var(--lms-mono);
+	text-align: center;
+	text-transform: uppercase;
+}
+.attachment-text {
+	min-width: 0;
+}
+.attachment-text a {
+	font-weight: 600;
+	color: var(--sl-color-white);
+	text-decoration: none;
+	overflow-wrap: anywhere;
+}
+.attachment-text a:hover {
+	color: var(--lms-accent-text);
+	text-decoration: underline;
+}
+.attachment-text a::after {
+	content: ' ↓';
+	color: var(--lms-accent-text);
+}
+.attachment-text p {
+	margin: 0.15rem 0 0;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}
+.attachment-meta {
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-xs);
+	color: var(--sl-color-gray-3);
+	white-space: nowrap;
+}
+/* Phones: the type and size go under the title. */
+@media (max-width: 36rem) {
+	.attachments li {
+		grid-template-columns: auto 1fr;
+		align-items: start;
+	}
+	.attachment-meta {
+		grid-column: 2;
+	}
+}
+.lesson-downloads {
+	margin: 0 0 2rem;
+}
+.lesson-downloads h2,
+.course-downloads-group h3 {
+	margin: 0 0 0.6rem;
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-sm);
+	font-weight: 600;
+	color: var(--sl-color-gray-3);
+}
+.course-downloads {
+	margin-top: 2.5rem;
+}
+.course-downloads > h2 {
+	margin: 0 0 1rem;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: 1.5rem;
+	color: var(--sl-color-white);
+}
+.course-downloads-group + .course-downloads-group {
+	margin-top: 1.25rem;
+}
+.course-downloads-group h3 a {
+	color: inherit;
+	text-decoration: none;
+}
+.course-downloads-group h3 a:hover {
+	color: var(--lms-accent-text);
+	text-decoration: underline;
+}

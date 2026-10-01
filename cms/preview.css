@@ -1,0 +1,80 @@
+/* The admin editor's preview pane (cms/preview.mjs): the page as the site shows it. Bundled after
+   the site's own stylesheets (fonts, src/css/site/, the theme's) into
+   static/admin/preview/preview.css by scripts/prepare.mjs. The site's layout (navbar, sidebars) isn't
+   there, so this sets the page itself, and the preview's own notes. */
+html,
+body {
+	margin: 0;
+	background: var(--sl-color-black);
+	color: var(--sl-color-gray-2);
+	font-family: var(--sl-font);
+	font-size: 16px;
+	line-height: 1.65;
+}
+.lms-preview {
+	max-width: var(--sl-content-width);
+	margin: 0 auto;
+	padding: 1.5rem 1.5rem 3rem;
+}
+.lms-preview .lms-page-header {
+	margin: 0 0 1.5rem;
+	padding: 0 0 1rem;
+	border-bottom: 1px solid var(--sl-color-gray-5);
+}
+.lms-preview-description {
+	margin: 0.5rem 0 0;
+	color: var(--sl-color-gray-3);
+}
+.lms-preview a {
+	color: var(--lms-accent-text);
+}
+.lms-preview img {
+	max-width: 100%;
+	height: auto;
+}
+.lms-preview table {
+	border-collapse: collapse;
+}
+.lms-preview :is(th, td) {
+	padding: 0.4rem 0.75rem;
+	border: 1px solid var(--sl-color-gray-5);
+}
+.lms-preview pre {
+	overflow-x: auto;
+	padding: 0.85rem 1rem;
+	background: var(--lms-panel);
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-sm);
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-sm);
+}
+.lms-preview .lms-shell pre {
+	margin: 0;
+	border: 0;
+	border-radius: 0;
+}
+/* A block the build would reject: the build's message. */
+.lms-preview-problem {
+	margin: 1.5rem 0;
+	padding: 0.85rem 1rem;
+	border: 1px solid var(--lms-hard);
+	border-inline-start-width: 4px;
+	border-radius: var(--lms-radius-sm);
+	color: var(--sl-color-white);
+}
+.lms-preview-problem p {
+	margin: 0 0 0.5rem;
+}
+.lms-preview .lms-preview-problem pre {
+	margin: 0;
+	white-space: pre-wrap;
+	background: transparent;
+	border: 0;
+	padding: 0;
+	color: var(--sl-color-gray-2);
+}
+.lms-preview-note {
+	margin: 1.5rem 0 0.25rem;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}

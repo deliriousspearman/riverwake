@@ -1,0 +1,28 @@
+/* Hardline Classic theme (scripts/themes.mjs): Hardline's square corners, heavier outlines and
+   lifting cards, with Hacklab's Chakra Petch headings. Loaded after hardline.css, it undoes only
+   Hardline's heading changes (font, sizes, letter spacing and the home page title size) and gives
+   the toggle switches back Hacklab's rounded track. The values below are Hacklab's, from
+   src/css/site/. */
+
+:root {
+	--lms-display: 'Chakra Petch', var(--sl-font);
+	--sl-text-h1: 2.5rem;
+	--sl-text-h2: 1.6rem;
+	--sl-text-h3: 1.3rem;
+}
+
+.navbar__title,
+.lms-page-header h1,
+.theme-doc-markdown :is(h2, h3) {
+	letter-spacing: 0;
+}
+.lms-hero-title {
+	font-size: clamp(2.75rem, 1.5rem + 4vw, 4.5rem);
+}
+
+/* The "Hide completed" switch looks as it does in Hacklab: a rounded track (Hardline's is square)
+   with a 1px outline, so the round knob doesn't crowd its edge. */
+.catalog-filter input {
+	border-width: 1px;
+	border-radius: 999px;
+}

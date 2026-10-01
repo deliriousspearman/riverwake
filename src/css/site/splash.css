@@ -1,0 +1,54 @@
+/* Home and 404 pages: the splash layout and hero. */
+
+/* ---------------------------------------------------------------------------------------------
+   Home and 404 pages: the splash layout and hero. */
+.lms-splash {
+	width: 100%;
+	max-width: 70rem;
+	margin-inline: auto;
+	padding: 0 1.5rem 3rem;
+}
+.lms-hero {
+	display: grid;
+	align-items: center;
+	gap: 1rem 2.5rem;
+	padding-block: clamp(1.5rem, 0.5rem + 5vmin, 3.5rem) 1rem;
+}
+@media (min-width: 50rem) {
+	.lms-hero {
+		grid-template-columns: 7fr 4fr;
+	}
+}
+.lms-hero-title {
+	margin: 0 0 1rem;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: clamp(2.75rem, 1.5rem + 4vw, 4.5rem);
+	line-height: 1;
+	color: var(--sl-color-white);
+}
+.lms-hero-tagline {
+	margin: 0;
+	font-size: clamp(1.125rem, calc(0.75rem + 1vw), 1.375rem);
+	color: var(--sl-color-gray-2);
+}
+.lms-hero-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem 2rem;
+	margin-top: 2rem;
+}
+.lms-hero-html {
+	justify-self: end;
+	width: min(100%, 27rem);
+}
+@media (max-width: 49.99rem) {
+	/* Title and tagline first; the terminal follows as a smaller illustration. */
+	.lms-hero-html {
+		justify-self: center;
+		width: min(100%, 22rem);
+	}
+	.hero-terminal-body {
+		font-size: 0.75rem !important;
+	}
+}

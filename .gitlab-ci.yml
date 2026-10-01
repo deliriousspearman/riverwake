@@ -1,0 +1,68 @@
+# GitLab pipeline. Every merge request is tested (npm test) and built (a build fails on broken
+# content, see README). Every push to main, including the admin editor's saves, is tested, built
+# and published as the project's GitLab Pages site (README → Publishing).
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  # Each admin editor save is a commit. When several arrive in a row, a new pipeline cancels the
+  # older ones (their jobs are interruptible, below): only the latest content needs building, and
+  # every pipeline builds the whole site anyway.
+  auto_cancel:
+    on_new_commit: interruptible
+
+stages: [build, deploy]
+
+variables:
+  # Page dates come from each file's git history (scripts/dates.mjs), so clone all of it.
+  GIT_DEPTH: '0'
+  # The GitLab that editors' browsers reach for the admin editor. Set it if that differs from
+  # GitLab's own address (CI_SERVER_URL), e.g. behind a proxy.
+  # CMS_GITLAB_URL: https://gitlab.example.com
+  # The image and npm cache the jobs use. Without internet access, set CI/CD variables to use the
+  # image built from ci/Dockerfile instead (README → Running offline): PIPELINE_IMAGE, NPM_CACHE=/opt/npm-cache
+  # and NPM_CONFIG_OFFLINE=true. Project variables take precedence over these defaults.
+  # Pinned to an exact image, so a changed upstream image can't silently run in the pipeline. To
+  # update: docker pull node:22-bookworm, then use the "Digest" from docker inspect (or Docker Hub),
+  # here and in ci/Dockerfile.
+  PIPELINE_IMAGE: node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
+  NPM_CACHE: .npm
+
+default:
+  image: $PIPELINE_IMAGE
+  cache:
+    key:
+      files: [package-lock.json]
+    paths: [.npm/]
+  before_script:
+    - npm ci --cache "$NPM_CACHE" --prefer-offline --no-audit --no-fund
+  # Safe to stop part-way: a cancelled build publishes nothing, and the newer pipeline publishes.
+  interruptible: true
+
+check:
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - npm test
+    - npm run typecheck
+    - npm run build
+
+pages:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  resource_group: pages
+  script:
+    # A push isn't published if the tests fail; the site stays as it was.
+    - npm test
+    # The Pages address, unless a SITE_URL CI/CD variable names a custom domain.
+    - export SITE_URL="${SITE_URL:-$CI_PAGES_URL}"
+    - npm run build
+  pages:
+    publish: build
+  artifacts:
+    # Pages keeps its own copy of the site, and each deploy's artifact holds every video, so don't
+    # keep them for GitLab's default 30 days (README → Videos). The latest one is always kept.
+    expire_in: 1 day

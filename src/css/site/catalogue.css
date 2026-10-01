@@ -1,0 +1,298 @@
+/* Catalogue cards and lists: course and pathway cards, the filter bar, empty states, level chips. */
+
+/* Cards show "4 lessons" until started; the progress bar appears once there's progress. */
+:is(.course-card, .pathway-card, .pathway-step):not(.is-started) progress[data-progress-bar] {
+	display: none;
+}
+
+/* Course cards (home page preview and /courses/) */
+.course-list {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+	margin-block: 1.5rem;
+}
+.course-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	padding: 1.25rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-lg);
+	background: var(--lms-panel);
+}
+.course-card:hover {
+	border-color: var(--lms-accent);
+	box-shadow: var(--lms-hover-shadow);
+}
+.course-card h2 {
+	margin: 0;
+	line-height: 1.25;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: 1.3rem;
+}
+.course-card h2 a {
+	color: var(--sl-color-white);
+	text-decoration: none;
+}
+/* The whole card is clickable through the title link. */
+.course-card h2 a::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+}
+.course-card p {
+	margin: 0;
+	flex: 1;
+	color: var(--sl-color-gray-2);
+}
+/* "Continue →" on started course cards: above the card-wide title link, hidden until started and
+   once complete (the card itself links to the overview). */
+.card-continue {
+	position: relative;
+	z-index: 1;
+	margin-inline-start: auto;
+	font-weight: 700;
+	color: var(--lms-accent-text);
+	text-decoration: none;
+	white-space: nowrap;
+}
+.card-continue:hover {
+	text-decoration: underline;
+}
+:is(.course-card, .pathway-step):not(.is-started) .card-continue,
+:is(.course-card, .pathway-step).is-complete .card-continue {
+	display: none;
+}
+.course-card.is-complete {
+	border-color: var(--lms-accent);
+}
+.course-card.is-complete .card-title::after {
+	content: 'Completed';
+	margin-inline-start: auto;
+	align-self: flex-start;
+	padding: 0.15rem 0.5rem;
+	border-radius: var(--lms-radius-xs);
+	background: var(--lms-accent);
+	color: var(--lms-on-accent);
+	font: 700 0.75rem var(--lms-mono);
+	white-space: nowrap;
+}
+
+/* Filter bar on the catalogue pages (src/components/CatalogFilter.tsx):
+   text filter, level filter, and the "Hide completed" switch on the right. */
+.catalog-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem;
+	margin-block: 0 1.5rem;
+}
+.catalog-search {
+	flex: 1 1 16rem;
+	max-width: 24rem;
+}
+.catalog-search input,
+.catalog-level {
+	width: 100%;
+	height: 2.5rem;
+	padding: 0 0.85rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-sm);
+	background: var(--lms-panel);
+	color: var(--sl-color-white);
+	font: inherit;
+	font-size: var(--sl-text-sm);
+}
+.catalog-level {
+	width: auto;
+	padding-inline-end: 0.5rem;
+	cursor: pointer;
+}
+.catalog-search input::placeholder {
+	color: var(--sl-color-gray-3);
+}
+.catalog-search input:hover,
+.catalog-level:hover {
+	border-color: var(--sl-color-gray-4);
+}
+.catalog-search input:focus-visible,
+.catalog-level:focus-visible {
+	outline: 2px solid var(--sl-color-accent-high);
+	outline-offset: 1px;
+	border-color: var(--lms-accent);
+}
+/* "Hide completed" switch (CatalogFilter.tsx). Only shown once a course or pathway is complete. The
+   switches on the Settings page look the same, except that their knob follows the track's corners. */
+.catalog-filter {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	/* Next to the filter box (and level filter), like those two sit together. */
+	margin-inline-start: 0.25rem;
+	padding-block: 0.5rem;
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-xs);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-3);
+	cursor: pointer;
+	user-select: none;
+}
+.catalog-filter:hover {
+	color: var(--sl-color-white);
+}
+.catalog:not(:has(.course-card.is-complete, .pathway-card.is-complete, .lab-card.is-complete)) .catalog-filter {
+	display: none;
+}
+:is(.catalog-filter, .settings-switch) input {
+	appearance: none;
+	position: relative;
+	flex: none;
+	width: 2rem;
+	height: 1.1rem;
+	margin: 0;
+	border: var(--lms-border-width) solid var(--sl-color-gray-4);
+	border-radius: var(--lms-radius-pill);
+	background: var(--sl-color-gray-6);
+	cursor: pointer;
+	transition: background-color 0.15s, border-color 0.15s;
+}
+:is(.catalog-filter, .settings-switch) input::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 0.15rem;
+	width: 0.75rem;
+	height: 0.75rem;
+	border-radius: 50%;
+	background: var(--sl-color-gray-3);
+	transform: translateY(-50%);
+	transition: transform 0.15s, background-color 0.15s;
+}
+/* The Settings page's knobs take the track's corners: square where the theme's track is square. */
+.settings-switch input::before {
+	border-radius: var(--lms-radius-pill);
+}
+:is(.catalog-filter, .settings-switch) input:checked {
+	border-color: var(--lms-accent);
+	background: var(--lms-accent);
+}
+:is(.catalog-filter, .settings-switch) input:checked::before {
+	background: var(--lms-on-accent);
+	transform: translate(0.85rem, -50%);
+}
+:is(.catalog-filter, .settings-switch) input:focus-visible {
+	outline: 2px solid var(--sl-color-accent-high);
+	outline-offset: 2px;
+}
+.catalog-filter:has(input:checked) {
+	color: var(--lms-accent-text);
+}
+@media (prefers-reduced-motion: reduce) {
+	:is(.catalog-filter, .settings-switch) input,
+	:is(.catalog-filter, .settings-switch) input::before {
+		transition: none;
+	}
+}
+.catalog[data-hide-completed] :is(.course-card, .pathway-card, .lab-card).is-complete {
+	display: none;
+}
+/* Empty states, decided from the cards' state so they stay right when progress.ts marks cards
+   complete later: "No courses match" when the text/level filters leave no card, and "You've
+   completed all of these" when some match but "Hide completed" hides them all. */
+.catalog-empty {
+	display: none;
+	margin: 0 0 1.5rem;
+	padding: 1rem 1.25rem;
+	border: 1px dashed var(--sl-color-gray-4);
+	border-radius: var(--lms-radius-lg);
+	color: var(--sl-color-gray-2);
+}
+.catalog:not(:has([data-filter]:not([hidden]))) .catalog-no-match,
+.catalog[data-hide-completed]:has([data-filter]:not([hidden])):not(:has([data-filter]:not([hidden]):not(.is-complete)))
+	.catalog-all-done {
+	display: block;
+}
+/* The list pages (/courses/, /pathways/, /labs/) use the whole width beside the sidebar, so the
+   tile grids fit more tiles per row on wider screens. The intro keeps a readable line length. */
+:root:has([data-catalog]) {
+	--sl-content-width: 110rem;
+}
+.catalog-intro {
+	max-width: 70ch;
+	margin: 0 0 1rem;
+	color: var(--sl-color-gray-3);
+}
+.catalog-intro a {
+	color: var(--lms-accent-text);
+}
+.catalog .course-list {
+	margin-top: 0;
+}
+
+/* Pathway cards */
+.pathway-list {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr));
+	margin-bottom: 1.5rem;
+}
+.pathway-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	padding: 1.25rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-lg);
+	background: var(--lms-panel);
+}
+.pathway-card:hover {
+	border-color: var(--lms-accent);
+	box-shadow: var(--lms-hover-shadow);
+}
+.pathway-card header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+.pathway-card h2 {
+	margin: 0;
+	line-height: 1.25;
+	font-family: var(--lms-display);
+	font-weight: 700;
+	font-size: 1.3rem;
+	color: var(--sl-color-white);
+}
+.pathway-card h2 a {
+	color: inherit;
+	text-decoration: none;
+}
+.pathway-card h2 a:hover {
+	color: var(--lms-accent-text);
+	text-decoration: underline;
+}
+.pathway-card > p {
+	margin: 0;
+	color: var(--sl-color-gray-2);
+}
+/* Difficulty chip, coloured by level (LevelChip in Progress.tsx). */
+.level-chip {
+	--chip: var(--lms-easy);
+	flex-shrink: 0;
+	padding: 0.2rem 0.55rem;
+	border-radius: var(--lms-radius-xs);
+	border: 1px solid var(--chip);
+	background: color-mix(in srgb, var(--chip) 12%, transparent);
+	color: var(--chip);
+	font: 700 0.75rem var(--lms-mono);
+}
+.level-chip[data-level='intermediate'] {
+	--chip: var(--lms-medium);
+}
+.level-chip[data-level='advanced'] {
+	--chip: var(--lms-hard);
+}

@@ -1,0 +1,93 @@
+/* The site footer under every page (src/components/SiteFooter.tsx). */
+
+/* Site footer under every page (src/components/SiteFooter.tsx). The footer is part of each page's
+   content, so on a page shorter than the window it stays at the bottom of the window: each box from
+   the page's main area down to the footer's own parent fills the height left as a column, and the
+   footer's `margin-top: auto` takes whatever space is left over above it. Its 3rem gap from the
+   content is inside it (above the rule, drawn by ::before), as margins don't collapse in a column. */
+.site-footer {
+	position: relative;
+	margin-top: auto;
+	padding-top: calc(3rem + 1.25rem);
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}
+.site-footer::before {
+	content: '';
+	position: absolute;
+	inset: 3rem 0 auto;
+	border-top: 1px solid var(--sl-color-gray-5);
+}
+/* The boxes down to the footer: Layout pages' <main> (Settings, glossary, home, 404), and on docs
+   pages the text column (docs catalogue pages: /courses/, /pathways/, /labs/) or the page's column. */
+.main-wrapper > main:has(.site-footer),
+[class*='docMainContainer'] > .container:has(.site-footer),
+.docs-doc-page .row > .col[class*='docItemCol']:has(.site-footer),
+[class*='docItemContainer']:has(> .site-footer),
+.lms-catalog-content:has(> .site-footer),
+.lms-splash-content:has(> .site-footer) {
+	display: flex;
+	flex-direction: column;
+}
+.main-wrapper > main:has(.site-footer),
+.docs-doc-page .row:has(.site-footer),
+[class*='docItemContainer']:has(> .site-footer),
+.lms-catalog-content:has(> .site-footer),
+.lms-splash-content:has(> .site-footer) {
+	flex: 1 0 auto;
+}
+/* Centred with auto margins, which a column doesn't stretch: keep them full width (up to their max-width). */
+[class*='docItemContainer']:has(> .site-footer),
+.lms-catalog-content:has(> .site-footer) {
+	width: 100%;
+}
+/* In a column, neighbours' margins add up instead of overlapping: keep the spacing they had. The
+   footer brings its own gap, so whatever comes before it ends without a margin; and neighbours that
+   both have one keep only the larger. */
+:has(> .site-footer) > :has(+ .site-footer),
+:has(> .site-footer) > :has(+ .site-footer) > :last-child {
+	margin-bottom: 0;
+}
+.lms-splash-content > .home-section + .home-section {
+	margin-top: 0;
+}
+.lms-splash-content > .home-section > :last-child {
+	margin-bottom: 0;
+}
+[class*='docItemContainer'] > .lesson-complete:has(+ .pagination-nav) {
+	margin-bottom: 0;
+}
+.site-footer p {
+	margin: 0;
+}
+.site-footer-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.5rem 1.5rem;
+}
+.site-footer-brand strong {
+	margin-inline-end: 0.5rem;
+	font-family: var(--lms-display);
+	color: var(--sl-color-white);
+}
+.site-footer-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 1.25rem;
+}
+.site-footer-links a {
+	color: var(--sl-color-gray-2);
+	text-decoration: none;
+}
+.site-footer-links a:hover {
+	color: var(--lms-accent-text);
+	text-decoration: underline;
+}
+/* "Edit this page" (docs pages): for editors, so set apart and quieter than the site links. */
+.site-footer-links .site-footer-edit {
+	color: var(--sl-color-gray-3);
+	padding-left: 1.25rem;
+	border-left: 1px solid var(--sl-color-gray-5);
+}

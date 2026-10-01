@@ -1,0 +1,64 @@
+/* Buttons: primary, minimal, outline and danger (.lms-button), and the screen-reader-only helper. */
+
+/* ---------------------------------------------------------------------------------------------
+   Buttons (Start / Continue) */
+.lms-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5em;
+	padding: 0.75rem 1.25rem;
+	border: 1px solid transparent;
+	border-radius: var(--lms-radius-sm);
+	font-family: var(--lms-display);
+	font-size: var(--sl-text-base);
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	line-height: 1.1875;
+	text-decoration: none !important;
+}
+.lms-button.primary {
+	background: var(--lms-accent);
+	border-color: var(--lms-accent);
+	color: var(--lms-on-accent) !important;
+}
+.lms-button.primary:hover {
+	background: var(--lms-accent-soft);
+	border-color: var(--lms-accent-soft);
+	color: var(--lms-on-accent);
+}
+.lms-button.minimal {
+	padding-inline: 0;
+	color: var(--sl-color-white);
+}
+.lms-button.minimal:hover {
+	color: var(--lms-accent-text);
+}
+/* Outlined (a secondary action beside a primary one) and danger (Reset progress on /settings/). */
+.lms-button:is(.outline, .danger) {
+	background: transparent;
+	border-color: var(--sl-color-gray-4);
+	color: var(--sl-color-white);
+}
+.lms-button.outline:hover {
+	border-color: var(--lms-accent);
+	color: var(--lms-accent-text);
+}
+.lms-button.danger {
+	border-color: var(--lms-hard);
+	color: var(--lms-hard);
+}
+.lms-button.danger:hover {
+	background: var(--lms-hard);
+	color: var(--sl-color-black);
+}
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}

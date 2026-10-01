@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<!--
+			The admin editor (Sveltia CMS). This file is a template: scripts/prepare.mjs renders it to
+			static/admin/index.html, filling in the GitLab address (CMS_GITLAB_URL).
+			The policy lets the editor talk only to this site and to GitLab (its API, sign-in and avatars). Its
+			UI fonts are self-hosted in /admin/fonts/ (scripts/prepare.mjs), so it needs nothing from the
+			internet; its optional update check (unpkg.com) is deliberately blocked. The
+			site pages' own policy (scripts/csp.mjs) is stricter and skips /admin/.
+			A <meta> policy can't forbid framing (frame-ancestors), so frame-guard.js does that here; the
+			Pages server should also send X-Frame-Options (README → Security checklist).
+		-->
+		<meta
+			http-equiv="content-security-policy"
+			content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: ${CMS_GITLAB_URL}; media-src 'self' blob:; connect-src 'self' data: blob: ${CMS_GITLAB_URL}; font-src 'self'; frame-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' ${CMS_GITLAB_URL}"
+		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Course admin</title>
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<script src="/admin/frame-guard.js"></script>
+	</head>
+	<body>
+		<script src="/admin/sveltia-cms.js"></script>
+		<!-- Page previews with the site's own blocks and styles (cms/preview.mjs, bundled by prepare.mjs). -->
+		<script src="/admin/preview.js"></script>
+	</body>
+</html>

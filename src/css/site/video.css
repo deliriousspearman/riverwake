@@ -1,0 +1,38 @@
+/* Lesson videos, and the notice that replaces one that can't be loaded. */
+
+/* Lesson video */
+.lesson-video {
+	margin: 0 0 2rem;
+}
+.lesson-video video {
+	display: block;
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	background: #000;
+	border-radius: var(--lms-radius-lg);
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+}
+/* Replaces the player when the video can't be loaded (LessonVideo in src/components/DocParts.tsx). */
+.video-unavailable {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.5rem 1rem;
+	padding: 0.85rem 1rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-inline-start: 4px solid var(--lms-medium);
+	border-radius: var(--lms-radius-lg);
+	background: var(--lms-panel);
+	color: var(--sl-color-gray-2);
+	font-size: var(--sl-text-sm);
+}
+.video-unavailable p {
+	margin: 0;
+}
+.video-unavailable strong {
+	color: var(--sl-color-white);
+}
+.video-unavailable .link-button {
+	margin: 0;
+}

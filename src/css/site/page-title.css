@@ -1,0 +1,66 @@
+/* Course, pathway and lab pictures, and the page dates under a title. */
+
+/* Course and pathway pictures: square, like a profile picture (optional `image` field). */
+.picture {
+	flex-shrink: 0;
+	width: 3.5rem;
+	height: 3.5rem;
+	aspect-ratio: 1;
+	object-fit: cover;
+	border-radius: var(--lms-radius-md);
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	background: #0d1420;
+}
+.picture-lg {
+	width: 4.5rem;
+	height: 4.5rem;
+	border-radius: var(--lms-radius-lg);
+}
+.card-title {
+	display: flex;
+	align-items: center;
+	gap: 0.875rem;
+	min-width: 0;
+}
+.title-with-picture {
+	display: flex;
+	align-items: center;
+	gap: 1.25rem;
+}
+.title-with-picture h1 {
+	margin-top: 0;
+}
+
+/* Page dates under the title (PageDates in src/components/DocParts.tsx) */
+.page-dates {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 1rem;
+	margin: 0.5rem 0 0;
+	font-family: var(--lms-mono);
+	font-size: 0.8rem;
+	color: var(--sl-color-gray-3);
+}
+.page-dates span + span::before {
+	content: '·';
+	margin-inline-end: 1rem;
+}
+.page-position {
+	color: var(--sl-color-text-accent);
+}
+@media (max-width: 50rem) {
+	.page-dates {
+		flex-direction: column;
+	}
+	.page-dates span + span::before {
+		content: none;
+	}
+	.picture-lg {
+		width: 3.5rem;
+		height: 3.5rem;
+		border-radius: var(--lms-radius-md);
+	}
+	.title-with-picture {
+		gap: 1rem;
+	}
+}

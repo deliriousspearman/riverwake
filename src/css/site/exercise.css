@@ -1,0 +1,76 @@
+/* ```exercise blocks (scripts/blocks.mjs): task, hints and solution. */
+
+/* Exercises: ```exercise blocks (scripts/blocks.mjs) */
+.lms-exercise {
+	margin-block: 2rem;
+	padding: 1.25rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-left: 4px solid #5cb2ff;
+	border-radius: var(--lms-radius-md);
+	background: var(--sl-color-gray-7, var(--sl-color-black));
+}
+.lms-exercise-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.6rem;
+	margin-bottom: 0.75rem;
+}
+.lms-exercise-badge {
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-xs);
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	padding: 0.15rem 0.55rem;
+	border-radius: var(--lms-radius-pill);
+	background: #5cb2ff;
+	color: #0b111b;
+}
+.lms-exercise-title {
+	font-weight: 700;
+	font-size: var(--sl-text-lg);
+	color: var(--sl-color-white);
+}
+.lms-exercise-task p,
+.lms-exercise details p {
+	margin: 0 0 0.6rem;
+}
+.lms-exercise ul {
+	margin: 0 0 0.6rem;
+	padding-inline-start: 1.25rem;
+}
+.lms-exercise details {
+	margin-top: 0.6rem;
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-sm);
+}
+.lms-exercise summary {
+	padding: 0.5rem 0.75rem;
+	font-size: var(--sl-text-sm);
+	font-weight: 600;
+	cursor: pointer;
+	color: var(--sl-color-gray-2);
+}
+.lms-exercise summary:hover {
+	color: var(--sl-color-white);
+}
+.lms-exercise details[open] summary {
+	border-bottom: 1px solid var(--sl-color-gray-6);
+}
+.lms-exercise details > div {
+	padding: 0.75rem 0.75rem 0.25rem;
+}
+.lms-exercise-solution summary {
+	color: var(--sl-color-text-accent);
+}
+.lms-exercise-code {
+	margin: 0 0 0.75rem;
+	padding: 0.75rem 1rem;
+	overflow-x: auto;
+	border-radius: var(--lms-radius-sm);
+	background: #141d2b;
+	color: #ffffff;
+	font-family: var(--lms-mono);
+	font-size: var(--sl-text-sm);
+}

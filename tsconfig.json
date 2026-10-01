@@ -1,0 +1,21 @@
+{
+  "extends": "@docusaurus/tsconfig",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0"
+  },
+  "include": [
+    "src",
+    "docusaurus.config.ts",
+    "sidebars.ts",
+    "scripts/*.d.ts"
+  ],
+  "exclude": [
+    "build",
+    ".docusaurus"
+  ]
+}

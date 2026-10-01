@@ -1,0 +1,244 @@
+/* Code blocks, terminal windows (```terminal and shell code), the copy button, and Mermaid diagrams. */
+
+/* ---------------------------------------------------------------------------------------------
+   Code blocks (Prism in Docusaurus, in an editor-style frame) */
+.theme-code-block {
+	--prism-background-color: var(--lms-panel) !important;
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-code);
+	box-shadow: none;
+	margin-block: 1.5rem 0;
+}
+.theme-code-block pre,
+.theme-code-block .prism-code {
+	border-radius: var(--lms-radius-code);
+	background-color: var(--lms-panel) !important;
+}
+.theme-code-block code {
+	font-size: var(--sl-text-sm);
+	line-height: 1.65;
+}
+/* A title shows as an editor tab. */
+.theme-code-block [class*='codeBlockTitle'] {
+	display: inline-block;
+	margin-bottom: -1px;
+	padding: 0.4rem 1rem;
+	border: none;
+	border-bottom: 1px solid var(--lms-panel);
+	border-inline-end: 1px solid var(--sl-color-gray-5);
+	background: var(--lms-panel);
+	color: var(--sl-color-gray-2);
+	font: 400 var(--sl-text-sm) var(--sl-font);
+}
+.theme-code-block:has([class*='codeBlockTitle']) {
+	background: var(--sl-color-bg-nav);
+}
+.theme-code-block:has([class*='codeBlockTitle']) [class*='codeBlockContent'] {
+	border-top: 1px solid var(--sl-color-gray-5);
+	background: var(--lms-panel);
+}
+
+/* Terminal windows. Shared by ```terminal blocks (scripts/terminal.mjs), shell code blocks
+   (.lms-shell, which wrap Docusaurus's code block) and the home page hero. Dark in both modes. */
+.lms-terminal,
+.lms-shell {
+	--lms-term: #a4b1cd;
+	--lms-term-bg: #141d2b;
+	--lms-term-bar: #1a2332;
+	--lms-term-edge: #0b111b;
+	--lms-term-sel: #2c3a52;
+	position: relative;
+	margin: 1.5rem 0 0;
+	overflow: hidden;
+	border: 1px solid var(--lms-term-edge);
+	border-radius: var(--lms-radius-lg);
+	background: var(--lms-term-bg);
+	box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.35);
+}
+.lms-window-bar {
+	position: relative;
+	min-height: 2.1rem;
+	padding: 0.4rem 3.5rem;
+	background: var(--lms-term-bar);
+	border-bottom: 1px solid var(--lms-term-edge);
+	color: var(--lms-term);
+	font-size: var(--sl-text-sm);
+	font-weight: 500;
+	text-align: center;
+}
+.lms-window-bar::before {
+	content: '';
+	position: absolute;
+	left: 1rem;
+	top: 50%;
+	translate: 0 -50%;
+	width: 2.6rem;
+	height: 0.7rem;
+	background:
+		radial-gradient(circle at 0.35rem 50%, #ff5f56 0.3rem, transparent 0.32rem),
+		radial-gradient(circle at 1.3rem 50%, #ffbd2e 0.3rem, transparent 0.32rem),
+		radial-gradient(circle at 2.25rem 50%, #27c93f 0.3rem, transparent 0.32rem);
+}
+.lms-terminal-code {
+	margin: 0;
+	padding: 1rem 1.35rem;
+	overflow-x: auto;
+	border-radius: 0;
+	background: var(--lms-term-bg);
+	color: var(--t-output);
+	font: var(--sl-text-sm) / 1.65 var(--lms-mono);
+}
+.lms-terminal-code::selection,
+.lms-terminal-code *::selection {
+	background: var(--lms-term-sel);
+}
+.lms-terminal-code code {
+	padding: 0;
+	border: none;
+	background: none;
+	color: inherit;
+	font: inherit;
+}
+.t-frame {
+	color: var(--t-frame);
+}
+.t-user {
+	color: var(--t-user);
+	font-weight: 700;
+}
+.t-path {
+	color: var(--t-path);
+	font-weight: 700;
+}
+.t-prompt {
+	color: var(--t-prompt-user);
+	font-weight: 700;
+}
+.t-root {
+	color: var(--t-prompt-root);
+	font-weight: 700;
+}
+.t-command {
+	color: var(--t-command);
+}
+.t-output {
+	color: var(--t-output);
+}
+/* ```terminal-red / -blue / -green / -purple / -orange: the same window, tinted, to tell sessions
+   apart. `--lms-term` is the accent: title text, the line under the title bar and a thin outline.
+   The prompt colours come from PALETTES in scripts/terminal.mjs. */
+.lms-terminal:is(.lms-terminal-red, .lms-terminal-blue, .lms-terminal-green, .lms-terminal-purple, .lms-terminal-orange) {
+	border-color: color-mix(in srgb, var(--lms-term) 35%, #0b111b);
+	box-shadow:
+		0 0 0 1px color-mix(in srgb, var(--lms-term) 25%, transparent),
+		0 0.5rem 1.5rem rgb(0 0 0 / 0.35);
+}
+.lms-terminal:is(.lms-terminal-red, .lms-terminal-blue, .lms-terminal-green, .lms-terminal-purple, .lms-terminal-orange) .lms-window-bar {
+	border-bottom-color: var(--lms-term);
+}
+.lms-terminal.lms-terminal-red {
+	--lms-term: #ff5c5c;
+	--lms-term-bg: #1d1418;
+	--lms-term-bar: #2a181d;
+	--lms-term-sel: #4a2530;
+}
+.lms-terminal.lms-terminal-blue {
+	--lms-term: #5cb2ff;
+	--lms-term-bg: #0f1a2e;
+	--lms-term-bar: #152642;
+	--lms-term-sel: #22406a;
+}
+.lms-terminal.lms-terminal-green {
+	--lms-term: #2ee7b6;
+	--lms-term-bg: #0e1b17;
+	--lms-term-bar: #142821;
+	--lms-term-sel: #1f4a3c;
+}
+.lms-terminal.lms-terminal-purple {
+	--lms-term: #c16cfa;
+	--lms-term-bg: #18132a;
+	--lms-term-bar: #24193c;
+	--lms-term-sel: #3d2a5e;
+}
+.lms-terminal.lms-terminal-orange {
+	--lms-term: #ffaf00;
+	--lms-term-bg: #1c170e;
+	--lms-term-bar: #2a2112;
+	--lms-term-sel: #4a3a1c;
+}
+/* Copy button (src/client/copy.ts), shown on hover. */
+.lms-copy {
+	position: absolute;
+	top: calc(2.1rem + 0.5rem);
+	right: 0.5rem;
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	border: 1px solid #2c3a52;
+	border-radius: var(--lms-radius-sm);
+	background: #1a2332 no-repeat center / 1rem
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a4b1cd' stroke-width='1.75'%3E%3Crect x='9' y='9' width='11' height='11' rx='2'/%3E%3Cpath d='M5 15V5a2 2 0 0 1 2-2h10'/%3E%3C/svg%3E");
+	opacity: 0;
+	cursor: pointer;
+	transition: opacity 0.15s;
+}
+.lms-terminal:hover .lms-copy,
+.lms-copy:focus-visible {
+	opacity: 1;
+}
+.lms-copy-feedback {
+	position: absolute;
+	right: calc(100% + 0.4rem);
+	top: 50%;
+	translate: 0 -50%;
+	padding: 0.1rem 0.5rem;
+	border-radius: var(--lms-radius-xs);
+	background: #2c3a52;
+	color: #ffffff;
+	font-size: var(--sl-text-xs);
+	white-space: nowrap;
+	opacity: 0;
+	transition: opacity 0.15s;
+}
+.lms-copy.is-copied .lms-copy-feedback {
+	opacity: 1;
+}
+/* Shell code blocks: Docusaurus's highlighted block inside the terminal frame. */
+.lms-shell .theme-code-block {
+	--prism-background-color: var(--lms-term-bg) !important;
+	margin: 0;
+	border: none;
+	border-radius: 0;
+	background: var(--lms-term-bg);
+}
+.lms-shell .theme-code-block pre,
+.lms-shell .theme-code-block .prism-code {
+	background: var(--lms-term-bg) !important;
+	border-radius: 0;
+}
+
+/* Mermaid diagrams (```mermaid, src/theme/Mermaid; colours in src/lib/mermaid.ts): on a panel like the
+   site's other blocks, centred, scrolling sideways when wider than the column. */
+.lms-mermaid {
+	margin: 1.5rem 0;
+	padding: 1.25rem;
+	overflow-x: auto;
+	text-align: center;
+	background: var(--lms-panel);
+	border: var(--lms-border-width) solid var(--sl-color-gray-5);
+	border-radius: var(--lms-radius-lg);
+}
+.lms-mermaid > svg {
+	height: auto;
+}
+/* Until the diagram is drawn (src/theme/Mermaid): the empty panel, its height estimated. With
+   JavaScript off, the <noscript> note shows under "Loading diagram…". */
+.lms-mermaid-loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.25rem;
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-3);
+}

@@ -1,0 +1,45 @@
+/* Nightshift theme (scripts/themes.mjs): Hacklab with a teal accent, rounder corners and pill
+   shapes, a soft glow on hover and Figtree headings. Panels and layout are Hacklab's. Loaded
+   after the site's stylesheets (src/css/site/), whose variables it overrides. */
+
+:root {
+	--lms-display: var(--sl-font);
+	--lms-radius-xs: 6px;
+	--lms-radius-sm: 10px;
+	--lms-radius-md: 14px;
+	--lms-radius-lg: 18px;
+	--lms-radius-pill: 999px;
+	--lms-radius-code: 12px;
+	--lms-hover-shadow: 0 0 0 1px var(--lms-accent), 0 0 28px -6px color-mix(in srgb, var(--lms-accent) 55%, transparent);
+
+	/* Teal accent (dark mode). */
+	--sl-color-accent-low: #0e3b31;
+	--sl-color-accent: #2ee7b6;
+	--sl-color-accent-high: #8ef3d6;
+	--lms-accent: #2ee7b6;
+	--lms-on-accent: #032219;
+	--lms-accent-text: #2ee7b6;
+	--lms-accent-soft: #8ef3d6;
+	--lms-easy: #2ee7b6;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #d3f6ec;
+	--sl-color-accent: #0f8a6a;
+	--sl-color-accent-high: #0a6650;
+	--lms-accent-text: #0a6650;
+	--lms-easy: #0f8a6a;
+}
+
+/* Figtree headings: a touch tighter, as display text. */
+.navbar__title,
+.lms-page-header h1,
+.theme-doc-markdown :is(h2, h3) {
+	letter-spacing: -0.015em;
+}
+
+/* Buttons are pills. */
+.lms-button,
+.lesson-action {
+	border-radius: var(--lms-radius-pill);
+}

@@ -1,0 +1,8 @@
+title: Lorem Ipsum Pathway 1
+description: Quis minim non cillum malesuada deserunt habitant labore voluptate ut mollit consectetur. Occaecat enim sapien scelerisque eiusmod laborum.
+level: Beginner
+image: /images/icons/badge/pathways/lorem-pathway-1.svg
+order: 1
+courses:
+  - lorem-course-1
+  - lorem-course-2
