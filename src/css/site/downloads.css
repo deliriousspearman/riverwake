@@ -1,7 +1,6 @@
-/* Downloadable files (Attachments in src/components/DocParts.tsx). */
-
 /* Downloadable files (Attachments in src/components/DocParts.tsx): under the video on lesson pages,
-   and gathered under "Downloads" on course overviews (CourseDownloads, same file). */
+   gathered under "Downloads" on course overviews (CourseDownloads, same file), and in the page text
+   where a ```attachment block is (renderAttachment in scripts/blocks.mjs, the same markup). */
 .attachments {
 	display: grid;
 	gap: 0.5rem;
@@ -102,4 +101,8 @@
 .course-downloads-group h3 a:hover {
 	color: var(--lms-accent-text);
 	text-decoration: underline;
+}
+/* ```attachment blocks: the page text's spacing between list items doesn't apply. */
+.theme-doc-markdown .lms-attachment li + li {
+	margin-top: 0;
 }

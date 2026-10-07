@@ -47,7 +47,7 @@ function Section({ id, title, link, children }: { id: string; title: string; lin
 }
 
 export default function Home() {
-	const { courses, pathways, labs } = useCatalog();
+	const { courses, pathways, labs, features } = useCatalog();
 	const history = useHistory();
 	// The catalogue used to be tabs on this page: send old #pathways and #labs links to their pages.
 	useEffect(() => {
@@ -79,7 +79,7 @@ export default function Home() {
 						<p className="catalog-intro">Curated sequences of courses. Work through them in order.</p>
 						<PathwayList limit={2} />
 					</Section>
-					{labs.length > 0 && (
+					{features.proLabs && labs.length > 0 && (
 						<Section id="home-labs" title="Pro Labs" link={<Link to="/labs/">View all pro labs ({labs.length}) →</Link>}>
 							<p className="catalog-intro">Realistic networks of vulnerable machines to attack from start to finish.</p>
 							<LabList limit={2} />

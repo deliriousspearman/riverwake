@@ -145,8 +145,10 @@ export const glossarySchema = z.object({
 /**
  * Pages removed on purpose: content/settings/removed-pages.yml (scripts/removed-pages.mjs). Each
  * address also covers everything under it, so a course's address covers all its lessons.
+ * `checkFrom` is the day the check starts (the site going live), as YYYY-MM-DD; unset, it's off.
  */
 export const removedPagesSchema = z.object({
+	checkFrom: optional(z.coerce.date().transform((date) => date.toISOString().slice(0, 10))),
 	pages: optional(
 		z.array(
 			z.object({
@@ -185,6 +187,12 @@ export const bannerSchema = z.object({
 	height: z.number().int().min(BANNER_HEIGHT.min).max(BANNER_HEIGHT.max).default(40),
 	bold: z.boolean().default(true),
 	italic: z.boolean().default(false),
+});
+
+/** Parts of the site that can be switched off: content/settings/features.yml */
+export const featuresSchema = z.object({
+	// Pro labs in the navbar, footer, home page, search and sitemap.
+	proLabs: z.boolean().default(true),
 });
 
 /** Parse `data` with `schema`; throws one error listing every problem, prefixed with `where`. */

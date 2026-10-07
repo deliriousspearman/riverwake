@@ -7,12 +7,18 @@
 //   ```asciinema   terminal recording: src (a .cast under static/), title?, player options
 //   ```timeline    events in order: title?, layout? (vertical | horizontal | snake), style? (plain | cards),
 //                  events[{ date, title, text? }]
+//   ```attachment  downloads where the block is: one entry or a list of { file, title, description?,
+//                  overview? }, the fields of `attachments` in frontmatter (scripts/attachments.mjs).
+//                  `overview: true` also lists the file on the course overview (scripts/content.mjs
+//                  finds the blocks in a page, plugins/lms-content.mjs publishes them).
 //
 // Text fields support `code`, **bold**, *italic* and [links](https://…), as text nodes only.
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
+import { attachmentInfo, attachmentProblems, extensionOf } from './attachments.mjs';
 import { STATIC_DIR } from './content.mjs';
-import { blocks, el, inline, readYamlBlock, text, unknownFields } from './hast-text.mjs';
+import { parse } from 'yaml';
+import { blocks, el, failer, inline, readYamlBlock, text, unknownFields } from './hast-text.mjs';
 
 // ---------------------------------------------------------------------------------------------
 // ```quiz
@@ -292,6 +298,55 @@ export function renderTimeline(timeline) {
 					]),
 				]);
 			}),
+		),
+	]);
+}
+
+// ---------------------------------------------------------------------------------------------
+// ```attachment (the same list as the lesson's Downloads, Attachments in src/components/DocParts.tsx)
+
+const ATTACHMENT_FIELDS = ['file', 'title', 'description', 'overview'];
+
+/** The block's entries, checked like `attachments` in frontmatter. `staticDir` is for tests. */
+export function readAttachment(codeBlock, staticDir = STATIC_DIR) {
+	const fail = failer('attachment', codeBlock);
+	let config;
+	try {
+		config = parse(codeBlock.code);
+	} catch (error) {
+		fail(`invalid YAML (${error.message})`);
+	}
+	const entries = Array.isArray(config) ? config : [config];
+	if (!entries.length) fail('expected `file:` and `title:` lines, or a list of them');
+	return entries.map((entry, i) => {
+		const at = entries.length > 1 ? `file ${i + 1}: ` : '';
+		if (!entry || typeof entry !== 'object' || Array.isArray(entry)) fail(`${at}expected \`file:\` and \`title:\` lines`);
+		const unknown = unknownFields(entry, ATTACHMENT_FIELDS);
+		if (unknown) fail(`${at}${unknown}`);
+		const { file, title, description, overview = false } = entry;
+		for (const problem of attachmentProblems(file, staticDir)) fail(`${at}\`file\` ${problem}`);
+		if (typeof title !== 'string' || !title.trim()) fail(`${at}\`title\` is required`);
+		if (description !== undefined && typeof description !== 'string') fail(`${at}\`description\` must be text`);
+		if (typeof overview !== 'boolean') fail(`${at}\`overview\` must be true or false`);
+		return { file, title, ...(description ? { description } : {}), overview, ext: extensionOf(file), ...attachmentInfo(file, staticDir) };
+	});
+}
+
+export function renderAttachment(items) {
+	return el('div', { className: ['lms-attachment', 'not-content'] }, [
+		el(
+			'ul',
+			{ className: ['attachments'] },
+			items.map(({ file, title, description, ext, type, size }) =>
+				el('li', {}, [
+					el('span', { className: ['attachment-ext'], ariaHidden: 'true' }, [text(ext)]),
+					el('div', { className: ['attachment-text'] }, [
+						el('a', { href: file, download: true }, [text(title)]),
+						...(description ? [el('p', {}, [text(description)])] : []),
+					]),
+					el('span', { className: ['attachment-meta'] }, [text([type, size].filter(Boolean).join(' · '))]),
+				]),
+			),
 		),
 	]);
 }

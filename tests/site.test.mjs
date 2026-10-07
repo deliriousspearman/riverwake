@@ -1,7 +1,8 @@
 // Smaller helpers: the security policy (scripts/csp.mjs) and the raw HTML check
 // (plugins/rehype-safe-html.mjs), banner contrast (scripts/banner.mjs),
 // lesson summaries and sections (scripts/summary.mjs, scripts/sections.mjs), and themes
-// (scripts/themes.mjs) against the CMS's theme list.
+// (scripts/themes.mjs) against the CMS's theme list, and the visitor's colour themes
+// (src/lib/palettes.ts, src/css/site/palettes.css).
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -15,7 +16,7 @@ import { compareLessons, sectionTitle } from '../scripts/sections.mjs';
 import { sizeReport } from '../scripts/site-size.mjs';
 import { letterOf, lessonSummary } from '../scripts/summary.mjs';
 import { selectedTheme, SITE_STYLESHEETS, THEMES } from '../scripts/themes.mjs';
-import { tempDir, writeFiles } from './helpers.mjs';
+import { importTs, tempDir, writeFiles } from './helpers.mjs';
 
 const sha = (text) => `'sha256-${createHash('sha256').update(text).digest('base64')}'`;
 
@@ -158,4 +159,51 @@ test('every stylesheet in src/css/site/ is loaded, once, in the listed order', (
 	assert.deepEqual([...SITE_STYLESHEETS].sort(), files.sort(), 'scripts/themes.mjs SITE_STYLESHEETS and src/css/site/ differ');
 	assert.equal(new Set(SITE_STYLESHEETS).size, SITE_STYLESHEETS.length);
 	assert.equal(SITE_STYLESHEETS[0], 'theme', 'theme.css (the variables) loads first');
+});
+
+test('every colour theme sets every colour, matches src/lib/palettes.ts, and keeps its text readable', async () => {
+	const { PALETTES, SITE_PALETTES, STORED_PALETTES } = await importTs('src/lib/palettes.ts');
+	const css = readFileSync(new URL('../src/css/site/palettes.css', import.meta.url), 'utf8');
+	const blocks = Object.fromEntries(
+		[...css.matchAll(/^:root\[data-theme\]\[data-lms-palette='(\w+)'\] \{([^}]*)\}/gm)].map(([, id, body]) => [
+			id,
+			Object.fromEntries([...body.matchAll(/--([\w-]+): (#[0-9a-f]{6});/g)].map(([, name, value]) => [name, value])),
+		]),
+	);
+	assert.deepEqual(Object.keys(blocks).sort(), [...STORED_PALETTES].sort(), 'src/lib/palettes.ts and palettes.css list different palettes');
+	assert.ok(Object.values(SITE_PALETTES).every((id) => PALETTES.some((palette) => palette.id === id)));
+	for (const palette of PALETTES) assert.match(palette.id, /^[a-z0-9]{1,16}$/, 'src/head/preferences.js only sets plain values');
+	// The navbar shows each one's name from the first frame (src/css/site/navbar.css).
+	const navbar = readFileSync(new URL('../src/css/site/navbar.css', import.meta.url), 'utf8');
+	for (const id of STORED_PALETTES) assert.ok(navbar.includes(`[data-lms-palette='${id}'] .lms-theme-select [data-palette='${id}']`), `navbar.css doesn't show the name of ${id}`);
+
+	// Every colour variable theme.css sets for dark mode (gray-7 too, for a light palette).
+	const theme = readFileSync(new URL('../src/css/site/theme.css', import.meta.url), 'utf8');
+	const dark = theme.slice(theme.indexOf('/* Dark */'), theme.indexOf(":root[data-theme='light']"));
+	const colours = [...dark.matchAll(/--([\w-]+): #[0-9a-f]{6};/g)].map(([, name]) => name);
+	for (const [id, values] of Object.entries(blocks)) {
+		const base = PALETTES.find((palette) => palette.id === id).base;
+		const missing = [...colours, ...(base === 'light' ? ['sl-color-gray-7', 'lms-terminal-accent', 'lms-terminal-accent-soft'] : [])].filter((name) => !values[name]);
+		assert.deepEqual(missing, [], `${id} doesn't set these`);
+		// Reading text 4.5:1 (WCAG AA); colour cues (difficulty chips, aside headings, quiz marks) 3:1.
+		const pairs = [
+			[4.5, 'sl-color-gray-2', 'sl-color-black'],
+			[4.5, 'sl-color-gray-2', 'lms-panel'],
+			[4.5, 'sl-color-gray-3', 'lms-panel'],
+			[4.5, 'lms-accent-text', 'sl-color-black'],
+			[4.5, 'lms-accent-text', 'lms-panel'],
+			[4.5, base === 'light' ? 'sl-color-accent' : 'sl-color-accent-high', 'sl-color-black'],
+			[4.5, 'lms-on-accent', 'lms-accent'],
+			[4.5, 'lms-on-accent', 'lms-accent-soft'],
+			[4.5, 'lms-on-info', 'lms-info'],
+			[4.5, 'lms-terminal-text', 'lms-terminal-bg'],
+			[4.5, values['lms-terminal-accent'] ? 'lms-terminal-accent' : 'lms-accent', 'lms-terminal-deep'],
+			...['easy', 'medium', 'hard', 'right', 'wrong'].map((name) => [3, `lms-${name}`, 'lms-panel']),
+			...['info', 'tip', 'caution', 'danger'].map((name) => [3, `lms-${name}`, 'sl-color-black']),
+		];
+		for (const [min, text, background] of pairs) {
+			const ratio = contrastRatio(values[text], values[background]);
+			assert.ok(ratio >= min, `${id}: --${text} on --${background} is ${ratio.toFixed(1)}:1, under ${min}:1`);
+		}
+	}
 });

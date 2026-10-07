@@ -1,8 +1,8 @@
-// The ```quiz, ```exercise and ```asciinema blocks (scripts/blocks.mjs) and the Markdown-ish text
+// The ```quiz, ```exercise, ```asciinema and ```attachment blocks (scripts/blocks.mjs) and the Markdown-ish text
 // in them (scripts/hast-text.mjs).
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { questionId, quizId, readConfig, readExercise, readQuiz, readTimeline, renderQuiz, renderTimeline, snakeCell } from '../scripts/blocks.mjs';
+import { questionId, quizId, readAttachment, readConfig, readExercise, readQuiz, readTimeline, renderAttachment, renderQuiz, renderTimeline, snakeCell } from '../scripts/blocks.mjs';
 import { blocks, inline, unknownFields } from '../scripts/hast-text.mjs';
 import { tempDir, writeFiles } from './helpers.mjs';
 
@@ -76,6 +76,47 @@ test('a recording must exist under static/, and its options have the right types
 	assert.throws(() => readConfig(block('src: ../secret.cast'), staticDir), /must be a path like/);
 	assert.throws(() => readConfig(block('src: /casts/web/demo.cast\nspeed: fast'), staticDir), /`speed` must be a number/);
 	assert.throws(() => readConfig(block('src: /casts/web/demo.cast\nvolume: 3'), staticDir), /unknown option `volume`/);
+});
+
+test('an attachment block takes one file or a list, with the type and size of each', (t) => {
+	const staticDir = writeFiles(tempDir(t), { 'files/web/ports.csv': 'port\n22\n', 'files/web/scan.pcap': 'x' });
+	assert.deepEqual(readAttachment(block('file: /files/web/ports.csv\ntitle: Ports'), staticDir), [
+		{ file: '/files/web/ports.csv', title: 'Ports', overview: false, ext: 'csv', type: 'CSV', size: '8 B' },
+	]);
+	const list = readAttachment(block('- file: /files/web/ports.csv\n  title: Ports\n  description: All of them.\n- file: /files/web/scan.pcap\n  title: Scan\n  overview: true'), staticDir);
+	assert.deepEqual(
+		list.map(({ file, description, overview }) => ({ file, description, overview })),
+		[
+			{ file: '/files/web/ports.csv', description: 'All of them.', overview: false },
+			{ file: '/files/web/scan.pcap', description: undefined, overview: true },
+		],
+	);
+});
+
+test('attachment block mistakes fail the build, naming the file', (t) => {
+	const staticDir = writeFiles(tempDir(t), { 'files/web/ports.csv': 'port\n', 'files/web/page.html': '<p>' });
+	const fails = (code, pattern) => assert.throws(() => readAttachment(block(code), staticDir), pattern);
+	fails('file: /files/web/missing.csv\ntitle: Ports', /attachment block in docs\/courses\/web\/quiz\.md: `file` file not found: static\/files\/web\/missing\.csv/);
+	fails('file: /files/web/page.html\ntitle: Page', /file type "\.html" isn't allowed/);
+	fails('file: ../secret.csv\ntitle: Ports', /must be a path under \/files\//);
+	fails('file: /files/web/ports.csv', /`title` is required/);
+	fails('file: /files/web/ports.csv\ntitle: Ports\noverview: yes please', /`overview` must be true or false/);
+	fails('file: /files/web/ports.csv\ntitle: Ports\nlink: x', /unknown field\(s\): link/);
+	fails('- file: /files/web/ports.csv\n  title: Ports\n- just text', /file 2: expected `file:` and `title:` lines/);
+	fails('[]', /expected `file:` and `title:` lines, or a list of them/);
+	fails('', /expected `file:` and `title:` lines/);
+});
+
+test('an attachment block has the markup of the Downloads list, a download link and no size if unknown', () => {
+	const hast = renderAttachment([{ file: '/files/web/ports.csv', title: 'Ports', description: 'All of them.', ext: 'csv', type: 'CSV', size: '' }]);
+	assert.deepEqual(hast.properties.className, ['lms-attachment', 'not-content']);
+	const [ul] = hast.children;
+	assert.deepEqual(ul.properties.className, ['attachments']);
+	const [ext, textPart, meta] = ul.children[0].children;
+	assert.equal(ext.children[0].value, 'csv');
+	assert.deepEqual(textPart.children[0].properties, { href: '/files/web/ports.csv', download: true });
+	assert.equal(textPart.children[1].children[0].value, 'All of them.');
+	assert.equal(meta.children[0].value, 'CSV');
 });
 
 test('block text supports code, bold, italic and safe links only', () => {

@@ -3,10 +3,10 @@ kind: lesson
 title: Proident fugiat aute
 description: Amet nostrud officia et morbi proident ullamco pariatur qui vitae scelerisque occaecat reprehenderit.
 sidebar:
-  order: 3
+  order: 4
 ---
 
-Lorem term 5 varius nostrud qui qui amet in officia laboris integer nostrud turpis egestas vitae do. Fames culpa malesuada tempor qui elit faucibus consectetur vitae eiusmod est incididunt sed. Malesuada aliqua deserunt ad velit eiusmod.
+Lorem term 9 varius nostrud qui qui amet in officia laboris integer nostrud turpis egestas vitae do. Fames culpa malesuada tempor qui elit faucibus consectetur vitae eiusmod est incididunt sed. Malesuada aliqua deserunt ad velit eiusmod.
 
 ## Reprehenderit est
 

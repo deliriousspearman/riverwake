@@ -6,7 +6,7 @@ sidebar:
   order: 2
 ---
 
-Lorem term 25 ea minim commodo quis veniam anim culpa pariatur varius. Ipsum incididunt.
+Lorem term 51 ea minim commodo quis veniam anim culpa pariatur varius. Ipsum incididunt.
 
 | Ipsum ullamco | Sint | Egestas culpa |
 | --- | --- | --- |

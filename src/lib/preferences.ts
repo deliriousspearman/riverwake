@@ -2,15 +2,17 @@
 // localStorage, like progress (src/lib/progress.ts), and never sent anywhere.
 //
 //   lms-preferences-v1   { text, width, motion, scroll, wrap, toc, breadcrumbs, glossary, captions,
-//                        speed }: only the ones changed from the default are stored
+//                        speed, pathways, palette }: only the ones changed from the default are stored
 //   lms-hide-completed   "1" or "0": the catalogue's "Hide completed" switch (src/components/
 //                        CatalogFilter.tsx), older than the rest and kept under its own key
 //
 // Each stored preference is also set on <html> as data-lms-<name>, which the CSS reads (text size,
-// width, motion, the "On this page" column, the pinned breadcrumb bar, glossary underlines). static/head/preferences.js (from src/head/preferences.js)
+// width, motion, the "On this page" column, the pinned breadcrumb bar, glossary underlines, the
+// colour theme). static/head/preferences.js (from src/head/preferences.js)
 // does that before the page is drawn, so pages don't jump once the scripts load; this module keeps
 // it up to date when a preference changes, here or in another tab.
 import { useSyncExternalStore } from 'react';
+import { STORED_PALETTES } from './palettes';
 
 const KEY = 'lms-preferences-v1';
 const HIDE_KEY = 'lms-hide-completed';
@@ -18,8 +20,8 @@ const HIDE_KEY = 'lms-hide-completed';
 export type Preferences = {
 	/** Text size: the whole page, as with browser zoom, so line lengths stay the same. */
 	text?: 'large' | 'larger';
-	/** A wider text column on lesson and guide pages. */
-	width?: 'wide';
+	/** A wider text column on lesson and guide pages, or one as wide as the screen allows. */
+	width?: 'wide' | 'full';
 	/** Turn animations and transitions off, whatever the device says. */
 	motion?: 'reduce';
 	/** "On this page" jumps to a heading instead of a quick scroll (src/client/toc-scroll.ts). */
@@ -36,13 +38,17 @@ export type Preferences = {
 	captions?: 'on';
 	/** Playback speed for lesson videos and terminal recordings, e.g. "1.25". */
 	speed?: string;
+	/** Pathway cards list every course instead of the first few and "+N more courses". */
+	pathways?: 'all';
+	/** A colour theme other than the site's own light or dark (src/lib/palettes.ts). */
+	palette?: string;
 };
-export const PREFERENCE_NAMES = ['text', 'width', 'motion', 'scroll', 'wrap', 'toc', 'breadcrumbs', 'glossary', 'captions', 'speed'] as const;
+export const PREFERENCE_NAMES = ['text', 'width', 'motion', 'scroll', 'wrap', 'toc', 'breadcrumbs', 'glossary', 'captions', 'speed', 'pathways', 'palette'] as const;
 export const SPEEDS = ['0.75', '1', '1.25', '1.5', '2'];
 /** Each preference's values other than its default (which isn't stored). */
 const CHOICES: Record<(typeof PREFERENCE_NAMES)[number], string[]> = {
 	text: ['large', 'larger'],
-	width: ['wide'],
+	width: ['wide', 'full'],
 	motion: ['reduce'],
 	scroll: ['instant'],
 	wrap: ['on'],
@@ -51,6 +57,8 @@ const CHOICES: Record<(typeof PREFERENCE_NAMES)[number], string[]> = {
 	glossary: ['off'],
 	captions: ['on'],
 	speed: SPEEDS.filter((speed) => speed !== '1'),
+	pathways: ['all'],
+	palette: STORED_PALETTES,
 };
 
 const NONE: Preferences = {};
@@ -61,7 +69,9 @@ function load(): Preferences {
 	try {
 		const saved = JSON.parse(localStorage.getItem(KEY) ?? '{}');
 		if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return {};
-		return Object.fromEntries(PREFERENCE_NAMES.filter((name) => typeof saved[name] === 'string').map((name) => [name, saved[name]]));
+		// A colour theme no longer offered: back to the site's own colours.
+		const known = (name: (typeof PREFERENCE_NAMES)[number]) => typeof saved[name] === 'string' && (name !== 'palette' || CHOICES.palette.includes(saved[name]));
+		return Object.fromEntries(PREFERENCE_NAMES.filter(known).map((name) => [name, saved[name]]));
 	} catch {
 		return {};
 	}

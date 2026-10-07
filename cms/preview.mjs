@@ -1,5 +1,5 @@
 // The admin editor's preview pane for pages (courses, lessons, labs, guide): the page text as the
-// site shows it, including the site's own blocks (quiz, exercise, timeline, recording, terminal),
+// site shows it, including the site's own blocks (quiz, exercise, timeline, recording, download, terminal),
 // rendered by the same code as the build (plugins/remark-lms-blocks.mjs, renderCodeBlock) and styled
 // by the site's CSS (preview.css, registered below). A block the build would reject shows the
 // build's own message instead, so editors see the problem before they save, rather than as a failed
@@ -21,7 +21,7 @@ import { defaultHandlers, toHast } from 'mdast-util-to-hast';
 import { renderCodeBlock } from '../plugins/remark-lms-blocks.mjs';
 import { SHELL_LANGUAGES, titleFromMeta, windowBar } from '../scripts/terminal.mjs';
 
-const BLOCK_NAMES = { quiz: 'quiz', exercise: 'exercise', asciinema: 'recording', timeline: 'timeline' };
+const BLOCK_NAMES = { quiz: 'quiz', exercise: 'exercise', asciinema: 'recording', timeline: 'timeline', attachment: 'download' };
 const ADMONITIONS = new Set(['note', 'tip', 'info', 'caution', 'warning', 'danger']);
 
 // Quizzes and the other YAML blocks so far on the page (quiz ids need it), counted per preview.

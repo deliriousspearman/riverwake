@@ -42,7 +42,9 @@ Two ways to take something off the site without losing it:
 
 The build checks every link, so deleting something that's still linked to fails the pipeline, and the site stays as it was. Remove or change the links first. The error names each page that links to the deleted one.
 
-**After deleting a lesson or a course**, add its old address to **Site settings → Removed pages** in the admin editor (`content/settings/removed-pages.yml`), with a short reason. Until you do, the site won't publish, so that a page doesn't vanish by accident: learners lose their progress for it, and links to it from bookmarks or other sites break. A course's address covers all of its lessons.
+**Before the site goes live**, none of this is checked: rename and delete courses and lessons freely. On launch day, an administrator sets **Site settings → Removed pages → Check from** to that day. From then on, the rules below apply to every page renamed or deleted on or after it (renames from before are never checked).
+
+**After deleting a lesson or a course** (once **Check from** is set), add its old address to **Site settings → Removed pages** in the admin editor (`content/settings/removed-pages.yml`), with a short reason. Until you do, the site won't publish, so that a page doesn't vanish by accident: learners lose their progress for it, and links to it from bookmarks or other sites break. A course's address covers all of its lessons.
 
 ```yaml
 pages:

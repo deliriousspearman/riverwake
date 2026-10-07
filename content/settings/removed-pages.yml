@@ -3,4 +3,9 @@
 # renamed is now nothing (scripts/removed-pages.mjs): learners lose their progress for it and old
 # links break. If a page moved, add its old address to the new page's `aliases` instead.
 # Each address also covers everything under it: a course's address covers all of its lessons.
+#
+# checkFrom: the day the site went live (YYYY-MM-DD). Only pages deleted or renamed on or after it
+# are checked. Leave it empty while the site is being set up, so courses and lessons can be renamed
+# freely; the build then warns that nothing is checked.
+checkFrom:
 pages: []

@@ -1,7 +1,8 @@
 // Mermaid diagrams (```mermaid blocks) in the site's colours: src/theme/Mermaid draws each diagram
 // with mermaidConfig(), which reads the colours, body font, outline width and corner radius of the
-// selected theme (content/settings/theme.yml) and colour mode from the page's CSS variables
-// (src/css/site/theme.css and src/css/themes/), so diagrams follow whichever theme is chosen. Mermaid
+// selected theme (content/settings/theme.yml), colour mode and visitor's colour theme from the page's
+// CSS variables (src/css/site/theme.css, palettes.css and src/css/themes/), so diagrams follow
+// whichever theme is chosen. Mermaid
 // needs real colours, not var(--…), to work out its own shades.
 //
 // Lessons can mark flowchart nodes with two classes, no `classDef` needed:

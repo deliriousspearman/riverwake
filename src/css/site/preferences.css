@@ -14,6 +14,11 @@ html[data-lms-text='larger'] {
 html[data-lms-width='wide'] {
 	--sl-content-width: 60rem;
 }
+/* As wide as the screen allows, beside the sidebar and "On this page" (any value wider than the
+   screen will do: the column's max-width adds its padding to it). */
+html[data-lms-width='full'] {
+	--sl-content-width: 100vw;
+}
 /* Reduce motion, whatever the device says (the site already follows prefers-reduced-motion). */
 html[data-lms-motion='reduce'],
 html[data-lms-motion='reduce'] *,

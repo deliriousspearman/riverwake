@@ -1,0 +1,28 @@
+# Lorem Lab 4's flags: placeholders. Replace each `flag` with the real value (admin editor → Lab flags).
+# Never put flags in docs/labs/*.md: only their hashes reach the site (scripts/lab-flags.mjs).
+lab: lorem-lab-4
+flags:
+  - machine: HOST-01
+    label: Flag 1
+    flag: CODEX{6319318e70d50dc8d3b0f44b}
+  - machine: HOST-01
+    label: Flag 2
+    flag: CODEX{62c271b204a209aa75ae3c8a}
+  - machine: HOST-02
+    label: Flag 3
+    flag: CODEX{86e5037d9bcd6f9a6b551a06}
+  - machine: HOST-03
+    label: Flag 4
+    flag: CODEX{91e1ab72434921646fa4bcdc}
+  - machine: HOST-03
+    label: Flag 5
+    flag: CODEX{6b41bb2ab3332fe22f99fa1f}
+  - machine: HOST-04
+    label: Flag 6
+    flag: CODEX{d527218e4bc12446f562f678}
+  - machine: HOST-05
+    label: Flag 7
+    flag: CODEX{b60bc8fd10200e0f46617f5e}
+  - machine: HOST-06
+    label: Flag 8
+    flag: CODEX{e47f1f0719f8d3037637ba23}

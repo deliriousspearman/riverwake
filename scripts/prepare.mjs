@@ -25,7 +25,7 @@
 // 4. The admin editor's preview (cms/preview.mjs and cms/preview.css), bundled with esbuild into
 //    static/admin/preview.js and static/admin/preview/ (the site's stylesheets for the selected theme,
 //    with their fonts). The block code it shares with the build is Node code: its few Node-only
-//    imports get browser stand-ins here (a block's .cast file isn't checked in the preview).
+//    imports get browser stand-ins here (the files a block names aren't checked in the preview).
 import { copyFileSync, cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
@@ -150,13 +150,15 @@ const STAND_INS = {
 		} };
 		return hash;
 	}`,
-	'node:fs': 'export const existsSync = () => true;',
+	// Files aren't checked in the preview, and downloads show no size.
+	'node:fs': 'export const existsSync = () => true; export const statSync = () => ({ isFile: () => true, size: undefined });',
+	'node:path': "export const extname = (path) => /\\.[^./]*$/.exec(path)?.[0] ?? '';",
 	'content.mjs': "export const STATIC_DIR = '/';",
 };
 const standIns = {
 	name: 'browser-stand-ins',
 	setup(builder) {
-		builder.onResolve({ filter: /^node:(crypto|fs)$|[/]content[.]mjs$/ }, (args) => ({ path: args.path.replace(/^.*[/]/, ''), namespace: 'stand-in' }));
+		builder.onResolve({ filter: /^node:(crypto|fs|path)$|[/]content[.]mjs$/ }, (args) => ({ path: args.path.replace(/^.*[/]/, ''), namespace: 'stand-in' }));
 		builder.onLoad({ filter: /.*/, namespace: 'stand-in' }, (args) => ({ contents: STAND_INS[args.path], loader: 'js' }));
 	},
 };

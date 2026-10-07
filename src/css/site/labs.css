@@ -30,6 +30,8 @@
 }
 .lab-card h2 {
 	margin: 0;
+	/* A long one-word name wraps instead of running out of the card. */
+	overflow-wrap: anywhere;
 	line-height: 1.25;
 	font-family: var(--lms-display);
 	font-weight: 700;
@@ -47,6 +49,7 @@
 }
 .lab-card > p {
 	margin: 0;
+	overflow-wrap: anywhere;
 	flex: 1;
 	color: var(--sl-color-gray-2);
 }
@@ -171,7 +174,10 @@
 	border-radius: var(--lms-radius-md);
 }
 .lab-machines {
+	/* Infima makes every table a block (so its columns don't stretch) with a bottom margin. */
+	display: table;
 	width: 100%;
+	margin: 0;
 	border-collapse: collapse;
 	font-size: var(--sl-text-sm);
 }

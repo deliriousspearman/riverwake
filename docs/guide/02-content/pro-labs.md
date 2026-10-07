@@ -5,7 +5,7 @@ sidebar:
   order: 4
 ---
 
-A pro lab page describes a practice environment that runs elsewhere: the site shows its scenario, stats, machines and skills, and learners connect to the lab itself separately. Each lab is one file, `docs/labs/<lab>.md`, shown at `/labs/<lab>/` and listed under **Pro Labs**.
+A pro lab page describes a practice environment that runs elsewhere: the site shows its scenario, stats, machines and skills, and learners connect to the lab itself separately. Each lab is one file, `docs/labs/<lab>.md`, shown at `/labs/<lab>/` and listed under **Pro Labs**. While labs are being built, you can hide them from visitors with **Site settings → Features → Show Pro Labs** ([site settings](site-settings.md#features)).
 
 ## Adding a lab
 
@@ -76,6 +76,6 @@ flags:
 - A submitted flag is matched exactly, apart from spaces around it.
 - **Changing a flag's value** makes learners' browsers forget they captured it. Renaming its label doesn't.
 - Captured flags aren't in progress backups, and **Reset progress** doesn't clear them.
-- The flags in this repository for Lorem Lab 2 and Lorem Lab 1 are **placeholders**: replace them with the lab's real flags.
+- The flags in this repository for all five labs (Lorem Lab 1, Lorem Lab 2, Lorem Lab 3, Lorem Lab 4 and Lorem Lab 5) are **placeholders**: replace them with the lab's real flags.
 
 The build checks the file: a flag's machine must be one of the lab's, no two flags may have the same value (or the same machine and label), and if the lab page still has `flags:`, it must match the number of flags in the file.

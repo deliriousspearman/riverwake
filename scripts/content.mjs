@@ -19,6 +19,8 @@
 // Drafts and `sidebar.hidden` lessons are left out of every list.
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { fromMarkdown } from 'mdast-util-from-markdown';
+import { visit } from 'unist-util-visit';
 import { parse } from 'yaml';
 import { compareLessons, compareSections, sectionTitle } from './sections.mjs';
 
@@ -54,6 +56,32 @@ export function readFrontmatter(file) {
 		frontmatterCache.set(file, cached);
 	}
 	return structuredClone(cached.data);
+}
+
+// ```attachment blocks by file, kept until the file changes, like the frontmatter.
+const attachmentBlockCache = new Map();
+
+/**
+ * The text of each ```attachment block in a page, with its line (for the course overview's
+ * Downloads: scripts/blocks.mjs reads them). Parsed as Markdown, so a block shown as an example
+ * inside another code block isn't one.
+ */
+export function readAttachmentBlocks(file) {
+	const { mtimeMs, size } = statSync(file);
+	const version = `${mtimeMs}:${size}`;
+	let cached = attachmentBlockCache.get(file);
+	if (cached?.version !== version) {
+		const found = [];
+		const text = readFileSync(file, 'utf8');
+		if (text.includes('```attachment')) {
+			visit(fromMarkdown(text.replace(/^---\r?\n[\s\S]*?\r?\n---/, (front) => front.replace(/[^\n]/g, ''))), 'code', (node) => {
+				if (node.lang === 'attachment') found.push({ code: node.value, line: node.position?.start.line });
+			});
+		}
+		cached = { version, blocks: found };
+		attachmentBlockCache.set(file, cached);
+	}
+	return structuredClone(cached.blocks);
 }
 
 const byOrderThenTitle = (a, b) =>
@@ -215,6 +243,11 @@ export function readGlossary(dir = GLOSSARY_DIR) {
 export function readSettings(name, dir = join(CONTENT_DIR, 'settings')) {
 	const file = join(dir, `${name}.yml`);
 	return existsSync(file) ? (parse(readFileSync(file, 'utf8')) ?? {}) : {};
+}
+
+/** Whether pro labs are shown (content/settings/features.yml, `proLabs`; on unless set to false). */
+export function proLabsShown(settings = readSettings('features')) {
+	return settings.proLabs !== false;
 }
 
 // ---------------------------------------------------------------------------------------------

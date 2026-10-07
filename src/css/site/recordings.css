@@ -6,17 +6,17 @@
 	margin: 1.5rem 0;
 	border-radius: var(--lms-radius-lg);
 	overflow: hidden;
-	border: 1px solid #0b111b;
-	background: #141d2b;
+	border: 1px solid var(--lms-terminal-edge);
+	background: var(--lms-terminal-bg);
 	box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.35);
 }
 .lms-cast-titlebar {
 	position: relative;
 	min-height: 2.1rem;
 	padding: 0.4rem 3.5rem;
-	background: #1a2332;
-	border-bottom: 1px solid #0b111b;
-	color: #a4b1cd;
+	background: var(--lms-terminal-bar);
+	border-bottom: 1px solid var(--lms-terminal-edge);
+	color: var(--lms-terminal-text);
 	font-size: var(--sl-text-sm);
 	font-weight: 500;
 	text-align: center;
@@ -37,19 +37,19 @@
 .lms-cast-fallback {
 	display: block;
 	padding: 1rem;
-	color: #9fef00;
+	color: var(--lms-terminal-accent);
 }
 .lms-cast .ap-wrapper {
-	background: #141d2b;
+	background: var(--lms-terminal-bg);
 }
 .lms-cast .ap-player {
 	border-radius: 0;
 }
 /* Scoped under .lms-cast so it outranks the player's own stylesheet, which loads later. */
 .lms-cast .asciinema-player-theme-lms {
-	--term-color-foreground: #a4b1cd;
-	--term-color-background: #141d2b;
-	--term-color-0: #141d2b;
+	--term-color-foreground: var(--lms-terminal-text);
+	--term-color-background: var(--lms-terminal-bg);
+	--term-color-0: var(--lms-terminal-bg);
 	--term-color-1: #ff3e3e;
 	--term-color-2: #9fef00;
 	--term-color-3: #ffaf00;

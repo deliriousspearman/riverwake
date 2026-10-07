@@ -86,10 +86,54 @@ test('preferences are stored, set on <html>, and put back to their defaults', as
 	assert.equal(localStorage.getItem('lms-preferences-v1'), null);
 	assert.equal(root.attributes.size, 0);
 
+	// Every course on pathway cards: off (the first few, then "+N more courses") unless chosen.
+	prefs.setPreferences({ pathways: 'all' });
+	assert.equal(root.attributes.get('data-lms-pathways'), 'all');
+	prefs.resetPreferences();
+	assert.equal(prefs.fillPreferences({ pathways: 'all' }), 1);
+	assert.equal(prefs.fillPreferences({ pathways: 'some' }), 0);
+	prefs.resetPreferences();
+
 	// "Hide completed" keeps its own, older key.
 	prefs.setHideCompleted(true);
 	assert.equal(localStorage.getItem('lms-hide-completed'), '1');
 	assert.ok(prefs.getHideCompleted());
+	delete globalThis.localStorage;
+	delete globalThis.window;
+	delete globalThis.document;
+});
+
+test('a colour theme is a preference: stored, set on <html>, and only ones the site offers', async () => {
+	const root = fakeRoot();
+	globalThis.localStorage = fakeStorage();
+	globalThis.window = { addEventListener() {} };
+	globalThis.document = { documentElement: root };
+	const prefs = await importTs('src/lib/preferences.ts');
+	const palettes = await importTs('src/lib/palettes.ts');
+
+	// Hacklab Night and Day are the site's own colours: no preference, just the colour mode.
+	assert.deepEqual(palettes.paletteChoice('dracula'), { palette: 'dracula', colorMode: 'dark' });
+	assert.deepEqual(palettes.paletteChoice('latte'), { palette: 'latte', colorMode: 'light' });
+	assert.deepEqual(palettes.paletteChoice('day'), { palette: undefined, colorMode: 'light' });
+	assert.equal(palettes.currentPalette(undefined, 'light').label, 'Hacklab Day');
+	assert.equal(palettes.currentPalette(undefined, 'dark').label, 'Hacklab Night');
+	assert.equal(palettes.currentPalette('nord', 'dark').label, 'Nord');
+	assert.equal(palettes.currentPalette('gone', 'dark').label, 'Hacklab Night');
+
+	prefs.setPreferences({ palette: 'nord' });
+	assert.equal(root.attributes.get('data-lms-palette'), 'nord');
+	prefs.setPreferences({ palette: undefined });
+	assert.ok(!root.attributes.has('data-lms-palette'));
+
+	// One no longer offered (or never was) is ignored when read back.
+	localStorage.setItem('lms-preferences-v1', JSON.stringify({ palette: 'gone', text: 'large' }));
+	const fresh = await importTs('src/lib/preferences.ts');
+	assert.deepEqual(fresh.getPreferences(), { text: 'large' });
+	// A backup's theme fills in only a known one.
+	localStorage.removeItem('lms-preferences-v1');
+	assert.equal(fresh.fillPreferences({ palette: 'gone' }), 0);
+	assert.equal(fresh.fillPreferences({ palette: 'mocha' }), 1);
+	assert.equal(fresh.getPreferences().palette, 'mocha');
 	delete globalThis.localStorage;
 	delete globalThis.window;
 	delete globalThis.document;
@@ -179,6 +223,12 @@ test('preferences from a backup fill in only what the restoring browser is still
 	assert.equal(prefs.fillPreferences({ ...backup, width: 'enormous', motion: 3, unknown: 'x' }), 2);
 	assert.deepEqual(prefs.getPreferences(), { text: 'large', speed: '1.5', captions: 'on' });
 	assert.equal(prefs.getHideCompleted(), false);
+	// Both text widths other than the standard one restore.
+	for (const width of ['wide', 'full']) {
+		prefs.resetPreferences();
+		assert.equal(prefs.fillPreferences({ width }), 1);
+		assert.deepEqual(prefs.getPreferences(), { width });
+	}
 	// Nothing to fill from an older backup.
 	assert.equal(prefs.fillPreferences(undefined), 0);
 	delete globalThis.localStorage;

@@ -1,14 +1,16 @@
 // Slim site footer under every page's content: site name and description, links back to the
-// catalogue and to the site guide for editors (docs/guide/), on docs pages an "Edit this page" link
+// catalogue (not Pro labs while they're switched off) and to the site guide for editors (docs/guide/), on docs pages an "Edit this page" link
 // (its file in GitLab, from src/theme/DocItem/Paginator), and a warning when the browser blocks site
 // storage. Where progress is kept is explained at the top of the Settings page (src/pages/settings.tsx).
 import React from 'react';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { useCatalog } from '../lib/catalog';
 import { useStorageWorks } from '../lib/progress';
 
 export default function SiteFooter({ storageWarning = true, editUrl }: { storageWarning?: boolean; editUrl?: string }) {
 	const { siteConfig } = useDocusaurusContext();
+	const { features } = useCatalog();
 	const storageWorks = useStorageWorks();
 
 	return (
@@ -21,7 +23,7 @@ export default function SiteFooter({ storageWarning = true, editUrl }: { storage
 				<nav className="site-footer-links" aria-label="Footer">
 					<Link to="/courses/">Courses</Link>
 					<Link to="/pathways/">Pathways</Link>
-					<Link to="/labs/">Pro labs</Link>
+					{features.proLabs && <Link to="/labs/">Pro labs</Link>}
 					<Link to="/glossary/">Glossary</Link>
 					<Link to="/guide/">Site guide</Link>
 					<Link to="/settings/">Settings</Link>

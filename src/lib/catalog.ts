@@ -11,7 +11,10 @@ export type Lesson = {
 	video: string | null;
 	section: string | null;
 	sectionTitle: string | null;
+	/** `attachments` in frontmatter: shown above the lesson and on the course overview. */
 	attachments: Attachment[];
+	/** ```attachment blocks with `overview: true`: the lesson shows them in its text; listed on the course overview. */
+	overviewAttachments: Attachment[];
 };
 export type Level = 'Beginner' | 'Intermediate' | 'Advanced';
 export type Course = {
@@ -66,6 +69,8 @@ export type Lab = {
 export type GlossaryEntry = { id: string; term: string; aliases: string[]; definition: string; seeAlso: { id: string; term: string }[] };
 export type Catalog = {
 	site: { description: string };
+	/** Parts of the site switched on ("Site settings → Features"): when off, nothing links to them. */
+	features: { proLabs: boolean };
 	courses: Course[];
 	pathways: Pathway[];
 	labs: Lab[];

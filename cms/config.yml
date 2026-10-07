@@ -116,7 +116,7 @@ collections:
         label_singular: Download
         widget: list
         required: false
-        hint: 'Files for this lesson, shown above the lesson text and on the course overview.'
+        hint: 'Files for this lesson, shown above the lesson text and on the course overview. To show one in the text instead, use an attachment block (Site guide → Images, downloads and video).'
         fields:
           - { name: file, label: File, widget: file, accept: '.pdf,.txt,.md,.csv,.json,.yaml,.yml,.log,.conf,.py,.sh,.ps1,.pcap,.pcapng,.zip,.7z,.gz,.tgz,.tar,.docx,.xlsx,.pptx,.odt,.ods,.odp,.png,.jpg,.jpeg,.webp,.gif', media_folder: /static/files, public_folder: /files, media_library: { config: { max_file_size: 10485760 } }, hint: 'Up to 10 MB. PDF, text, Markdown, CSV, JSON, YAML, logs, scripts (.py .sh .ps1), packet captures, ZIP/7z/tar archives, Office documents or images. Not HTML or SVG.' }
           - { name: title, label: Title, widget: string, hint: 'What learners see, e.g. Nmap cheat sheet' }
@@ -305,7 +305,7 @@ collections:
   # Site-wide settings: single files, edited as forms.
   - name: settings
     label: Site settings
-    description: 'The site banner and theme, and pages removed on purpose. Changes go live with the next deploy (a few minutes after saving).'
+    description: 'The site banner and theme, which parts of the site are shown, and pages removed on purpose. Changes go live with the next deploy (a few minutes after saving).'
     files:
       - name: theme
         label: Theme
@@ -333,16 +333,22 @@ collections:
           - { name: bold, label: Bold text, widget: boolean, default: true }
           - { name: italic, label: Italic text, widget: boolean, default: false }
           - { name: height, label: Bar height (pixels), widget: number, value_type: int, min: 20, max: 120, default: 40, hint: '20 to 120. The bar grows taller if the message doesn''t fit on one line (e.g. on phones).' }
+      - name: features
+        label: Features
+        file: content/settings/features.yml
+        fields:
+          - { name: proLabs, label: Show Pro Labs, widget: boolean, default: true, hint: 'Switch off to hide Pro Labs while they''re being built: no link in the navbar, the footer or the home page, and no search results. The lab pages still exist at their addresses, so you can check them before switching this back on.' }
       - name: removed
         label: Removed pages
         file: content/settings/removed-pages.yml
         fields:
+          - { name: checkFrom, label: Check from, widget: datetime, time_format: false, date_format: 'YYYY-MM-DD', format: 'YYYY-MM-DD', required: false, hint: 'Leave empty while the site is being set up: courses and lessons can then be renamed or deleted freely. Set it to the day the site goes live: from then on, a course or lesson renamed or deleted on or after this day needs an old address (redirect) or an entry below, or the site won''t publish.' }
           - name: pages
             label: Pages removed on purpose
             label_singular: Removed page
             widget: list
             required: false
-            hint: 'After deleting a lesson or course, add its old address here, or the site won''t publish: learners lose their progress for a removed page, and links to it break. If the page moved instead, add the old address to the new page''s Old addresses field. A course''s address covers all its lessons.'
+            hint: 'Once Check from is set: after deleting a lesson or course, add its old address here, or the site won''t publish: learners lose their progress for a removed page, and links to it break. If the page moved instead, add the old address to the new page''s Old addresses field. A course''s address covers all its lessons.'
             fields:
               - { name: path, label: Old address, widget: string, pattern: ['^/courses/[\w./-]+$', 'Must look like /courses/<course>/<lesson>'], hint: 'e.g. /courses/lorem-course-4/03-old-lesson' }
               - { name: reason, label: Reason, widget: string, hint: 'Why it was removed, e.g. Replaced by the new injection lessons.' }

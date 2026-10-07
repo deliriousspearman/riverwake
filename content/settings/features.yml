@@ -1,0 +1,4 @@
+# Parts of the site that can be switched off while they're being built ("Site settings → Features"
+# in the admin editor). Switched off, a part's pages still exist at their addresses (so editors can
+# check them), but nothing links to them: not the navbar, the footer, the home page, search or the sitemap.
+proLabs: true

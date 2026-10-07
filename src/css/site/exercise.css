@@ -5,7 +5,7 @@
 	margin-block: 2rem;
 	padding: 1.25rem;
 	border: var(--lms-border-width) solid var(--sl-color-gray-5);
-	border-left: 4px solid #5cb2ff;
+	border-left: 4px solid var(--lms-info);
 	border-radius: var(--lms-radius-md);
 	background: var(--sl-color-gray-7, var(--sl-color-black));
 }
@@ -24,8 +24,8 @@
 	text-transform: uppercase;
 	padding: 0.15rem 0.55rem;
 	border-radius: var(--lms-radius-pill);
-	background: #5cb2ff;
-	color: #0b111b;
+	background: var(--lms-info);
+	color: var(--lms-on-info);
 }
 .lms-exercise-title {
 	font-weight: 700;
@@ -55,11 +55,14 @@
 .lms-exercise summary:hover {
 	color: var(--sl-color-white);
 }
-.lms-exercise details[open] summary {
-	border-bottom: 1px solid var(--sl-color-gray-6);
-}
-.lms-exercise details > div {
-	padding: 0.75rem 0.75rem 0.25rem;
+/* Hints and solutions are Docusaurus's <Details>, which animates the height of the <div> after the
+   summary and hides it when closed. Anything on that <div> or the summary that isn't clipped by its
+   height (padding, a border shown only when [open]) appears and disappears in one frame, which made
+   opening and closing jolt; so the spacing goes on the inner content and the divider is Docusaurus's
+   own top border on it, both inside the animated area. */
+.lms-exercise details > div > div {
+	margin-inline: 0.75rem;
+	padding-bottom: 0.25rem;
 }
 .lms-exercise-solution summary {
 	color: var(--sl-color-text-accent);
@@ -69,7 +72,7 @@
 	padding: 0.75rem 1rem;
 	overflow-x: auto;
 	border-radius: var(--lms-radius-sm);
-	background: #141d2b;
+	background: var(--lms-terminal-bg);
 	color: #ffffff;
 	font-family: var(--lms-mono);
 	font-size: var(--sl-text-sm);

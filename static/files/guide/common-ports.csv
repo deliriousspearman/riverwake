@@ -1,0 +1,13 @@
+port,protocol,service,notes
+22,tcp,SSH,Remote administration; watch for brute-force attempts
+25,tcp,SMTP,Mail between servers
+53,udp/tcp,DNS,TCP for zone transfers and large answers
+80,tcp,HTTP,Unencrypted web traffic
+88,tcp/udp,Kerberos,Active Directory sign-in
+135,tcp,MS-RPC,Windows remote procedure calls
+139,tcp,NetBIOS,Older Windows file sharing
+389,tcp/udp,LDAP,Directory queries
+443,tcp,HTTPS,Web traffic over TLS
+445,tcp,SMB,Windows file sharing; never expose to the internet
+3389,tcp,RDP,Remote Desktop; a common way in for attackers
+5985,tcp,WinRM,PowerShell remoting over HTTP

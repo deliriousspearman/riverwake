@@ -1,0 +1,433 @@
+/* Colour themes a visitor picks in the navbar or on the Settings page (src/lib/palettes.ts, the
+   `palette` preference, set on <html> as data-lms-palette before the page is drawn). Each block
+   replaces the colour variables of theme.css (not the shapes or fonts, which stay the site
+   theme's) for a light or dark base: Docusaurus's colour mode is set to the palette's base, so
+   rules written for `[data-theme='light']` still apply. Hacklab Night and Hacklab Day aren't here:
+   they're the site theme's own colours, with no palette set.
+
+   `[data-theme]` raises each selector above the site theme files (src/css/themes/), which load
+   later and set accents on `:root` and `:root[data-theme='light']`. Every palette sets the same
+   variables (tests/site.test.mjs checks them and their contrast); light ones also set gray-7, and
+   an accent for the (still dark) terminals, as their own is too dark there.
+   Colours follow each palette's published values, darkened or lightened only where text would
+   otherwise be hard to read. */
+
+/* ---- Dark ------------------------------------------------------------------------------------ */
+
+/* Dracula (draculatheme.com). */
+:root[data-theme][data-lms-palette='dracula'] {
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #f8f8f2;
+	--sl-color-gray-2: #d4d5de;
+	--sl-color-gray-3: #a3abd0;
+	--sl-color-gray-4: #6272a4;
+	--sl-color-gray-5: #44475a;
+	--sl-color-gray-6: #343746;
+	--sl-color-black: #21222c;
+	--sl-color-accent-low: #3d3459;
+	--sl-color-accent: #bd93f9;
+	--sl-color-accent-high: #d6bcfc;
+	--sl-color-bg-nav: #282a36;
+	--sl-color-bg-sidebar: #1e1f29;
+	--sl-color-bg-inline-code: #343746;
+	--lms-panel: #282a36;
+	--lms-panel-2: #303241;
+	--lms-accent: #bd93f9;
+	--lms-on-accent: #191a21;
+	--lms-accent-text: #bd93f9;
+	--lms-accent-soft: #d6bcfc;
+	--lms-easy: #50fa7b;
+	--lms-medium: #ffb86c;
+	--lms-hard: #ff5555;
+	--lms-info: #8be9fd;
+	--lms-on-info: #191a21;
+	--lms-tip: #ff79c6;
+	--lms-caution: #ffb86c;
+	--lms-danger: #ff5555;
+	--lms-right: #50fa7b;
+	--lms-wrong: #ff5555;
+	--lms-terminal-text: #f8f8f2;
+	--lms-terminal-bg: #1e1f29;
+	--lms-terminal-bar: #282a36;
+	--lms-terminal-edge: #191a21;
+	--lms-terminal-sel: #44475a;
+	--lms-terminal-deep: #191a21;
+	--lms-picture-bg: #191a21;
+}
+
+/* Catppuccin Mocha (catppuccin.com). */
+:root[data-theme][data-lms-palette='mocha'] {
+	--sl-color-white: #e6e9fb;
+	--sl-color-gray-1: #cdd6f4;
+	--sl-color-gray-2: #bac2de;
+	--sl-color-gray-3: #9399b2;
+	--sl-color-gray-4: #6c7086;
+	--sl-color-gray-5: #45475a;
+	--sl-color-gray-6: #313244;
+	--sl-color-black: #181825;
+	--sl-color-accent-low: #3b3352;
+	--sl-color-accent: #cba6f7;
+	--sl-color-accent-high: #dcc4fa;
+	--sl-color-bg-nav: #1e1e2e;
+	--sl-color-bg-sidebar: #1b1b29;
+	--sl-color-bg-inline-code: #313244;
+	--lms-panel: #1e1e2e;
+	--lms-panel-2: #262637;
+	--lms-accent: #cba6f7;
+	--lms-on-accent: #11111b;
+	--lms-accent-text: #cba6f7;
+	--lms-accent-soft: #dcc4fa;
+	--lms-easy: #a6e3a1;
+	--lms-medium: #fab387;
+	--lms-hard: #f38ba8;
+	--lms-info: #89b4fa;
+	--lms-on-info: #11111b;
+	--lms-tip: #f5c2e7;
+	--lms-caution: #f9e2af;
+	--lms-danger: #f38ba8;
+	--lms-right: #a6e3a1;
+	--lms-wrong: #f38ba8;
+	--lms-terminal-text: #cdd6f4;
+	--lms-terminal-bg: #11111b;
+	--lms-terminal-bar: #181825;
+	--lms-terminal-edge: #0b0b12;
+	--lms-terminal-sel: #45475a;
+	--lms-terminal-deep: #11111b;
+	--lms-picture-bg: #11111b;
+}
+
+/* Tokyo Night (github.com/enkia/tokyo-night-vscode-theme). */
+:root[data-theme][data-lms-palette='tokyo'] {
+	--sl-color-white: #e0e6ff;
+	--sl-color-gray-1: #c0caf5;
+	--sl-color-gray-2: #a9b1d6;
+	--sl-color-gray-3: #848cb5;
+	--sl-color-gray-4: #565f89;
+	--sl-color-gray-5: #3b4261;
+	--sl-color-gray-6: #292e42;
+	--sl-color-black: #16161e;
+	--sl-color-accent-low: #283457;
+	--sl-color-accent: #7aa2f7;
+	--sl-color-accent-high: #a4c0fa;
+	--sl-color-bg-nav: #1a1b26;
+	--sl-color-bg-sidebar: #181922;
+	--sl-color-bg-inline-code: #24283b;
+	--lms-panel: #1a1b26;
+	--lms-panel-2: #1f2335;
+	--lms-accent: #7aa2f7;
+	--lms-on-accent: #16161e;
+	--lms-accent-text: #7aa2f7;
+	--lms-accent-soft: #a4c0fa;
+	--lms-easy: #9ece6a;
+	--lms-medium: #e0af68;
+	--lms-hard: #f7768e;
+	--lms-info: #7dcfff;
+	--lms-on-info: #16161e;
+	--lms-tip: #bb9af7;
+	--lms-caution: #e0af68;
+	--lms-danger: #f7768e;
+	--lms-right: #9ece6a;
+	--lms-wrong: #f7768e;
+	--lms-terminal-text: #a9b1d6;
+	--lms-terminal-bg: #13131a;
+	--lms-terminal-bar: #1f2335;
+	--lms-terminal-edge: #0e0e13;
+	--lms-terminal-sel: #2e3c64;
+	--lms-terminal-deep: #101016;
+	--lms-picture-bg: #101016;
+}
+
+/* Nord (nordtheme.com). */
+:root[data-theme][data-lms-palette='nord'] {
+	--sl-color-white: #eceff4;
+	--sl-color-gray-1: #e5e9f0;
+	--sl-color-gray-2: #d8dee9;
+	--sl-color-gray-3: #b0bacd;
+	--sl-color-gray-4: #6c7a96;
+	--sl-color-gray-5: #4c566a;
+	--sl-color-gray-6: #434c5e;
+	--sl-color-black: #2e3440;
+	--sl-color-accent-low: #3b5361;
+	--sl-color-accent: #88c0d0;
+	--sl-color-accent-high: #a9d3df;
+	--sl-color-bg-nav: #3b4252;
+	--sl-color-bg-sidebar: #333a48;
+	--sl-color-bg-inline-code: #434c5e;
+	--lms-panel: #3b4252;
+	--lms-panel-2: #404859;
+	--lms-accent: #88c0d0;
+	--lms-on-accent: #2e3440;
+	--lms-accent-text: #88c0d0;
+	--lms-accent-soft: #a9d3df;
+	--lms-easy: #a3be8c;
+	--lms-medium: #ebcb8b;
+	--lms-hard: #e48a92;
+	--lms-info: #81a1c1;
+	--lms-on-info: #2e3440;
+	--lms-tip: #c9a5c2;
+	--lms-caution: #ebcb8b;
+	--lms-danger: #e48a92;
+	--lms-right: #a3be8c;
+	--lms-wrong: #e48a92;
+	--lms-terminal-text: #d8dee9;
+	--lms-terminal-bg: #2a2f3a;
+	--lms-terminal-bar: #3b4252;
+	--lms-terminal-edge: #242933;
+	--lms-terminal-sel: #4c566a;
+	--lms-terminal-deep: #242933;
+	--lms-picture-bg: #242933;
+}
+
+/* Gruvbox Dark (github.com/morhetz/gruvbox). */
+:root[data-theme][data-lms-palette='gruvbox'] {
+	--sl-color-white: #fbf1c7;
+	--sl-color-gray-1: #ebdbb2;
+	--sl-color-gray-2: #d5c4a1;
+	--sl-color-gray-3: #bdae93;
+	--sl-color-gray-4: #7c6f64;
+	--sl-color-gray-5: #504945;
+	--sl-color-gray-6: #3c3836;
+	--sl-color-black: #282828;
+	--sl-color-accent-low: #4a3d1a;
+	--sl-color-accent: #fabd2f;
+	--sl-color-accent-high: #fcd36b;
+	--sl-color-bg-nav: #32302f;
+	--sl-color-bg-sidebar: #2c2a29;
+	--sl-color-bg-inline-code: #3c3836;
+	--lms-panel: #32302f;
+	--lms-panel-2: #3a3735;
+	--lms-accent: #fabd2f;
+	--lms-on-accent: #282828;
+	--lms-accent-text: #fabd2f;
+	--lms-accent-soft: #fcd36b;
+	--lms-easy: #b8bb26;
+	--lms-medium: #fe8019;
+	--lms-hard: #fb4934;
+	--lms-info: #83a598;
+	--lms-on-info: #1d2021;
+	--lms-tip: #d3869b;
+	--lms-caution: #fe8019;
+	--lms-danger: #fb4934;
+	--lms-right: #b8bb26;
+	--lms-wrong: #fb4934;
+	--lms-terminal-text: #ebdbb2;
+	--lms-terminal-bg: #1d2021;
+	--lms-terminal-bar: #282828;
+	--lms-terminal-edge: #141617;
+	--lms-terminal-sel: #504945;
+	--lms-terminal-deep: #1d2021;
+	--lms-picture-bg: #1d2021;
+}
+
+/* One Dark (Atom's default dark syntax theme). */
+:root[data-theme][data-lms-palette='onedark'] {
+	--sl-color-white: #e6e9ef;
+	--sl-color-gray-1: #d7dae0;
+	--sl-color-gray-2: #abb2bf;
+	--sl-color-gray-3: #8f96a3;
+	--sl-color-gray-4: #5c6370;
+	--sl-color-gray-5: #3e4451;
+	--sl-color-gray-6: #2c313a;
+	--sl-color-black: #21252b;
+	--sl-color-accent-low: #1f3a52;
+	--sl-color-accent: #61afef;
+	--sl-color-accent-high: #8cc5f4;
+	--sl-color-bg-nav: #282c34;
+	--sl-color-bg-sidebar: #23272e;
+	--sl-color-bg-inline-code: #2c313c;
+	--lms-panel: #282c34;
+	--lms-panel-2: #2c313a;
+	--lms-accent: #61afef;
+	--lms-on-accent: #21252b;
+	--lms-accent-text: #61afef;
+	--lms-accent-soft: #8cc5f4;
+	--lms-easy: #98c379;
+	--lms-medium: #e5c07b;
+	--lms-hard: #e06c75;
+	--lms-info: #56b6c2;
+	--lms-on-info: #21252b;
+	--lms-tip: #c678dd;
+	--lms-caution: #d19a66;
+	--lms-danger: #e06c75;
+	--lms-right: #98c379;
+	--lms-wrong: #e06c75;
+	--lms-terminal-text: #abb2bf;
+	--lms-terminal-bg: #1b1f24;
+	--lms-terminal-bar: #21252b;
+	--lms-terminal-edge: #16191d;
+	--lms-terminal-sel: #3e4451;
+	--lms-terminal-deep: #1b1f24;
+	--lms-picture-bg: #1b1f24;
+}
+
+/* Solarized Dark (ethanschoonover.com/solarized). */
+:root[data-theme][data-lms-palette='solardark'] {
+	--sl-color-white: #fdf6e3;
+	--sl-color-gray-1: #eee8d5;
+	--sl-color-gray-2: #a3b0b0;
+	--sl-color-gray-3: #93a1a1;
+	--sl-color-gray-4: #586e75;
+	--sl-color-gray-5: #1f4c58;
+	--sl-color-gray-6: #0d3f4c;
+	--sl-color-black: #002b36;
+	--sl-color-accent-low: #0b4560;
+	--sl-color-accent: #4aa3e3;
+	--sl-color-accent-high: #7dbcea;
+	--sl-color-bg-nav: #073642;
+	--sl-color-bg-sidebar: #01313d;
+	--sl-color-bg-inline-code: #0a404e;
+	--lms-panel: #073642;
+	--lms-panel-2: #0a3c49;
+	--lms-accent: #4aa3e3;
+	--lms-on-accent: #002b36;
+	--lms-accent-text: #4aa3e3;
+	--lms-accent-soft: #7dbcea;
+	--lms-easy: #a4b800;
+	--lms-medium: #d9a400;
+	--lms-hard: #f0605c;
+	--lms-info: #4aa3e3;
+	--lms-on-info: #002b36;
+	--lms-tip: #9a9ee0;
+	--lms-caution: #e9773f;
+	--lms-danger: #f0605c;
+	--lms-right: #a4b800;
+	--lms-wrong: #f0605c;
+	--lms-terminal-text: #93a1a1;
+	--lms-terminal-bg: #00212b;
+	--lms-terminal-bar: #073642;
+	--lms-terminal-edge: #001a21;
+	--lms-terminal-sel: #0d4a5a;
+	--lms-terminal-deep: #001a21;
+	--lms-picture-bg: #001a21;
+}
+
+/* High Contrast: white on black, a yellow accent and strong outlines. */
+:root[data-theme][data-lms-palette='contrast'] {
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #ffffff;
+	--sl-color-gray-2: #f2f2f2;
+	--sl-color-gray-3: #d4d4d4;
+	--sl-color-gray-4: #a6a6a6;
+	--sl-color-gray-5: #8c8c8c;
+	--sl-color-gray-6: #333333;
+	--sl-color-black: #000000;
+	--sl-color-accent-low: #3d3300;
+	--sl-color-accent: #ffd400;
+	--sl-color-accent-high: #ffe866;
+	--sl-color-bg-nav: #000000;
+	--sl-color-bg-sidebar: #000000;
+	--sl-color-bg-inline-code: #262626;
+	--lms-panel: #0d0d0d;
+	--lms-panel-2: #1a1a1a;
+	--lms-accent: #ffd400;
+	--lms-on-accent: #000000;
+	--lms-accent-text: #ffd400;
+	--lms-accent-soft: #ffe866;
+	--lms-easy: #4dff88;
+	--lms-medium: #ffb000;
+	--lms-hard: #ff7070;
+	--lms-info: #66c2ff;
+	--lms-on-info: #000000;
+	--lms-tip: #e0a3ff;
+	--lms-caution: #ffb000;
+	--lms-danger: #ff7070;
+	--lms-right: #4dff88;
+	--lms-wrong: #ff7070;
+	--lms-terminal-text: #ffffff;
+	--lms-terminal-bg: #000000;
+	--lms-terminal-bar: #1a1a1a;
+	--lms-terminal-edge: #8c8c8c;
+	--lms-terminal-sel: #444444;
+	--lms-terminal-deep: #000000;
+	--lms-picture-bg: #1a1a1a;
+}
+
+/* ---- Light ----------------------------------------------------------------------------------- */
+
+/* Catppuccin Latte (catppuccin.com). Terminals stay dark, in Mocha's colours. */
+:root[data-theme][data-lms-palette='latte'] {
+	--sl-color-white: #303446;
+	--sl-color-gray-1: #3c3f56;
+	--sl-color-gray-2: #4c4f69;
+	--sl-color-gray-3: #5c5f77;
+	--sl-color-gray-4: #8c8fa1;
+	--sl-color-gray-5: #ccd0da;
+	--sl-color-gray-6: #dce0e8;
+	--sl-color-gray-7: #e6e9ef;
+	--sl-color-black: #e6e9ef;
+	--sl-color-accent-low: #e7dafb;
+	--sl-color-accent: #7a2ae0;
+	--sl-color-accent-high: #6420c0;
+	--sl-color-bg-nav: #eff1f5;
+	--sl-color-bg-sidebar: #eff1f5;
+	--sl-color-bg-inline-code: #dce0e8;
+	--lms-panel: #eff1f5;
+	--lms-panel-2: #e6e9ef;
+	--lms-accent: #8839ef;
+	--lms-on-accent: #ffffff;
+	--lms-accent-text: #7a2ae0;
+	--lms-accent-soft: #7a2ae0;
+	--lms-easy: #2e7a1e;
+	--lms-medium: #a85a08;
+	--lms-hard: #c50e36;
+	--lms-info: #1e66f5;
+	--lms-on-info: #ffffff;
+	--lms-tip: #b03a94;
+	--lms-caution: #a85a08;
+	--lms-danger: #c50e36;
+	--lms-right: #2e7a1e;
+	--lms-wrong: #c50e36;
+	--lms-terminal-text: #cdd6f4;
+	--lms-terminal-bg: #1e1e2e;
+	--lms-terminal-bar: #313244;
+	--lms-terminal-edge: #11111b;
+	--lms-terminal-sel: #45475a;
+	--lms-terminal-deep: #181825;
+	--lms-terminal-accent: #cba6f7;
+	--lms-terminal-accent-soft: #dcc4fa;
+	--lms-picture-bg: #ccd0da;
+}
+
+/* Solarized Light (ethanschoonover.com/solarized). Terminals stay dark, in Solarized Dark. */
+:root[data-theme][data-lms-palette='solarlight'] {
+	--sl-color-white: #002b36;
+	--sl-color-gray-1: #073642;
+	--sl-color-gray-2: #3f555c;
+	--sl-color-gray-3: #52676e;
+	--sl-color-gray-4: #93a1a1;
+	--sl-color-gray-5: #ddd6c1;
+	--sl-color-gray-6: #eee8d5;
+	--sl-color-gray-7: #f5efdc;
+	--sl-color-black: #f5efdc;
+	--sl-color-accent-low: #dcebf5;
+	--sl-color-accent: #1a6aa3;
+	--sl-color-accent-high: #12537f;
+	--sl-color-bg-nav: #fdf6e3;
+	--sl-color-bg-sidebar: #fdf6e3;
+	--sl-color-bg-inline-code: #eee8d5;
+	--lms-panel: #fdf6e3;
+	--lms-panel-2: #f5efdc;
+	--lms-accent: #1f74b3;
+	--lms-on-accent: #ffffff;
+	--lms-accent-text: #1a6aa3;
+	--lms-accent-soft: #1a6aa3;
+	--lms-easy: #5c6a00;
+	--lms-medium: #876500;
+	--lms-hard: #bd2926;
+	--lms-info: #1a6aa3;
+	--lms-on-info: #ffffff;
+	--lms-tip: #5157b0;
+	--lms-caution: #a8400f;
+	--lms-danger: #bd2926;
+	--lms-right: #5c6a00;
+	--lms-wrong: #bd2926;
+	--lms-terminal-text: #93a1a1;
+	--lms-terminal-bg: #002b36;
+	--lms-terminal-bar: #073642;
+	--lms-terminal-edge: #00212b;
+	--lms-terminal-sel: #0d4a5a;
+	--lms-terminal-deep: #00212b;
+	--lms-terminal-accent: #4aa3e3;
+	--lms-terminal-accent-soft: #7dbcea;
+	--lms-picture-bg: #eee8d5;
+}

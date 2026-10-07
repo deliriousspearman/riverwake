@@ -98,6 +98,8 @@
 }
 .pathway-step h3 {
 	margin: 0;
+	/* A long one-word name wraps instead of running out of the card. */
+	overflow-wrap: anywhere;
 	font-family: var(--lms-display);
 	font-weight: 700;
 	font-size: 1.2rem;
@@ -113,6 +115,7 @@
 }
 .pathway-step p {
 	margin: 0;
+	overflow-wrap: anywhere;
 	color: var(--sl-color-gray-2);
 }
 @media (max-width: 30rem) {

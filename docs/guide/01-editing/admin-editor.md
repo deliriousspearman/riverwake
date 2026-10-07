@@ -21,7 +21,7 @@ Choose **Sign in with GitLab**. A GitLab window opens; sign in there if you aren
 | **Pro Labs** | Lab descriptions: machines, flags, scenario |
 | **Glossary** | Security terms and their definitions |
 | **Site guide** | These pages |
-| **Site settings** | The theme, and the announcement banner |
+| **Site settings** | The theme, the announcement banner, showing or hiding Pro Labs, and removed pages |
 
 Each entry is a form. Text fields marked **Lesson content**, **Overview** or **Page content** are Markdown editors: use the toolbar, or switch to raw Markdown to paste in quizzes, exercises, timelines and terminals from [Lesson features](../03-features/text-and-callouts.md).
 

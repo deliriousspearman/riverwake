@@ -208,9 +208,14 @@ export function LessonList({ course }: { course: Course }) {
 	);
 }
 
-/** Course overview: the course's own downloads, then every lesson's, in course order. */
+/**
+ * Course overview: the course's own downloads, then every lesson's, in course order (its
+ * `attachments`, then its ```attachment blocks with `overview: true`).
+ */
 export function CourseDownloads({ course }: { course: Course }) {
-	const lessons = course.lessons.filter((l) => l.attachments.length);
+	const lessons = course.lessons
+		.map((lesson) => ({ lesson, items: [...lesson.attachments, ...lesson.overviewAttachments] }))
+		.filter(({ items }) => items.length);
 	if (!course.attachments.length && !lessons.length) return null;
 	return (
 		<section className="course-downloads not-content" aria-labelledby="course-downloads-heading">
@@ -221,12 +226,12 @@ export function CourseDownloads({ course }: { course: Course }) {
 					<Attachments items={course.attachments} />
 				</div>
 			)}
-			{lessons.map((lesson) => (
+			{lessons.map(({ lesson, items }) => (
 				<div className="course-downloads-group" key={lesson.path}>
 					<h3>
 						Lesson: <Link to={withSlash(lesson.path)}>{lesson.title}</Link>
 					</h3>
-					<Attachments items={lesson.attachments} />
+					<Attachments items={items} />
 				</div>
 			))}
 		</section>

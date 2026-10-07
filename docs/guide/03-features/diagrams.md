@@ -5,7 +5,7 @@ sidebar:
   order: 6
 ---
 
-A `mermaid` block turns a few lines of text into a diagram, drawn in the site's colours (in light and dark mode). It suits flows and sequences: how an attack unfolds, a decision to make, the messages in a protocol. The text stays in the lesson, so it can be changed in the admin editor like any other text.
+A `mermaid` block turns a few lines of text into a diagram, drawn in the site's colours (in whichever colour theme the learner picked). It suits flows and sequences: how an attack unfolds, a decision to make, the messages in a protocol. The text stays in the lesson, so it can be changed in the admin editor like any other text.
 
 For a network layout (zones, hosts and how they connect), draw it in draw.io instead: see [Network diagrams](../02-content/diagrams.md).
 

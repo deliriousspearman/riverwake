@@ -13,8 +13,9 @@ There are no accounts: progress (completed lessons, and quiz answers) lives in e
 `localStorage`. The Settings page
 (`/settings/`, linked from the footer) moves it to another browser or device as a small JSON file
 ("Download a backup", then "Restore from a backup"; restoring merges, so nothing already completed
-is lost), and resets it. It also holds each visitor's preferences, kept in the same browser: hide
-completed courses, glossary underlines, video captions and playback speed, text size, text width,
+is lost), and resets it. It also holds each visitor's preferences, kept in the same browser: the
+colour theme (also in the navbar's theme menu), hide completed courses, every course on pathway
+cards (by default a long pathway's card lists four and "+N more courses"), glossary underlines, video captions and playback speed, text size, text width,
 wrapping long code lines, showing "On this page" (also collapsed and shown by the button at the right of the breadcrumb bar), pinning the breadcrumb bar under the navbar (on by default), how "On this page" moves to a heading (a quick scroll by default, or instantly) and reduced motion. Backups carry these too, but restoring only fills in the ones the other browser
 hasn't changed from the default.
 
@@ -51,7 +52,8 @@ example:
 - a draw.io diagram (`.drawio.svg`) with HTML labels, no copy of the diagram, or anything that isn't
   drawing (`scripts/drawio-svg.mjs`), or one in a page without alt text;
 - a course or lesson page that was published and has gone (deleted or renamed, per git history)
-  with no redirect (`aliases`) and no entry in `content/settings/removed-pages.yml`;
+  with no redirect (`aliases`) and no entry in `content/settings/removed-pages.yml`, once the
+  site has gone live (see [Going live](#going-live));
 - raw HTML in a page that could run script (`<script>`, `onerror="…"`, `javascript:` links), or
   an inline script that isn't Docusaurus's own (see [Security](#security)).
 
@@ -119,6 +121,30 @@ GitLab Pages only serves the built files:
    browsers reach GitLab at another address (a proxy, or GitLab's `external_url` is an internal
    address), set `CMS_GITLAB_URL` in `.gitlab-ci.yml` to the address they use.
 
+### Going live
+
+While a site is being set up, courses and lessons get renamed and deleted all the time, and no
+learner has progress to lose yet. So the check for pages that disappeared without a redirect
+(`scripts/removed-pages.mjs`) only starts on the day set as `checkFrom` in
+`content/settings/removed-pages.yml` (**Site settings → Removed pages → Check from** in the admin
+editor):
+
+```yaml
+checkFrom: 2026-12-01   # the day the site went live
+pages: []
+```
+
+- **Empty (the default, and in a fresh copy):** nothing is checked. Rename and delete freely; each
+  build prints a warning that removed pages aren't checked yet.
+- **Set:** every course or lesson file deleted or renamed in a commit made on or after that day
+  (committer date) must have a redirect (the new page's `aliases`) or an entry under `pages`, or the
+  build fails and nothing is published. Changes made before that day are ignored, so the renames
+  from setting up never need tidying.
+
+Set it once, on launch day, before announcing the site; don't clear it afterwards. Setting it to a
+date in the past also checks everything renamed since then, which is a way to catch up on renames
+from a soft launch.
+
 ### Running offline
 
 Everything the site and the admin editor show is served by the site itself: fonts, scripts,
@@ -147,7 +173,8 @@ access needs these, prepared on a machine that has it:
   (`docker run -d -p 8080:8080 jgraph/drawio`, saved and loaded like the pipeline's image), or
   the draw.io desktop app. Generate the templates with
   `node templates/drawio/generate.mjs templates/drawio --no-font-source`, so they don't ask for
-  Google Fonts, and have editors install the fonts in `templates/drawio/fonts/` once.
+  Google Fonts, and have editors install the fonts in `templates/drawio/fonts/` once. The
+  PowerPoint template (`templates/powerpoint/`) uses the same fonts and needs nothing else.
 - **Adding or updating packages** (`npm install`) needs the npm registry, so do it on the machine
   with internet access, commit `package-lock.json`, and rebuild the image.
 
@@ -168,6 +195,8 @@ content and change these.
   offline ones if GitLab has no internet access (see [Running offline](#running-offline)).
 - **GitLab.** The [one-time setup](#one-time-setup) and the
   [security checklist](#security-checklist-for-a-new-installation).
+- **Going live.** Set `checkFrom` in `content/settings/removed-pages.yml` (see [Going live](#going-live)):
+  until then, renamed and deleted pages aren't checked.
 
 
 ## Security
@@ -260,7 +289,7 @@ docs/guide/                   the site guide for editors (footer → Site guide)
 content/pathways/*.yml        pathways
 content/glossary/*.yml        glossary terms
 content/lab-flags/*.yml       each pro lab's flags (values; only their hashes are published)
-content/settings/*.yml        site settings: theme.yml, banner.yml
+content/settings/*.yml        site settings: theme.yml, banner.yml, features.yml (Pro Labs on/off), removed-pages.yml
 content/imported-dates.json   original dates of pages that predate this repository (scripts/dates.mjs)
 static/                       images, downloads (files/), captions, recordings (casts/), videos, favicon
 cms/                          admin editor templates: config.yml, index.html (with its policy), frame-guard.js,
@@ -270,6 +299,8 @@ scripts/                      build-time helpers the plugins and config use
 tests/                        tests of those helpers (npm test)
 templates/social-card/        source of the link-preview picture (static/images/social/codex.png)
 templates/drawio/             draw.io templates (7 layouts), shapes and their generator (not published; guide → Network diagrams)
+templates/powerpoint/         PowerPoint template for course slide decks and its generator (not published; guide → Slide decks)
+templates/video-opener/       title-card opener for lesson videos, joined onto a recording with ffmpeg (npm run video-opener; guide → Images, downloads and video)
 src/components/               React components (catalogue pages, cards, lesson parts)
 src/theme/                    Docusaurus theme components wrapped or replaced ("swizzled")
 src/client/                   browser scripts for quizzes, glossary tips, recordings, copy buttons, click to enlarge
@@ -289,7 +320,7 @@ sidebars.ts                   one sidebar per course, plus the course list, pro 
 
 | Package | What it does here |
 |---|---|
-| `@docusaurus/core`, `@docusaurus/preset-classic` | The site itself: docs, pages, sitemap and the classic theme (navbar, sidebars, breadcrumbs, "On this page", light/dark mode, announcement bar). |
+| `@docusaurus/core`, `@docusaurus/preset-classic` | The site itself: docs, pages, sitemap and the classic theme (navbar, sidebars, breadcrumbs, "On this page", light/dark mode under the colour themes, announcement bar). |
 | `@docusaurus/faster` | Rspack and SWC for faster builds. |
 | `@docusaurus/plugin-client-redirects` | Redirects the old addresses of moved lessons and courses (their `aliases` field) to the new ones. |
 | `@easyops-cn/docusaurus-search-local` | Offline search. Glossary tooltip text is kept out of the results. |
@@ -304,8 +335,8 @@ sidebars.ts                   one sidebar per course, plus the course list, pro 
 
 | Plugin | What it does |
 |---|---|
-| `plugins/lms-content.mjs` | Reads courses, lessons, labs, the site guide, pathways, the glossary and the banner settings, and checks them (`scripts/schema.mjs` and the rules in `scripts/`). Any problem fails the build. It publishes the catalogue to every page as site data (the glossary only to the glossary pages) and adds the pages `/courses/`, `/pathways/`, `/pathways/<id>/`, `/labs/` and `/glossary/`. It also works out the "Created" and "Last updated" dates. |
-| `plugins/remark-lms-blocks.mjs` | Turns the special code blocks into their markup at build time: ` ```quiz `, ` ```exercise `, ` ```asciinema `, ` ```timeline ` and ` ```terminal ` (with its colour variants). It also gives shell code blocks (` ```sh ` and similar) a terminal window frame. |
+| `plugins/lms-content.mjs` | Reads courses, lessons, labs, the site guide, pathways, the glossary and the banner settings, and checks them (`scripts/schema.mjs` and the rules in `scripts/`), including, once the site has gone live, pages that were renamed or deleted with no redirect (`scripts/removed-pages.mjs`, see [Going live](#going-live)). Any problem fails the build. It publishes the catalogue to every page as site data (the glossary only to the glossary pages) and adds the pages `/courses/`, `/pathways/`, `/pathways/<id>/`, `/labs/` and `/glossary/`. It also works out the "Created" and "Last updated" dates. |
+| `plugins/remark-lms-blocks.mjs` | Turns the special code blocks into their markup at build time: ` ```quiz `, ` ```exercise `, ` ```asciinema `, ` ```timeline `, ` ```attachment ` and ` ```terminal ` (with its colour variants). It also gives shell code blocks (` ```sh ` and similar) a terminal window frame. |
 | `plugins/remark-drawio.mjs` | Puts draw.io diagrams (`.drawio.svg` images on a line of their own) into the page as SVG, through the allowlist in `scripts/drawio-svg.mjs`, so their text can be selected and found. |
 | `plugins/remark-glossary.mjs` | Marks the first use of each glossary term on lesson and lab pages, with its definition in a tooltip, at build time. |
 | `plugins/lms-csp.mjs` | Adds a Content-Security-Policy to every page after the build, allowing only Docusaurus's own inline scripts. The build fails if a page has any other inline script, or embeds an image or video from another site. It also stops fonts being embedded in a way the policy would block. |
@@ -326,7 +357,8 @@ These wrap or replace parts of Docusaurus's theme. Re-check them after upgrading
 | `DocItem/Paginator` (replaced, same parts) | Adds "Complete & continue" and the end-of-course panel above previous/next, and the site footer under them. |
 | `DocRoot/Layout` (wrapped) | A course overview opened from inside its course (`?view=course`) keeps the course's sidebar. |
 | `DocSidebarItem/Link` (wrapped) | Adds ticks for completed lessons, and makes the Overview link keep the course sidebar. |
-| `Mermaid` (replaced) | Draws ` ```mermaid ` diagrams in the selected theme's colours, outline width and corners for the current light/dark mode, read from the page's CSS variables (`src/lib/mermaid.ts`), with `:::highlight` and `:::attack` node classes. |
+| `ColorModeToggle` (replaced) | The navbar's colour theme menu (`src/lib/palettes.ts`): Hacklab Night and Day (the site theme's own dark and light), Dracula, Catppuccin Mocha and Latte, Tokyo Night, Nord, Gruvbox Dark, One Dark, Solarized Dark and Light, and High Contrast. A theme other than the site's own two is the `palette` preference (`<html data-lms-palette>`, colours in `src/css/site/palettes.css`); each sets Docusaurus's light or dark mode underneath. There's no Auto: everyone starts on Hacklab Night. |
+| `Mermaid` (replaced) | Draws ` ```mermaid ` diagrams in the selected theme's colours, outline width and corners for the current light/dark mode and colour theme, read from the page's CSS variables (`src/lib/mermaid.ts`), with `:::highlight` and `:::attack` node classes. |
 | `DocBreadcrumbs` (wrapped) | Puts the breadcrumbs in the breadcrumb bar, pinned under the navbar, with the button that collapses "On this page" on the right. Uses `useSidebarBreadcrumbs` and `useDoc` to know whether there's a trail and a table of contents. |
 | `DocBreadcrumbs/StructuredData` (replaced) | The breadcrumbs' data for search engines, with `<` escaped so a page title can't end its script. |
 | `DocBreadcrumbs/Items/Home` (replaced) | Starts the breadcrumbs with "Courses" on lesson pages instead of a home icon. |
@@ -394,7 +426,7 @@ the lab's page to track their progress (in their browser, `lms-lab-flags-v1`). F
 never go in `docs/labs/*.md`, whose frontmatter is copied into the public site's JavaScript: the
 build publishes only a salted SHA-256 hash of each (`scripts/lab-flags.mjs`), and the browser hashes
 a submitted flag the same way (`src/lib/lab-flags.ts`). With a flags file, the lab page's `flags`
-count can go. The files for Lorem Lab 2 and Lorem Lab 1 hold placeholder flags.
+count can go. The files for all five labs hold placeholder flags.
 
 **A glossary term** is `content/glossary/<id>.yml`: `term`, optional `aliases`, `definition` and
 optional `seeAlso` (other terms' file names).
@@ -434,6 +466,13 @@ src: /casts/<course>/<name>.cast
 title: Hashing and salting
 ```
 
+```attachment
+file: /files/<course>/cheat-sheet.pdf
+title: Injection cheat sheet
+description: Optional.
+overview: true               # optional: also list it on the course overview's Downloads
+```
+
 ```timeline
 layout: horizontal           # optional: vertical (the default), horizontal or snake
 style: cards                 # optional: plain (the default) or cards
@@ -449,6 +488,11 @@ events:
 
 Horizontal timelines scroll sideways when the events don't fit; snake timelines wrap into rows
 that run alternately left and right instead. Both are shown vertically where there isn't room.
+
+An ` ```attachment ` block shows downloads where it is, in the same format as `attachments` (one
+file, or a list of them) and checked by the same rules. Its files are listed on the course
+overview only with `overview: true`; a file can't be both in `attachments` and in a block on the
+same page.
 
 Callouts use `:::note`, `:::tip`, `:::caution` or `:::danger` (optionally `:::tip[Title]`).
 
@@ -490,6 +534,13 @@ the video, so clones stay small and each version of a video is stored once.
 3. Commit and push as usual; `git lfs ls-files` lists the videos git is handing to LFS.
 
 Videos can't be added through the admin editor.
+
+**An opener** (a title card in the site's style, before the recording):
+`npm run video-opener -- --title "…" --label "…" --join recording.mp4 --captions recording.vtt`
+writes `recording-with-opener.mp4` and captions moved to match (`--help` lists the options). It needs
+ffmpeg with libass on the machine (or `FFMPEG` pointing at one); it isn't an npm dependency, since the
+packages that bundle ffmpeg download it at install time. `templates/video-opener/opener.mjs` has the
+card's layout and colours.
 
 **If git-lfs wasn't installed**, `git add` stores the video as an ordinary file. `npm test` (and so
 the pipeline, which then doesn't publish) fails with "Not stored with Git LFS". Install git-lfs,

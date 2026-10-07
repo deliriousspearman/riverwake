@@ -37,7 +37,7 @@ Each level-two heading is a task.
 | `description` | Short description | Optional one-line summary of the lesson |
 | `sidebar.order` | Lesson number | Position within its course or section: lower first |
 | `video`, `captions` | Video path, Video captions | See [Images, downloads and video](images-downloads-video.md) |
-| `attachments` | Downloads | Files shown above the lesson and on the course overview |
+| `attachments` | Downloads | Files shown above the lesson and on the course overview (or put one in the text with an `attachment` block: see [Images, downloads and video](images-downloads-video.md#a-download-in-the-page-text)) |
 | `glossary` | Mark glossary terms | `false` stops glossary terms being underlined on this page |
 | `aliases` | Old addresses | Only after moving or renaming the lesson |
 | `draft` | (git only) | `draft: true` leaves the lesson out of the live site |

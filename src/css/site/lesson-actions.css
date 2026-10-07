@@ -6,6 +6,9 @@
 	flex-direction: column;
 	align-items: center;
 	gap: 0.75rem;
+	/* A clear gap after the lesson's last line, so the button (or end-of-course panel) doesn't
+	   read as part of the text above it. */
+	margin-top: 2.5rem;
 	margin-bottom: 1.5rem;
 }
 /* Shown by progress.ts when localStorage can't be written. */

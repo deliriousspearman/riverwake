@@ -2,10 +2,10 @@
 
 .hero-terminal {
 	width: 100%;
-	border: 1px solid #2c3a52;
+	border: 1px solid var(--lms-terminal-sel);
 	border-radius: var(--lms-radius-lg);
 	overflow: hidden;
-	background: #0d1420;
+	background: var(--lms-terminal-deep);
 	text-align: start;
 	box-shadow:
 		0 0 0 1px color-mix(in srgb, var(--lms-accent) 8%, transparent),
@@ -16,8 +16,8 @@
 	align-items: center;
 	gap: 0.75rem;
 	padding: 0.55rem 0.9rem;
-	background: #1a2332;
-	color: #a4b1cd;
+	background: var(--lms-terminal-bar);
+	color: var(--lms-terminal-text);
 	font: 500 0.8rem var(--lms-mono);
 }
 .hero-terminal-bar::before {
@@ -32,23 +32,23 @@
 .hero-terminal-body {
 	padding: 1rem 1.1rem 1.2rem;
 	font: 0.85rem/1.9 var(--lms-mono);
-	color: #a4b1cd;
+	color: var(--lms-terminal-text);
 }
 .hero-terminal-body p {
 	margin: 0;
 }
 .hero-terminal .prompt {
-	color: var(--lms-accent);
+	color: var(--lms-terminal-accent);
 }
 .hero-terminal .ok {
-	color: var(--lms-accent-soft);
+	color: var(--lms-terminal-accent-soft);
 }
 .hero-terminal .cursor {
 	display: inline-block;
 	width: 0.55rem;
 	height: 1rem;
 	vertical-align: -0.15rem;
-	background: var(--lms-accent);
+	background: var(--lms-terminal-accent);
 }
 @media (prefers-reduced-motion: no-preference) {
 	.hero-terminal .cursor {

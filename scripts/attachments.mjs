@@ -70,8 +70,9 @@ export function attachmentProblems(path, publicDir = STATIC_DIR) {
 	return [];
 }
 
-/** "840 B", "12 KB", "3.4 MB". */
+/** "840 B", "12 KB", "3.4 MB" ("" if unknown: the admin editor's preview can't see file sizes). */
 export function formatBytes(bytes) {
+	if (!Number.isFinite(bytes)) return '';
 	if (bytes < 1024) return `${bytes} B`;
 	if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
 	const mb = bytes / 1024 / 1024;

@@ -49,12 +49,38 @@
 	color: var(--lms-on-accent);
 }
 .pathway-courses a {
+	/* A long one-word name wraps instead of running out of the card (the step count wraps under it). */
+	overflow-wrap: anywhere;
 	color: var(--sl-color-white);
 	text-decoration: none;
 	font-weight: 500;
 }
 .pathway-courses a:hover {
 	text-decoration: underline;
+}
+/* A long pathway (src/components/PathwayList.tsx): the first four courses, then "+N more courses"
+   in the fifth row, until it's clicked or the visitor chose to see them all (Settings →
+   data-lms-pathways="all"). */
+:root:not([data-lms-pathways='all']) .pathway-courses.is-long:not(.is-expanded) > li:nth-child(n + 5):not(.pathway-more),
+:root[data-lms-pathways='all'] .pathway-more,
+.pathway-courses.is-expanded > .pathway-more {
+	display: none;
+}
+/* Shown in full, the last course is no longer followed by a row: no line down to the hidden one. */
+:root[data-lms-pathways='all'] .pathway-courses.is-long > li:nth-last-child(2)::after,
+.pathway-courses.is-expanded > li:nth-last-child(2)::after {
+	display: none;
+}
+.pathway-courses li.pathway-more {
+	counter-increment: none;
+}
+.pathway-courses li.pathway-more::before {
+	content: '…';
+	border-style: dashed;
+}
+.pathway-more .link-button {
+	margin: 0;
+	font-size: var(--sl-text-sm);
 }
 .pathway-course-count {
 	font-size: var(--sl-text-xs);

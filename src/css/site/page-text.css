@@ -20,7 +20,8 @@
 .theme-doc-markdown strong {
 	color: var(--sl-color-white);
 }
-.theme-doc-markdown a:not(.lms-button, .lesson-action, .hash-link) {
+/* Not download links (```attachment blocks): they keep the Downloads list's style (downloads.css). */
+.theme-doc-markdown a:not(.lms-button, .lesson-action, .hash-link, .attachment-text a) {
 	color: var(--sl-color-text-accent);
 	text-decoration: underline;
 }
@@ -109,17 +110,17 @@
 }
 .theme-admonition-note,
 .theme-admonition-info {
-	--lms-aside: #5cb2ff;
+	--lms-aside: var(--lms-info);
 }
 .theme-admonition-tip {
-	--lms-aside: #c16cfa;
+	--lms-aside: var(--lms-tip);
 }
 .theme-admonition-caution,
 .theme-admonition-warning {
-	--lms-aside: #ffaf00;
+	--lms-aside: var(--lms-caution);
 }
 .theme-admonition-danger {
-	--lms-aside: #ff3e3e;
+	--lms-aside: var(--lms-danger);
 }
 .theme-admonition [class*='admonitionHeading'] {
 	margin-bottom: 0.5rem;

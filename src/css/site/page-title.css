@@ -9,7 +9,7 @@
 	object-fit: cover;
 	border-radius: var(--lms-radius-md);
 	border: var(--lms-border-width) solid var(--sl-color-gray-5);
-	background: #0d1420;
+	background: var(--lms-picture-bg);
 }
 .picture-lg {
 	width: 4.5rem;

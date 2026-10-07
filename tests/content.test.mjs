@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { utimesSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { buildSidebars, courseRedirects, DOCS_DIR, readCourses, readFrontmatter, readGuide, sidebarFor } from '../scripts/content.mjs';
+import { buildSidebars, courseRedirects, DOCS_DIR, proLabsShown, readAttachmentBlocks, readCourses, readFrontmatter, readGuide, sidebarFor } from '../scripts/content.mjs';
 import { toDocusaurus } from '../scripts/frontmatter.mjs';
 import { page, tempDir, withNodeEnv, writeFiles } from './helpers.mjs';
 
@@ -154,6 +154,21 @@ test('frontmatter is cached until the file changes, and callers get their own co
 	assert.equal(readFrontmatter(file).title, 'Second');
 });
 
+test('attachment blocks are found with their line, but not one shown as an example in another code block', (t) => {
+	const dir = writeFiles(tempDir(t), {
+		'lesson.md': page(
+			'title: L\nattachments: []',
+			'Intro.\n\n```attachment\nfile: /files/a.csv\ntitle: A\n```\n\n````md\n```attachment\nfile: /files/example.csv\n```\n````\n\n- In a list:\n\n  ```attachment\n  file: /files/b.csv\n  ```',
+		),
+		'none.md': page('title: N', 'No blocks.'),
+	});
+	assert.deepEqual(readAttachmentBlocks(join(dir, 'lesson.md')), [
+		{ code: 'file: /files/a.csv\ntitle: A', line: 8 },
+		{ code: 'file: /files/b.csv', line: 21 },
+	]);
+	assert.deepEqual(readAttachmentBlocks(join(dir, 'none.md')), []);
+});
+
 test('an SVG picture is kept out of link previews; PNG, JPEG and WebP stay as the preview', () => {
 	const file = join(DOCS_DIR, 'courses/no-such-course/index.md');
 	const svg = toDocusaurus({ title: 'Web', kind: 'course', image: '/images/courses/web.svg' }, file);
@@ -169,8 +184,8 @@ test('removed pages: a page that git shows was deleted or renamed needs a redire
 	assert.equal(pagePath('docs/courses/web/index.md'), '/courses/web');
 	assert.equal(pagePath('docs/courses/web/02-basics/03-xss.md'), '/courses/web/02-basics/03-xss');
 	assert.equal(pagePath('docs/guide/index.md'), undefined);
-	// `git log --diff-filter=DR --name-status --format=%x00%h`, newest first.
-	const log = ['', 'b2\n\nR100\tdocs/courses/web/old.md\tdocs/courses/web/new.md\nD\tdocs/courses/web/gone.md', 'a1\n\nD\tdocs/courses/old-course/index.md\nD\tdocs/courses/old-course/intro.md\nD\tdocs/courses/web/back.md'].join('\0');
+	// `git log --diff-filter=DR --name-status --format='%x00%h %cs'`, newest first.
+	const log = ['', 'b2 2026-12-03\n\nR100\tdocs/courses/web/old.md\tdocs/courses/web/new.md\nD\tdocs/courses/web/gone.md', 'a1 2026-11-20\n\nD\tdocs/courses/old-course/index.md\nD\tdocs/courses/old-course/intro.md\nD\tdocs/courses/web/back.md'].join('\0');
 	const deleted = parseDeletedPages(log);
 	assert.deepEqual([...deleted.keys()], ['/courses/web/old', '/courses/web/gone', '/courses/old-course', '/courses/old-course/intro', '/courses/web/back']);
 	assert.deepEqual(deleted.get('/courses/web/old'), { file: 'docs/courses/web/old.md', commit: 'b2' });
@@ -181,4 +196,24 @@ test('removed pages: a page that git shows was deleted or renamed needs a redire
 		removed: ['/courses/old-course'], // the whole course, on purpose
 	});
 	assert.deepEqual(problems, ['/courses/web/gone (docs/courses/web/gone.md, removed in commit b2)']);
+	// Only changes on or after the go-live day (checkFrom) count: a1 was made while setting up.
+	assert.deepEqual([...parseDeletedPages(log, '2026-12-01').keys()], ['/courses/web/old', '/courses/web/gone']);
+	assert.deepEqual([...parseDeletedPages(log, '2026-12-03').keys()], ['/courses/web/old', '/courses/web/gone']);
+	assert.deepEqual([...parseDeletedPages(log, '2026-12-04').keys()], []);
+});
+
+test('removed pages: checkFrom is a day as YAML or the admin editor writes it, or empty (not checked yet)', async () => {
+	const { removedPagesSchema } = await import('../scripts/schema.mjs');
+	const { parse } = await import('yaml');
+	assert.equal(removedPagesSchema.parse(parse('checkFrom: 2026-12-01\npages: []')).checkFrom, '2026-12-01');
+	assert.equal(removedPagesSchema.parse({ checkFrom: '2026-12-01' }).checkFrom, '2026-12-01');
+	assert.equal(removedPagesSchema.parse({ checkFrom: '' }).checkFrom, undefined);
+	assert.equal(removedPagesSchema.parse(parse('checkFrom:\npages: []')).checkFrom, undefined);
+	assert.equal(removedPagesSchema.safeParse({ checkFrom: 'after launch' }).success, false);
+});
+
+test('pro labs are shown unless features.yml switches them off', () => {
+	assert.equal(proLabsShown({}), true);
+	assert.equal(proLabsShown({ proLabs: true }), true);
+	assert.equal(proLabsShown({ proLabs: false }), false);
 });

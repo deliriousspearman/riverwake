@@ -87,6 +87,27 @@
 	--lms-easy: #9fef00;
 	--lms-medium: #ffaf00;
 	--lms-hard: #ff3e3e;
+	/* Asides (note, tip, caution, danger) and the exercise badge, the same in both modes. */
+	--lms-info: #5cb2ff;
+	--lms-on-info: #0b111b;
+	--lms-tip: #c16cfa;
+	--lms-caution: #ffaf00;
+	--lms-danger: #ff3e3e;
+	/* Quiz answers: right and wrong. */
+	--lms-right: #27a35a;
+	--lms-wrong: #e5484d;
+	/* Terminal windows (code.css, recordings.css, the home page's hero): dark in both modes. */
+	--lms-terminal-text: #a4b1cd;
+	--lms-terminal-bg: #141d2b;
+	--lms-terminal-bar: #1a2332;
+	--lms-terminal-edge: #0b111b;
+	--lms-terminal-sel: #2c3a52;
+	--lms-terminal-deep: #0d1420;
+	/* The accent on a terminal: the theme's own, unless a light colour theme's is too dark for it. */
+	--lms-terminal-accent: var(--lms-accent);
+	--lms-terminal-accent-soft: var(--lms-accent-soft);
+	/* Behind a page's picture while it loads (and around a transparent one). */
+	--lms-picture-bg: #0d1420;
 }
 
 :root[data-theme='light'] {
@@ -175,6 +196,11 @@
 	--docusaurus-announcement-bar-height: auto;
 }
 
+/* The page background goes on <html> too: when the browser overscrolls (the bounce past the top or
+   bottom with a touchpad), it shows <html>'s background, which would otherwise be Infima's grey. */
+html {
+	background: var(--sl-color-black);
+}
 body {
 	background: var(--sl-color-black);
 	color: var(--sl-color-text);

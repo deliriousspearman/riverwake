@@ -66,6 +66,7 @@ export function selectedTheme(settingsFile = SETTINGS) {
  */
 export const SITE_STYLESHEETS = [
 	'theme',
+	'palettes',
 	'navbar',
 	'sidebar',
 	'page-layout',

@@ -2,13 +2,15 @@
 // - Progress (src/lib/progress.ts): how much is done, forgetting the "Continue learning" lesson,
 //   backup and restore (a backup file is how a learner moves progress to another browser or device;
 //   restoring merges, so nothing is lost), and reset.
-// - Preferences (src/lib/preferences.ts): hide completed courses, glossary terms, video captions and
+// - Preferences (src/lib/preferences.ts): the colour theme (src/lib/palettes.ts), hide completed courses,
+//   every course on pathway cards, glossary terms, video captions and
 //   playback speed, text size, text width, "On this page", the pinned breadcrumb bar, code line
 //   wrapping, jumping to headings and motion. Each applies as soon as it's changed.
 // Laid out like the glossary: no sidebar, the page header, then sections.
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
+import { useColorMode } from '@docusaurus/theme-common';
 import {
 	forgetLastLesson,
 	isDoneIn,
@@ -22,6 +24,7 @@ import {
 } from '../lib/progress';
 import { fillPreferences, getHideCompleted, preferencesBackup, resetPreferences, setHideCompleted, setPreferences, SPEEDS, usePreferences, type Preferences } from '../lib/preferences';
 import { lessonOf, lessonPaths, useCatalog, withSlash } from '../lib/catalog';
+import { currentPalette, paletteChoice, PALETTES } from '../lib/palettes';
 import SiteFooter from '../components/SiteFooter';
 
 /** Saves this browser's progress, with its preferences, as codex-progress-<date>.json. */
@@ -103,11 +106,33 @@ function ContinueLearning() {
 function PreferenceSections() {
 	const preferences = usePreferences();
 	const set = (change: Preferences) => setPreferences(change);
+	const { colorMode, setColorMode } = useColorMode();
+	const choosePalette = (id: string) => {
+		const choice = paletteChoice(id);
+		set({ palette: choice.palette });
+		setColorMode(choice.colorMode);
+	};
+	const resetAll = () => {
+		resetPreferences();
+		setColorMode('dark');
+	};
 	// "Hide completed" is read after hydration, like the catalogue pages do.
 	const [hideCompleted, setHide] = useState(false);
 	useEffect(() => setHide(getHideCompleted()), []);
 	return (
 		<>
+			<Section id="look" title="Colours">
+				<Row name="Colour theme" help="The site’s colours: Hacklab Night and Day are its own, the others are well-known themes from code editors. The menu at the top of every page changes it too.">
+					{(ids) => (
+						<Choice
+							ids={ids}
+							value={currentPalette(preferences.palette, colorMode).id}
+							options={PALETTES.map((palette) => [palette.id, palette.label])}
+							onChange={choosePalette}
+						/>
+					)}
+				</Row>
+			</Section>
 			<Section id="courses" title="Courses and lessons">
 				<Row name="Hide completed courses" help="On the course and pathway lists. The lists’ own “Hide completed” switch is the same setting.">
 					{(ids) => (
@@ -120,6 +145,9 @@ function PreferenceSections() {
 							}}
 						/>
 					)}
+				</Row>
+				<Row name="Show every course on pathway cards" help="Pathway cards list the first few courses and “+ more courses” for the rest. On lists them all, so the cards can get long.">
+					{(ids) => <Switch ids={ids} checked={preferences.pathways === 'all'} onChange={(on) => set({ pathways: on ? 'all' : undefined })} />}
 				</Row>
 				<Row name="Glossary terms" help="Underline the first use of each glossary term in a lesson, with its meaning on hover or tap. Off shows them as plain text.">
 					{(ids) => <Switch ids={ids} checked={preferences.glossary !== 'off'} onChange={(on) => set({ glossary: on ? undefined : 'off' })} />}
@@ -148,7 +176,7 @@ function PreferenceSections() {
 						/>
 					)}
 				</Row>
-				<Row name="Text width" help="A wider column on lesson and guide pages, on screens with room for it, so more fits on each line.">
+				<Row name="Text width" help="A wider column on lesson and guide pages, on screens with room for it, so more fits on each line. Full uses all the space beside the sidebar and “On this page”.">
 					{(ids) => (
 						<Choice
 							ids={ids}
@@ -156,6 +184,7 @@ function PreferenceSections() {
 							options={[
 								['', 'Standard'],
 								['wide', 'Wide'],
+								['full', 'Full'],
 							]}
 							onChange={(width) => set({ width: width || undefined })}
 						/>
@@ -197,7 +226,7 @@ function PreferenceSections() {
 					)}
 				</Row>
 				<p className="settings-defaults">
-					<button type="button" className="link-button" onClick={resetPreferences}>
+					<button type="button" className="link-button" onClick={resetAll}>
 						Put these settings back to their defaults
 					</button>
 				</p>

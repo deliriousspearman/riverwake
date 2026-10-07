@@ -1,7 +1,7 @@
 // Applies this browser's site preferences (src/lib/preferences.ts, set on the Settings page) to
 // <html> as data-lms-<name> attributes before the page is drawn, so a larger text size, a wider
-// column, reduced motion, a collapsed "On this page", an unpinned breadcrumb bar or hidden glossary
-// underlines are there from the first frame instead of the page jumping once the site's scripts
+// column, reduced motion, a collapsed "On this page", an unpinned breadcrumb bar, hidden glossary
+// underlines or a colour theme (data-lms-palette, src/css/site/palettes.css) are there from the first frame instead of the page jumping once the site's scripts
 // load. Loaded in <head> by docusaurus.config.ts
 // (headTags), and copied to static/head/ by scripts/prepare.mjs: the page policy (scripts/csp.mjs)
 // allows no inline scripts of our own. Keep it tiny and dependency-free.

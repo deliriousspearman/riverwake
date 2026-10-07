@@ -42,11 +42,11 @@
    (.lms-shell, which wrap Docusaurus's code block) and the home page hero. Dark in both modes. */
 .lms-terminal,
 .lms-shell {
-	--lms-term: #a4b1cd;
-	--lms-term-bg: #141d2b;
-	--lms-term-bar: #1a2332;
-	--lms-term-edge: #0b111b;
-	--lms-term-sel: #2c3a52;
+	--lms-term: var(--lms-terminal-text);
+	--lms-term-bg: var(--lms-terminal-bg);
+	--lms-term-bar: var(--lms-terminal-bar);
+	--lms-term-edge: var(--lms-terminal-edge);
+	--lms-term-sel: var(--lms-terminal-sel);
 	position: relative;
 	margin: 1.5rem 0 0;
 	overflow: hidden;
@@ -128,7 +128,7 @@
    apart. `--lms-term` is the accent: title text, the line under the title bar and a thin outline.
    The prompt colours come from PALETTES in scripts/terminal.mjs. */
 .lms-terminal:is(.lms-terminal-red, .lms-terminal-blue, .lms-terminal-green, .lms-terminal-purple, .lms-terminal-orange) {
-	border-color: color-mix(in srgb, var(--lms-term) 35%, #0b111b);
+	border-color: color-mix(in srgb, var(--lms-term) 35%, var(--lms-terminal-edge));
 	box-shadow:
 		0 0 0 1px color-mix(in srgb, var(--lms-term) 25%, transparent),
 		0 0.5rem 1.5rem rgb(0 0 0 / 0.35);
@@ -174,9 +174,9 @@
 	width: 2rem;
 	height: 2rem;
 	padding: 0;
-	border: 1px solid #2c3a52;
+	border: 1px solid var(--lms-terminal-sel);
 	border-radius: var(--lms-radius-sm);
-	background: #1a2332 no-repeat center / 1rem
+	background: var(--lms-terminal-bar) no-repeat center / 1rem
 		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a4b1cd' stroke-width='1.75'%3E%3Crect x='9' y='9' width='11' height='11' rx='2'/%3E%3Cpath d='M5 15V5a2 2 0 0 1 2-2h10'/%3E%3C/svg%3E");
 	opacity: 0;
 	cursor: pointer;
@@ -193,7 +193,7 @@
 	translate: 0 -50%;
 	padding: 0.1rem 0.5rem;
 	border-radius: var(--lms-radius-xs);
-	background: #2c3a52;
+	background: var(--lms-terminal-sel);
 	color: #ffffff;
 	font-size: var(--sl-text-xs);
 	white-space: nowrap;

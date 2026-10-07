@@ -28,6 +28,8 @@
 }
 .course-card h2 {
 	margin: 0;
+	/* A long one-word name wraps instead of running out of the card. */
+	overflow-wrap: anywhere;
 	line-height: 1.25;
 	font-family: var(--lms-display);
 	font-weight: 700;
@@ -45,6 +47,7 @@
 }
 .course-card p {
 	margin: 0;
+	overflow-wrap: anywhere;
 	flex: 1;
 	color: var(--sl-color-gray-2);
 }
@@ -261,6 +264,8 @@
 }
 .pathway-card h2 {
 	margin: 0;
+	/* A long one-word name wraps instead of running out of the card. */
+	overflow-wrap: anywhere;
 	line-height: 1.25;
 	font-family: var(--lms-display);
 	font-weight: 700;
@@ -277,6 +282,7 @@
 }
 .pathway-card > p {
 	margin: 0;
+	overflow-wrap: anywhere;
 	color: var(--sl-color-gray-2);
 }
 /* Difficulty chip, coloured by level (LevelChip in Progress.tsx). */

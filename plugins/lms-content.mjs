@@ -19,13 +19,14 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { attachmentInfo, extensionOf } from '../scripts/attachments.mjs';
 import { bannerWarnings } from '../scripts/banner.mjs';
-import { CONTENT_DIR, courseRedirects, DOCS_DIR, STATIC_DIR, glossaryVersion, readCourses, readGlossary, readGuide, readLabFlags, readLabs, readPathways, readSettings } from '../scripts/content.mjs';
+import { readAttachment } from '../scripts/blocks.mjs';
+import { CONTENT_DIR, courseRedirects, DOCS_DIR, STATIC_DIR, glossaryVersion, readAttachmentBlocks, readCourses, readGlossary, readGuide, proLabsShown, readLabFlags, readLabs, readPathways, readSettings } from '../scripts/content.mjs';
 import { createdDate, newest, updatedDate } from '../scripts/dates.mjs';
 import { glossaryProblems } from '../scripts/glossary.mjs';
 import { labFlagProblems, labFlagWarnings, publicFlags } from '../scripts/lab-flags.mjs';
 import { labProblems, labSummary, osCounts } from '../scripts/labs.mjs';
 import { deletedPages, removedPageProblems } from '../scripts/removed-pages.mjs';
-import { bannerSchema, check, glossarySchema, labFlagsSchema, pageSchema, pathwaySchema, removedPagesSchema } from '../scripts/schema.mjs';
+import { bannerSchema, check, featuresSchema, glossarySchema, labFlagsSchema, pageSchema, pathwaySchema, removedPagesSchema } from '../scripts/schema.mjs';
 import { DRAWIO_SVG, drawioSvgFile, readDrawioSvgFile } from '../scripts/drawio-svg.mjs';
 import { filesUnder, staticFileProblems, staticFileWarnings } from '../scripts/static-files.mjs';
 import { filterText, lessonSummary } from '../scripts/summary.mjs';
@@ -35,8 +36,30 @@ const iso = (date) => date?.toISOString();
 /** Attachments with their type label, extension and size for the download lists. */
 const files = (list = []) => list.map((a) => ({ ...a, ext: extensionOf(a.file), ...attachmentInfo(a.file) }));
 
-/** Validate a page's frontmatter, naming the file on failure. */
-const page = (item) => ({ ...item, data: check(pageSchema, item.data, `Frontmatter in ${item.file.replace(`${DOCS_DIR}/`, 'docs/')}`) });
+/**
+ * The files in a page's ```attachment blocks (scripts/blocks.mjs), with their type and size. Fails
+ * on an invalid block (as the page itself would) and on a file listed twice on the page, in
+ * `attachments` or another block: the page would show it twice.
+ */
+function attachmentBlocks(file, frontmatter = []) {
+	const where = file.replace(`${DOCS_DIR}/`, 'docs/');
+	const seen = new Set(frontmatter.map((a) => a.file));
+	return readAttachmentBlocks(file).flatMap(({ code, line }) =>
+		readAttachment({ code, parentDocument: { sourceFilePath: `${where}, line ${line}` } }).map((item) => {
+			if (seen.has(item.file)) {
+				throw new Error(`attachment block in ${where}, line ${line}: ${item.file} is already listed on this page (in \`attachments\` or another block); list each file once`);
+			}
+			seen.add(item.file);
+			return item;
+		}),
+	);
+}
+
+/** Validate a page's frontmatter and its ```attachment blocks, naming the file on failure. */
+const page = (item) => {
+	const data = check(pageSchema, item.data, `Frontmatter in ${item.file.replace(`${DOCS_DIR}/`, 'docs/')}`);
+	return { ...item, data, attachmentBlocks: attachmentBlocks(item.file, data.attachments) };
+};
 
 export function loadCatalog() {
 	const problems = [];
@@ -118,13 +141,18 @@ export function loadCatalog() {
 	if (staticIssues.length) problems.push(`Files in static/:\n- ${staticIssues.join('\n- ')}`);
 
 	const banner = attempt(() => check(bannerSchema, readSettings('banner'), 'Banner settings content/settings/banner.yml'));
+	const features = attempt(() => check(featuresSchema, readSettings('features'), 'Feature settings content/settings/features.yml'));
 	const aliases = attempt(() => courseRedirects()) ?? {};
 
-	// Course pages that were published and have gone with no redirect (scripts/removed-pages.mjs).
+	// Course pages that were published and have gone with no redirect (scripts/removed-pages.mjs),
+	// counted from the `checkFrom` date in removed-pages.yml (unset while the site is being set up).
 	const warnings = [];
 	const removed = attempt(() => check(removedPagesSchema, readSettings('removed-pages'), 'Removed pages content/settings/removed-pages.yml'));
-	const deleted = deletedPages();
-	if (!deleted) {
+	const checkFrom = removed?.checkFrom;
+	const deleted = removed && checkFrom ? deletedPages(checkFrom) : undefined;
+	if (removed && !checkFrom) {
+		warnings.push('Pages removed without a redirect aren\'t checked yet: set "Check from" in Site settings → Removed pages (content/settings/removed-pages.yml `checkFrom`) when the site goes live.');
+	} else if (removed && !deleted) {
 		warnings.push("git history isn't available, so pages removed without a redirect weren't checked.");
 	} else if (removed) {
 		const current = new Set(courses.flatMap((c) => [c.path, ...c.lessons.map((l) => l.path), ...c.hiddenLessons.map((l) => l.path)]));
@@ -139,11 +167,11 @@ export function loadCatalog() {
 
 	if (problems.length) throw new Error(`Content problems:\n\n${problems.join('\n\n')}`);
 	for (const warning of [...bannerWarnings(banner), ...staticFileWarnings(), ...labFlagWarningList, ...warnings]) console.warn(`[lms-content] ${warning}`);
-	return { courses, labs, guide, pathways, glossary, banner, aliases };
+	return { courses, labs, guide, pathways, glossary, banner, features, aliases };
 }
 
 /** The catalogue as the JSON the site renders from (src/lib/catalog.ts has its type). */
-export function toGlobalData({ courses, labs, guide = null, pathways, glossary, aliases }, siteDescription) {
+export function toGlobalData({ courses, labs, guide = null, pathways, glossary, features = {}, aliases }, siteDescription) {
 	const dates = {};
 	// Guide pages can show a video and downloads, like lessons (to demonstrate them): their files by page.
 	const guideAttachments = {};
@@ -162,6 +190,9 @@ export function toGlobalData({ courses, labs, guide = null, pathways, glossary, 
 			section: l.section || null,
 			sectionTitle: l.sectionTitle,
 			attachments: files(l.data.attachments),
+			// Files from the lesson's ```attachment blocks with `overview: true`: course overview only,
+			// as the lesson shows them in its text.
+			overviewAttachments: (l.attachmentBlocks ?? []).filter((a) => a.overview).map(({ overview, ...a }) => a),
 		};
 	};
 	const courseData = courses.map((course) => {
@@ -191,6 +222,8 @@ export function toGlobalData({ courses, labs, guide = null, pathways, glossary, 
 	const termById = new Map(glossary.map((e) => [e.id, e.data.term]));
 	return {
 		site: { description: siteDescription },
+		// Parts of the site switched on (content/settings/features.yml).
+		features: { proLabs: proLabsShown(features) },
 		courses: courseData,
 		pathways: pathways.map(({ id, data }) => {
 			const lessons = data.courses.flatMap((slug) => courseBySlug.get(slug).lessons.map((l) => l.data));

@@ -9,7 +9,7 @@ import { createRequire } from 'node:module';
 import { test } from 'node:test';
 import { parse } from 'yaml';
 import { pageHast, toDom } from '../cms/preview.mjs';
-import { bannerSchema, glossarySchema, labFlagsSchema, pageSchema, pathwaySchema, removedPagesSchema } from '../scripts/schema.mjs';
+import { bannerSchema, featuresSchema, glossarySchema, labFlagsSchema, pageSchema, pathwaySchema, removedPagesSchema } from '../scripts/schema.mjs';
 
 const require = createRequire(import.meta.url);
 const Ajv = require('ajv');
@@ -63,11 +63,12 @@ test('every page field in the admin editor is one the build accepts, and the rev
 	assert.deepEqual(missing, [], `page settings no admin editor collection can set: ${missing.join(', ')}`);
 });
 
-test('pathway, glossary, banner, removed-pages and lab-flags fields match their schemas exactly', () => {
+test('pathway, glossary, banner, features, removed-pages and lab-flags fields match their schemas exactly', () => {
 	const cases = [
 		['pathways', collection('pathways').fields, pathwaySchema],
 		['glossary', collection('glossary').fields, glossarySchema],
 		['settings/banner', file('settings', 'banner').fields, bannerSchema],
+		['settings/features', file('settings', 'features').fields, featuresSchema],
 		['settings/removed', file('settings', 'removed').fields, removedPagesSchema],
 		['lab-flags', collection('lab-flags').fields, labFlagsSchema],
 	];

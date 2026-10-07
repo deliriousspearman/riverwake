@@ -112,4 +112,4 @@ A plain `.drawio` file in `static/` is refused too, with a reminder to export it
 
 A PNG export (**File → Export as → PNG**) still works as an ordinary picture, but its text can't be selected or found, and it blurs when zoomed.
 
-Diagrams stay dark when a learner switches the site to light mode, like the terminal windows do.
+Diagrams stay dark when a learner picks a light colour theme, like the terminal windows do.

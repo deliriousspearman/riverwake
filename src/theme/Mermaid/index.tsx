@@ -1,5 +1,6 @@
 // Replaces @docusaurus/theme-mermaid's Mermaid component (same markup) so diagrams use the selected
-// theme's colours in light and dark mode, read from the page (src/lib/mermaid.ts). The plugin's own
+// theme's colours in light and dark mode and the visitor's colour theme (src/lib/palettes.ts), read
+// from the page (src/lib/mermaid.ts). The plugin's own
 // option takes one fixed config for both modes. Mermaid itself is only downloaded on pages that have
 // a diagram. Until a diagram is drawn (and in the page's HTML), a placeholder panel of about its
 // height stands in for it, so the text below doesn't jump when it appears.
@@ -9,6 +10,7 @@ import ErrorBoundary from '@docusaurus/ErrorBoundary';
 import { ErrorBoundaryErrorMessageFallback, useColorMode } from '@docusaurus/theme-common';
 import { MermaidContainerClassName, useMermaidRenderResult } from '@docusaurus/theme-mermaid/client';
 import { estimatedHeight, mermaidConfig } from '../../lib/mermaid';
+import { usePreferences } from '../../lib/preferences';
 
 type RenderResult = NonNullable<ReturnType<typeof useMermaidRenderResult>>;
 
@@ -46,11 +48,12 @@ function MermaidRenderer({ value, config }: { value: string; config: MermaidConf
 }
 
 /**
- * The config for `colorMode`, read from the page once it shows that mode. Docusaurus applies a mode
- * change to <html data-theme> in an effect that can run after this component's, so wait (a frame at
- * a time, briefly) until the attribute matches before reading the colours.
+ * The config for `colorMode` and `palette`, read from the page once it shows that mode. Docusaurus
+ * applies a mode change to <html data-theme> in an effect that can run after this component's, so
+ * wait (a frame at a time, briefly) until the attribute matches before reading the colours. The
+ * palette's attribute is set before its listeners are told, so it's already there.
  */
-function useMermaidConfig(colorMode: 'light' | 'dark') {
+function useMermaidConfig(colorMode: 'light' | 'dark', palette: string) {
 	const [config, setConfig] = useState<MermaidConfig | null>(null);
 	useEffect(() => {
 		let frame = 0;
@@ -61,27 +64,28 @@ function useMermaidConfig(colorMode: 'light' | 'dark') {
 		};
 		read();
 		return () => cancelAnimationFrame(frame);
-	}, [colorMode]);
+	}, [colorMode, palette]);
 	return config;
 }
 
 /**
- * A new renderer (`key`) for each colour mode. The plugin keeps one diagram id for a component's
+ * A new renderer (`key`) for each colour mode and colour theme. The plugin keeps one diagram id for a component's
  * whole life, and Mermaid deletes any element with that id before drawing: re-drawing in place for
  * the new mode could delete the diagram on screen and then, if the new drawing came out the same
  * (Mermaid's config is global, so concurrent diagrams can share one), never put it back. That left
  * a page loaded in light mode with an empty panel.
  */
-function ThemedMermaid({ value, colorMode }: { value: string; colorMode: 'light' | 'dark' }) {
-	const config = useMermaidConfig(colorMode);
+function ThemedMermaid({ value, colorMode, palette }: { value: string; colorMode: 'light' | 'dark'; palette: string }) {
+	const config = useMermaidConfig(colorMode, palette);
 	return config ? <MermaidRenderer value={value} config={config} /> : <Placeholder value={value} />;
 }
 
 export default function Mermaid(props: { value: string }) {
 	const { colorMode } = useColorMode();
+	const palette = usePreferences().palette ?? '';
 	return (
-		<ErrorBoundary key={colorMode} fallback={(params) => <ErrorBoundaryErrorMessageFallback {...params} />}>
-			<ThemedMermaid value={props.value} colorMode={colorMode} />
+		<ErrorBoundary key={`${colorMode} ${palette}`} fallback={(params) => <ErrorBoundaryErrorMessageFallback {...params} />}>
+			<ThemedMermaid value={props.value} colorMode={colorMode} palette={palette} />
 		</ErrorBoundary>
 	);
 }

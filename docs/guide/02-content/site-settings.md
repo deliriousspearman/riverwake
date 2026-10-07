@@ -1,15 +1,15 @@
 ---
 title: Site settings
-description: The site's theme, and the announcement banner across the top of every page.
+description: The site's theme, the announcement banner across the top of every page, and hiding Pro Labs while they're being built.
 sidebar:
-  order: 9
+  order: 10
 ---
 
-Both settings are in the admin editor under **Site settings**, or in `content/settings/` with git. Like any change, they go live a few minutes after saving.
+These settings are in the admin editor under **Site settings**, or in `content/settings/` with git. Like any change, they go live a few minutes after saving.
 
 ## Theme
 
-The theme sets the look of the whole site. Every theme has a light and a dark mode, and visitors still choose between those with the switch in the top bar.
+The theme sets the look of the whole site: its shapes, fonts and its own dark and light colours. Visitors choose the colours they see with the menu in the top bar (or on the Settings page): **Hacklab Night** and **Hacklab Day** are the theme's own dark and light, and the others (Dracula, Catppuccin, Tokyo Night, Nord, Gruvbox, One Dark, Solarized and High Contrast) are well-known code editor colours over the same shapes and fonts. Everyone starts on Hacklab Night. The names stay the same whichever theme is set here, so with `nightshift` Hacklab Night has a teal accent.
 
 | Theme | Look |
 |---|---|
@@ -49,4 +49,14 @@ italic: false
 height: 40
 ```
 
-If the text and bar colours are too close to read easily, the build still publishes, but prints a warning in the pipeline log. Check the banner on the live site in both light and dark mode.
+If the text and bar colours are too close to read easily, the build still publishes, but prints a warning in the pipeline log. Check the banner on the live site in a light and a dark colour theme.
+
+## Features
+
+**Show Pro Labs** (`proLabs`) hides Pro Labs while they're being built. Switched off, visitors don't see them: there's no **Pro Labs** link in the top bar or the footer, no Pro Labs section on the home page, and labs don't come up in search. The lab pages still exist at their addresses (`/labs/` and `/labs/<lab>/`), so you can check them on the live site; anyone given the address can open them too, so this hides labs but doesn't make them secret. Switch it back on when they're ready.
+
+With git, `content/settings/features.yml`:
+
+```yaml
+proLabs: false
+```

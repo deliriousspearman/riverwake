@@ -2,6 +2,7 @@
 //
 //   ```quiz / ```exercise / ```asciinema   validated YAML → the block's markup (scripts/blocks.mjs)
 //   ```timeline                            validated YAML → a vertical, horizontal or snake timeline
+//   ```attachment                          validated YAML → downloads where the block is
 //   ```terminal, ```terminal-<colour>      terminal window, coloured at build time (scripts/terminal.mjs)
 //   ```sh (and other shell languages)      the usual highlighted code block, in a terminal frame
 //
@@ -10,7 +11,7 @@
 // code blocks, …), and the site's CSS and scripts (src/client/) apply to it unchanged.
 // Invalid blocks throw, which fails the build with the file and the problem.
 import { visit, SKIP } from 'unist-util-visit';
-import { readConfig, readExercise, readQuiz, readTimeline, quizId, renderCast, renderExercise, renderQuiz, renderTimeline } from '../scripts/blocks.mjs';
+import { readAttachment, readConfig, readExercise, readQuiz, readTimeline, quizId, renderAttachment, renderCast, renderExercise, renderQuiz, renderTimeline } from '../scripts/blocks.mjs';
 import { PALETTES, renderTerminal, SHELL_LANGUAGES, titleFromMeta, windowBar } from '../scripts/terminal.mjs';
 
 /** hast property name → JSX attribute name. */
@@ -71,10 +72,11 @@ const RENDERERS = {
 	exercise: (codeBlock) => renderExercise(readExercise(codeBlock)),
 	asciinema: (codeBlock) => renderCast(readConfig(codeBlock)),
 	timeline: (codeBlock) => renderTimeline(readTimeline(codeBlock)),
+	attachment: (codeBlock) => renderAttachment(readAttachment(codeBlock)),
 };
 
 /**
- * The hast for one of the site's own blocks (quiz, exercise, asciinema, timeline, terminal[-colour]),
+ * The hast for one of the site's own blocks (quiz, exercise, asciinema, timeline, attachment, terminal[-colour]),
  * or undefined for any other language. Throws, with the problem, if the block is invalid. Also used
  * by the admin editor's preview (cms/preview.mjs), so it shows blocks exactly as the site does.
  * `position` counts the quizzes and other YAML blocks on the page so far (for quiz ids).

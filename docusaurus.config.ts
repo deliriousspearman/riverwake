@@ -3,7 +3,7 @@
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import { themes as prismThemes } from 'prism-react-renderer';
-import { courseRedirects, readSettings } from './scripts/content.mjs';
+import { courseRedirects, proLabsShown, readSettings } from './scripts/content.mjs';
 import { toDocusaurus } from './scripts/frontmatter.mjs';
 import { selectedTheme, themeStylesheets } from './scripts/themes.mjs';
 import remarkDrawio from './plugins/remark-drawio.mjs';
@@ -18,6 +18,9 @@ const theme = selectedTheme();
 // The site banner ("Site settings → Banner"), validated by the lms-content plugin.
 const banner = readSettings('banner');
 const showBanner = banner.enabled === true && typeof banner.message === 'string' && banner.message.trim() !== '';
+// Pro labs on or off ("Site settings → Features"). Off, their pages still build, but the navbar, search
+// and sitemap leave them out (the footer and home page read it from the catalogue).
+const showLabs = proLabsShown();
 
 // "Edit this page" links (src/theme/DocItem/Paginator): each page's file in GitLab's editor. The same
 // GitLab address and project as the admin editor (scripts/prepare.mjs).
@@ -101,7 +104,7 @@ const config: Config = {
 				},
 				blog: false,
 				theme: { customCss: themeStylesheets(theme) },
-				sitemap: { lastmod: null },
+				sitemap: { lastmod: null, ignorePatterns: showLabs ? [] : ['/labs/**'] },
 			} satisfies Preset.Options,
 		],
 	],
@@ -126,12 +129,17 @@ const config: Config = {
 				// each: of those, only the glossary's term pages (/glossary/<id>/), so searching a term
 				// finds its definition. The catalogue lists would only repeat the courses' own text, and
 				// the Settings page has nothing to find.
-				docsRouteBasePath: ['courses', 'labs'],
+				// Labs only while they're switched on.
+				docsRouteBasePath: showLabs ? ['courses', 'labs'] : ['courses'],
 				indexPages: true,
-				ignoreFiles: ['glossary', 'settings', /^pathways(\/|$)/],
+				ignoreFiles: ['glossary', 'settings', /^pathways(\/|$)/, ...(showLabs ? [] : [/^labs(\/|$)/])],
 				// On staging every page is `noindex` (for search engines), which this would otherwise skip.
 				forceIgnoreNoIndex: STAGING,
 				language: ['en'],
+				// No typo tolerance: combined with prefix matching on the word being typed, one wrong
+				// letter let short terms match unrelated words ("arin" found "bring" and "print").
+				// Prefixes still match ("kerb" finds Kerberos).
+				fuzzyMatchingDistance: 0,
 				hashed: true,
 				highlightSearchTermsOnTargetPage: false,
 				searchBarShortcutHint: true,
@@ -155,14 +163,16 @@ const config: Config = {
 		// Link-preview picture for every page without a PNG/JPEG/WebP one of its own (source:
 		// templates/social-card/codex-card.svg).
 		image: 'images/social/codex.png',
-		colorMode: { defaultMode: 'dark', respectPrefersColorScheme: true },
+		// Dark (Hacklab Night) for everyone at first, whatever the device prefers; the theme menu
+		// (src/theme/ColorModeToggle) offers the other colour themes, each light or dark underneath.
+		colorMode: { defaultMode: 'dark', respectPrefersColorScheme: false },
 		docs: { sidebar: { hideable: true, autoCollapseCategories: false } },
 		navbar: {
 			title: TITLE,
 			items: [
 				{ to: '/courses/', label: 'Courses', position: 'left', activeBaseRegex: '^/courses/' },
 				{ to: '/pathways/', label: 'Pathways', position: 'left', activeBaseRegex: '^/pathways/' },
-				{ to: '/labs/', label: 'Pro Labs', position: 'left', activeBaseRegex: '^/labs/' },
+				...(showLabs ? [{ to: '/labs/', label: 'Pro Labs', position: 'left' as const, activeBaseRegex: '^/labs/' }] : []),
 				{ to: '/glossary/', label: 'Glossary', position: 'left', activeBaseRegex: '^/glossary/' },
 				{ type: 'search', position: 'right' },
 			],

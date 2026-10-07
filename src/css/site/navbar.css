@@ -9,6 +9,7 @@
 	box-shadow: none;
 }
 .navbar__brand {
+	flex-shrink: 0;
 	margin-inline-end: 1.5rem;
 }
 .navbar__title {
@@ -61,6 +62,14 @@
 	color: var(--sl-color-white);
 	font-size: var(--sl-text-sm);
 }
+/* Between the phone layout and wide screens, everything at full size doesn't fit beside the site
+   name: a narrower search box (and the theme menu's icon only, below). */
+@media (min-width: 997px) and (max-width: 79.99rem) {
+	.navbar__search-input,
+	.navbar .navbar__search input {
+		width: 14rem;
+	}
+}
 @media (max-width: 996px) {
 	.navbar__search-input,
 	.navbar .navbar__search input {
@@ -87,17 +96,18 @@
 		display: none;
 	}
 }
-/* Theme dropdown (src/theme/ColorModeToggle): icon, current choice, caret. The
-   icon and label follow <html data-theme-choice>; the transparent <select> on top takes the input.
-   A fixed width, with its contents at the end, so neither the caret nor the divider before it
-   moves between Dark, Light and Auto, and the icon stays by the text. */
+/* Colour theme dropdown (src/theme/ColorModeToggle): icon, current theme, caret. The icon follows
+   <html data-theme> (the theme's light or dark base) and the name <html data-lms-palette> (none for
+   Hacklab Night and Day); the transparent <select> on top takes the input. A minimum width, with
+   its contents at the end, so the caret and the divider before it move little between names, and
+   the icon stays by the text. */
 .lms-theme-select {
 	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: flex-end;
 	gap: 0.4rem;
-	min-width: 6.3rem;
+	min-width: 9rem;
 	height: 2.5rem;
 	padding-inline: 0.25rem;
 	color: var(--sl-color-gray-2);
@@ -122,12 +132,24 @@
 	opacity: 0.8;
 }
 .lms-theme-icon [data-choice],
-.lms-theme-label [data-choice] {
+.lms-theme-label [data-palette] {
 	display: none;
 }
-[data-theme-choice='dark'] .lms-theme-select [data-choice='dark'],
-[data-theme-choice='light'] .lms-theme-select [data-choice='light'],
-[data-theme-choice='system'] .lms-theme-select [data-choice='system'] {
+[data-theme='dark'] .lms-theme-select [data-choice='dark'],
+[data-theme='light'] .lms-theme-select [data-choice='light'],
+:root:not([data-lms-palette])[data-theme='dark'] .lms-theme-select [data-palette='night'],
+:root:not([data-lms-palette])[data-theme='light'] .lms-theme-select [data-palette='day'],
+/* One line per palette in src/lib/palettes.ts (tests/site.test.mjs checks). */
+[data-lms-palette='dracula'] .lms-theme-select [data-palette='dracula'],
+[data-lms-palette='mocha'] .lms-theme-select [data-palette='mocha'],
+[data-lms-palette='tokyo'] .lms-theme-select [data-palette='tokyo'],
+[data-lms-palette='nord'] .lms-theme-select [data-palette='nord'],
+[data-lms-palette='gruvbox'] .lms-theme-select [data-palette='gruvbox'],
+[data-lms-palette='onedark'] .lms-theme-select [data-palette='onedark'],
+[data-lms-palette='solardark'] .lms-theme-select [data-palette='solardark'],
+[data-lms-palette='contrast'] .lms-theme-select [data-palette='contrast'],
+[data-lms-palette='latte'] .lms-theme-select [data-palette='latte'],
+[data-lms-palette='solarlight'] .lms-theme-select [data-palette='solarlight'] {
 	display: inline;
 }
 .lms-theme-select select {
@@ -143,6 +165,16 @@
 }
 .lms-theme-select select:disabled {
 	cursor: default;
+}
+/* Narrower screens: the icon and caret, without the theme's name (the open menu and the screen
+   reader label still name it). */
+@media (max-width: 79.99rem) {
+	.lms-theme-label {
+		display: none !important;
+	}
+	.lms-theme-select {
+		min-width: 0;
+	}
 }
 /* Small screens: the icon only. */
 @media (max-width: 49.99rem) {
